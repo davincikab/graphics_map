@@ -1,0 +1,94 @@
+
+{% extends "base.html" %}
+
+{% block header %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<style>
+    .map-container {
+        width: 100vw;
+        overflow: hidden;
+        height:95vh;
+        position: relative;
+    }
+
+    .details-tab {
+        width: 250px;
+        position: absolute;
+        top:0px;
+        left:0px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        padding:10px;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    .details-tab .details-header {
+        text-transform: capitalize;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .details-description {
+        padding:0.5rem 0px;
+    }
+
+    #map {
+        width:100vw;
+        height:90vh;
+    }
+</style>
+{% endblock %}
+{% block content %}
+{% include "navbar.html" %}
+<div class="map-container">
+    <div class="details-tab">
+        <div class="details-header">
+            <h4>{{ custom_map.title }}</h4>
+        </div>
+        
+        <div class="details-description">
+            {{ custom_map.description }}
+        </div>
+    </div>
+
+    <div id="map"></div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
+    let tilesUrl = `/{{ custom_map.tiles_folder }}`;
+    const customMapStyle = {
+        version: 8,
+        sources: {
+            'wms-layers':{
+                "type":"raster",
+                "tiles":[`${tilesUrl}/tiles/{z}/{x}/{y}.png`],
+                "tileSize":256
+            }
+        },
+        layers: [
+            {
+                "id": 'image-tile',
+                "source":"wms-layers",
+                "type": "raster",
+                "layout": {},
+            },
+        ]
+    }
+
+    const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        style: customMapStyle,
+        center:[5.048771,51.651427],
+        zoom: 16
+    });
+
+    map.on("load", () => {
+        
+    });
+</script>
+{% endblock %}

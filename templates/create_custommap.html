@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+ 
+    <style>
+        .main {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .form-section {
+            flex: 1;
+        }
+
+        .map-section {
+            flex: 0.8;
+        }
+
+        .mini-map {
+            width: 100%;
+            height: 90%;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{% include "navbar.html" %}
+<div class="main mt-5">
+    <div class="form-section">
+        <form action="" class="mx-3 my-2 form" method="post" id="upload_form">
+            <h5>Add Custom Map</h5>
+            {% csrf_token %}
+            {% for field in form %}
+                {{ field.errors }}
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                    {{ field }}
+                </div>
+                
+            {% endfor %}
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Center</label> <br>
+                <input class="form-control" type="text" name="center" maxlength="200" id="id_center" placeholder="" required disabled>
+            </div>
+    
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Tiles Zip File</label> <br>
+                <input class="form-control" type="file" name="tiles" maxlength="200" id="id_tiles" placeholder="Tiles Zip" required>
+            </div>
+    
+            <input type="submit" value="Upload Custom Map" class="btn btn-primary">
+        </form>
+        <div class="container d-none progress" id="progress"></div>
+    </div>
+
+    <div class="map-section mt-3">
+        <div class="mb-3">
+            <span class="form-label">Click/ or search to set map center</span> 
+        </div>
+        <div class="mini-map" id="mini-map"></div>
+    </div>    
+</div>
+    <script>
+        const uploadForm = document.getElementById('upload_form');
+        const input_file = document.getElementById('id_tiles');
+        const progress_bar = document.getElementById('progress');
+        
+        $("#upload_form").submit(function(e){
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            const media_data = input_file.files[0];
+            if(media_data != null){
+                console.log(media_data);
+                progress_bar.classList.remove("d-none");
+            }
+
+            $.ajax({
+                type: 'POST',
+                url:'/create_custommaps',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                        if(e.lengthComputable){
+                            const percentProgress = (e.loaded/e.total)*100;
+                            console.log(percentProgress);
+                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+                    aria-valuemax="100"></div>`
+                        }
+                    });
+                    return xhr
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response.data.includes("went wrong")) {
+                        console.log(response);
+                    } else {
+                        uploadForm.reset()
+                        progress_bar.classList.add('d-none');
+                    }
+                   
+                    // redirect to a project detail page
+                    // window.location.assign()
+                },
+                error: function(err){
+                    console.log(err);
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            });
+        });
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
+        const map = new mapboxgl.Map({
+            container: 'mini-map', // container ID
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center:[5.048771,51.651427],
+            zoom: 16
+        });
+
+        let geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        })
+
+        map.addControl(geocoder);
+        map.on("load", () => { 
+            geocoder.on("result", ({ result}) => {
+                let { center } = result;
+                document.getElementById("id_center").value = center.join(",");
+            });
+
+            map.on("click", (e) => {
+                document.getElementById("id_center").value = Object.values(e.lngLat);
+            });
+        });
+</script>
+    </script>
+{% endblock %}
+
+{% block js %}
+<script src="{% static '/js/form-control.js' %}"></script>
+
+{% endblock %}

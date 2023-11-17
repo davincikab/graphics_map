@@ -1,0 +1,144 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<style>
+    .map-container {
+        width: 100vw;
+        overflow: hidden;
+        height:95vh;
+        position: relative;
+    }
+
+    .pins_create_tabs {
+        width: 350px;
+        position: absolute;
+        top:80px;
+        left:0px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        max-height:70vh;
+        overflow-y: auto;
+    }
+
+    .details-tab {
+        width: 350px;
+        position: absolute;
+        top:0px;
+        left:0px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        padding:10px;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    .details-header {
+        text-transform: capitalize;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .details-description {
+        padding:0.5rem 0px;
+    }
+
+    #map {
+        width:100vw;
+        height:90vh;
+    }
+</style>
+{% endblock %}
+{% block content %}
+{% include "navbar.html" %}
+<div class="map-container">
+    <div class="details-tab">
+        <div class="details-header">
+            <h4>{{ project.title }}</h4>
+        </div>
+    </div>
+
+    <div class="icons-sections"></div>
+
+    <div class="pins_create_tabs" id="pins_create_tabs">
+        <div class="details-header px-2 py-2">
+            <h6>Add A Pin</h6>
+        </div>
+
+        <div class="body">
+            <form action="" method="post" class="px-3">
+                {% for field in pinsForm %}
+                    {{ field.errors }}
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                        {{ field }}
+                    </div>
+                    
+                {% endfor %} 
+                <input type="submit" value="Add Pin" class="btn btn-primary mt-2">
+            </form>
+        </div>
+    </div>
+
+    <div id="map"></div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
+    let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
+    const customMapStyle = {
+        version: 8,
+        sources: {
+            'wms-layers':{
+                "type":"raster",
+                "tiles":[`${tilesUrl}/tiles/{z}/{x}/{y}.png`],
+                "tileSize":256
+            }
+        },
+        layers: [
+            {
+                "id": 'image-tile',
+                "source":"wms-layers",
+                "type": "raster",
+                "layout": {},
+            },
+        ]
+    }
+
+    const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        style: customMapStyle,
+        center:[5.048771,51.651427],
+        zoom: 16
+    });
+
+    map.on("load", () => {
+        
+    });
+
+    function fetchPins() {
+        fetchPins("/pins/{{project.title}}")
+        .then(res => res.json())
+        .then(data => {
+
+        })
+        .catch(console.error);
+    }
+
+    function updateMapPins(locations) {
+
+    }
+
+    function handelPinCreation() {
+
+    }
+</script>
+<script src="{% static '/js/form-control.js' %}"></script>
+
+{% endblock %}

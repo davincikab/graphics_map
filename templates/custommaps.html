@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+ 
+    <style>
+        .main {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .form-section {
+            flex: 1;
+        }
+
+        .map-section {
+            flex: 0.8;
+        }
+
+        .mini-map {
+            width: 100%;
+            height: 90%;
+        }
+
+        .card {
+            display: flex;
+            padding:0px;
+            border-radius: 5px;
+            flex-direction: row;
+            color: black;
+            box-shadow: 0px 0px 0.25rem #999;
+            overflow: hidden;
+        }
+
+        .subheader {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .subheader .search-bar {
+            width: 70%;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+{% include "navbar.html" %}
+<div class="container mt-5">
+    <div class="header my-2">
+        <h3>Custom Maps</h3>
+        <div class="subheader d-flex py-1">
+            <div class="search-bar">
+                <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
+            </div>
+
+            <div>
+
+            </div>
+
+            <div class="">
+                <a href="/create_custommaps/" class="btn btn-primary">Add Custom Map</a>
+            </div>
+        </div>
+        
+    </div>
+    <div class="maps-container">
+        {% for custom_map in custom_maps %}
+            <div class="card">
+                <img src="/{{ custom_map.thumbnail }}" alt="{{ custom_map.title}}" width="250px">
+                <div class="card-body">
+                    <h4>
+                        <a href="/custom_maps/{{ custom_map.title}}">{{ custom_map.title}}</a>
+                    </h4>
+                    
+                    <p>{{ custom_map.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>  
+</div>
+{% endblock %}
