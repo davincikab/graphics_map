@@ -61,12 +61,21 @@
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
     let tilesUrl = `/{{ custom_map.tiles_folder }}`;
+    let center = `{{ custom_map.center }}`;
+    let maxZoom = parseInt(`{{ custom_map.maxzoom }}`);
+    let minZoom = parseInt(`{{ custom_map.minzoom }}`);
+    center = center.split(",").map(val => parseFloat(val))
+    // center = center ? center.split(",").map(val => parseFloat(val)) : [0,0];
+    let xyz_options = `{{ custom_map.tiles_in_folders }}`;
+    console.log(xyz_options);
+
+    xyz_options = xyz_options == "True" ? "{z}/{x}/{y}" : "{z}_{x}_{y}";
     const customMapStyle = {
         version: 8,
         sources: {
             'wms-layers':{
                 "type":"raster",
-                "tiles":[`${tilesUrl}/tiles/{z}/{x}/{y}.png`],
+                "tiles":[`${tilesUrl}/tiles/${xyz_options}.png`],
                 "tileSize":256
             }
         },
@@ -83,8 +92,10 @@
     const map = new mapboxgl.Map({
         container: 'map', // container ID
         style: customMapStyle,
-        center:[5.048771,51.651427],
-        zoom: 16
+        center:[...center],
+        zoom: minZoom + 1,
+        minZoom:minZoom,
+        maxZoom:maxZoom
     });
 
     map.on("load", () => {

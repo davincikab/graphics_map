@@ -2,12 +2,19 @@
 from django.contrib.gis.db import models
 
 # Create your models here.
+TILES_OPTIONS = (
+    (),
+    ()
+)
 class CustomMaps(models.Model):
     title = models.CharField(max_length=200,null=False)
     description = models.TextField()
     tiles_folder = models.FilePathField(default="/media/uploads/projects/efteling")
-    center = models.CharField(max_length=200,null=False)
-    thumbnail = models.ImageField(upload_to="../media/uploads/thumbnails")
+    center = models.CharField(max_length=200, default="0,0", null=False)
+    tiles_in_folders = models.BooleanField(default=False)
+    thumbnail = models.ImageField(upload_to="./uploads/thumbnails")
+    minzoom = models.IntegerField(default=0)
+    maxzoom = models.IntegerField(default=5)
 
     def __str__(self):
         return self.title
@@ -19,21 +26,35 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+ICON_TYPES = (
+    ("Pin", "Pin Icon"),
+    ("Area", "Area Icon"),
+    ("Accesibility", "Accessibility Icon")
+)
+
 class Icons(models.Model):
     title = models.CharField(max_length=200,null=False)
-    icon = models.FileField(upload_to="./media/uploads/icons/")
+    icon_type = models.CharField(max_length=100, choices=ICON_TYPES, default="Pin")
+    icon = models.FileField(upload_to="./uploads/icons/")
+
+PIN_TYPES = (
+    ("Area Pin", "Area Pin"),
+    ("Detail Pin", "Detail Pin")
+)
 
 class Pins(models.Model):
     title = models.CharField(max_length=200,null=False)
     subtitle =models.CharField(max_length=200)
     #point_type=models.
-    latitue = models.FloatField(default=0   )
-    longitude = models.FloatField(default=0 )
-    body = models.TextField()
-    icon = models.ForeignKey(Icons, on_delete=models.SET_NULL, null=True)
-    minzoom= models.IntegerField(default=0)
-    maxzoom=models.IntegerField(default=18)
+    pin_type = models.CharField(max_length=100, choices=PIN_TYPES, default="Detail Pin")
+    latitude = models.FloatField(default=0)
+    longitude = models.FloatField(default=0)
+    description = models.TextField(null=True)
+    icon = models.CharField(default="icon.png")
+    poi_category = models.CharField(default="") 
+    maxzoom = models.IntegerField(default=18)
+    minzoom = models.IntegerField(default=0)
     bottom_link = models.CharField(max_length=250)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
-    
-    
+    location_image = models.ImageField(default="default.png", upload_to="./uploads/thumbnails/pin_images/")
+    accesibility_features = models.JSONField(null=True)

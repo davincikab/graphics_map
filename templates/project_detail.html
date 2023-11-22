@@ -7,9 +7,30 @@
 <style>
     .map-container {
         width: 100vw;
-        overflow: hidden;
-        height:95vh;
+        /* overflow: hidden; */
+        height:90vh;
         position: relative;
+    }
+
+    .filter-section {
+        width: 200px;
+        position: absolute;
+        top:80px;
+        left:0px;
+        z-index: 3;
+        background-color: #fff;
+        margin: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    #edit-mode {
+        position: absolute;
+        top:0px;
+        right:00px;
+        margin:10px;
+        z-index: 3;
+        box-shadow: 0px 0px 0.5rem #555;
     }
 
     .pins_create_tabs {
@@ -23,10 +44,11 @@
         border-radius: 5px;
         max-height:70vh;
         overflow-y: auto;
+        box-shadow: 0px 0px 0.5rem #555;
     }
 
     .details-tab {
-        width: 350px;
+        max-width: 350px;
         position: absolute;
         top:0px;
         left:0px;
@@ -41,15 +63,198 @@
     .details-header {
         text-transform: capitalize;
         border-bottom: 1px solid #ddd;
+        /* display: flex;
+        align-items: center;
+        justify-content: space-around; */
+    }
+
+    .details-header h6 {
+        margin-bottom: 0px;
     }
 
     .details-description {
         padding:0.5rem 0px;
     }
 
-    #map {
+    .icons-sections {
+        position: absolute;
+        top:35px;
+        right:0px;
+        margin:10px;
+        width: 250px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        padding:10px;
+        box-shadow: 0px 0px 0.5rem #555;
+        font-size: 0.8rem;
+    }
+
+    .icon-list {
+        max-height: 300px;
+        overflow-y: auto;
+        width: 100%;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr) ) ;
+        padding:10px 0px;
+    }
+
+    .icon-list .icon {
+        width: 90%;
+        height: 50px;
+        cursor: pointer;
+    }
+
+    .icon-list .icon.active {
+        background-color: #999;
+    }
+
+    .icon > * {
+        pointer-events: none;
+    }
+
+    .icon img {
+        height: 50%;
+    }
+
+    #map-project {
         width:100vw;
         height:90vh;
+    }
+
+    #map-project canvas {
+        background-color: #2b2d20;
+    }
+
+    .div-marker {
+        background-color: white;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 0.15rem #222;
+    }
+
+    /* filter-tabs */
+    .filter-body {
+        max-height: 82%;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+
+    .filter-tab {
+        /* width: 100%; */
+        padding:0.5rem;
+    
+        border-bottom: 1px solid #ddd;
+        text-align:start;
+
+        text-transform: capitalize;
+        cursor: pointer;
+        display: flex;
+    }
+    .filter-tab > * {
+        pointer-events: none;
+    }
+
+    .filter-tab img {
+        margin-right: 0.5rem;
+    }
+
+    .filter-tab:hover {
+        background-color: aliceblue;
+    }
+
+    .filter-tab-body.active, .filter-tab.active {
+        background-color: aliceblue;
+        color:orange;
+    }
+
+    .filter-tab-body {
+        display: flex;
+        padding:0.5rem;
+        flex-direction: column;
+        align-items: self-start;
+    }
+
+    /* popup */
+    .mapboxgl-popup {
+        max-width: 380px !important;
+    }
+
+    .mapboxgl-popup-content {
+        padding: 0px;
+        /* overflow: hidden; */
+        display: flex;
+        width: 376px;
+        max-width: 100%;
+        min-height: 120px;
+        box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 40px 0px;
+        transform: translateY(0px) scale(1);
+        transition: all 300ms ease 0s;
+        will-change: transform;
+    }
+
+    .mapboxgl-popup-content > div {
+        display: flex;
+        height: 100%;
+        width: 100%;
+    }
+
+    .popup-content {
+        width: 376px;
+        display: flex;
+        height: 100%;
+    }
+
+    .popup-content .image-section {
+        width: 180px;
+        max-height: 120px;
+        overflow: hidden;
+
+    }
+
+    .image-section img {
+        width: 100%;
+        /* height: 120px; */
+    }
+
+    .popup-content .info-section {
+        padding:10px;
+        flex: 1;
+
+        padding: 10px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: baseline;
+    }
+
+    .popup-content .info-section h5 {
+        margin:5px 0px;
+        text-align: left;
+        font-size: 18px;
+    }
+
+    .info-section .icons {
+        display: flex;
+        margin-top: 0.5rem;
+        justify-content: space-between;
+    }
+
+    .info-section .icons img {
+        width: 30px;
+        height: 30px;
+        margin: 0 5px;
+    }
+
+    .mapboxgl-popup-close-button {
+        font-size: 1.5rem;
+        padding: 4px !important;
+        color:#000;
     }
 </style>
 {% endblock %}
@@ -57,20 +262,63 @@
 {% include "navbar.html" %}
 <div class="map-container">
     <div class="details-tab">
-        <div class="details-header">
+        <div class="detail-header">
             <h4>{{ project.title }}</h4>
         </div>
     </div>
 
-    <div class="icons-sections"></div>
+    
 
-    <div class="pins_create_tabs" id="pins_create_tabs">
+    {% if user.is_authenticated %}
+    <button class="btn btn-secondary py-0" id="edit-mode">Read Mode</button>
+    <div class="icons-sections d-none">
+        <div class="details-header py-2">
+            <h6>Pin Icon</h6>
+        </div>
+        <div class="icon-list">
+            {% for icon in pins_icons %}
+                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <span>{{ icon.title }}</span>
+                    </div>
+                {% endfor %} 
+        </div>
+        <div class="accesssibility-icons">
+            <div class="details-header">
+                <h6>Accessibility Icons</h6>
+            </div>
+            <div class="icon-list">
+                {% for icon in accessebility_icons %}
+                    <div class="icon acc-icons" data-item='{"title":"{{icon.title}}", "icon":"{{icon.icon}}"}'>
+                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <span>{{ icon.title }}</span>
+                    </div>
+                {% endfor %} 
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+    <div class="filter-section" id="filter-section">
+        <div class="details-header px-2 py-2">
+            <h6>Filters</h6>
+        </div>
+
+        <div class="body">
+
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="pins_create_tabs d-none" id="pins_create_tabs">
         <div class="details-header px-2 py-2">
             <h6>Add A Pin</h6>
         </div>
 
         <div class="body">
-            <form action="" method="post" class="px-3">
+            <form action="" method="post" class="px-3" id="poi-form">
+                {% csrf_token %}
                 {% for field in pinsForm %}
                     {{ field.errors }}
                     <div class="mb-1">
@@ -80,11 +328,14 @@
                     
                 {% endfor %} 
                 <input type="submit" value="Add Pin" class="btn btn-primary mt-2">
+
+                <div class="container d-none progress" id="progress"></div>
             </form>
         </div>
     </div>
+    {% endif %}
 
-    <div id="map"></div>
+    <div id="map-project"></div>
 </div>
 {% endblock %}
 
@@ -92,12 +343,27 @@
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
     let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
+    let projectId = `{{ project.pk}}`;
+    let center = `{{ project.custom_map.center }}`;
+    let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
+    let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
+    center = center.split(",").map(val => parseFloat(val));
+    let poiData = [], allData=[], categoryMarkers = [];
+
+    let xyz_options = `{{ custom_map.tiles_in_folders }}`;
+    console.log(xyz_options);
+
+    xyz_options = xyz_options == "True" ? "{z}/{x}/{y}" : "{z}_{x}_{y}";
+
+    const pinsFormSection = document.getElementById("pins_create_tabs");
+    const iconsSection = document.querySelector(".icons-sections");
+
     const customMapStyle = {
         version: 8,
         sources: {
             'wms-layers':{
                 "type":"raster",
-                "tiles":[`${tilesUrl}/tiles/{z}/{x}/{y}.png`],
+                "tiles":[`${tilesUrl}/tiles/${xyz_options}.png`],
                 "tileSize":256
             }
         },
@@ -106,39 +372,470 @@
                 "id": 'image-tile',
                 "source":"wms-layers",
                 "type": "raster",
+                "paint": {"raster-fade-duration": 100},
                 "layout": {},
             },
-        ]
-    }
+        ],
+        "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+    };
 
     const map = new mapboxgl.Map({
-        container: 'map', // container ID
+        container: 'map-project', // container ID
         style: customMapStyle,
-        center:[5.048771,51.651427],
-        zoom: 16
+        center:[...center],
+        zoom: minZoom,
+        minZoom:minZoom,
+        maxZoom:maxZoom
     });
 
-    map.on("load", () => {
-        
+    const navigationCtrl = new mapboxgl.NavigationControl({ showCompass:false });
+    map.addControl(navigationCtrl, 'bottom-right');
+
+    map.on("style.load", function () {
+        // area layer
+        map.addSource("area-pins", {
+            type:"geojson",
+            data:{"type":"FeatureCollection", "features":[]}
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins",
+            source:"area-pins",
+            layout:{
+                'icon-allow-overlap': true,
+                'icon-image': ['get', 'poi_category'],
+                'icon-size': 0.75,
+                'text-allow-overlap': true,
+                'text-field': ['get','title'],
+                'text-max-width': 13, // ems
+                'text-offset': [0, 1.2],
+                'text-font': ['Nunito Sans Bold'],
+                'text-anchor': 'center',
+                'text-size': 14,
+                'text-line-height': 1,
+            },
+            paint:{
+                'text-color': '#fff',
+            },
+            maxzoom:minZoom + 1
+        })
+
+        // map.addSource();
+        map.addSource("pois", {
+            type:"geojson",
+            data:{"type":"FeatureCollection", "features":[]}
+        });
+
+        map.addLayer({
+            type:'circle',
+            source:"pois",
+            id:"pois",
+            minzoom:minZoom + 1,
+            "paint":{
+                "circle-color":"#4D3929",
+                "circle-stroke-color":"#fff",
+                "circle-radius":[
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    0,
+                    2.5,
+                    19,
+                    5
+                ],
+                "circle-stroke-width":3
+            },
+        });
+
+        fetchPins();
+        // addMarkerHandler();
+        map.on("click", (e) => {
+            let btn = document.getElementById("edit-mode");
+            if(btn) {
+                updatePinLocation(e.lngLat.toArray());
+            }
+        });
+
+        map.on("zoomend", (e) => {
+            if(map.getZoom() < (minZoom + 1) ) {
+                categoryMarkers.forEach(marker => marker.remove())
+            } else {
+                categoryMarkers.forEach(marker => marker.addTo(map))
+            }
+        });
+
     });
+
+    function loadMapImages(imageList) {
+        imageList.forEach(imgObj => {
+            if(!map.hasImage(imgObj.category)) {
+                map.loadImage(`/media/${imgObj.icon}`, (err, image) => {
+                    if(err) throw err;
+
+                    console.log("Image Loading")
+                    console.log(image);
+                    
+                    map.addImage(imgObj.category, image);
+                });
+            }  
+           
+        });
+    }
+
 
     function fetchPins() {
-        fetchPins("/pins/{{project.title}}")
+        fetch(`/pins?project_id=${projectId}`)
         .then(res => res.json())
-        .then(data => {
+        .then(({data}) => {
+            let info = JSON.parse(data).map(entry => entry.fields);
 
+            
+            allData = JSON.parse(JSON.stringify(info))
+            poiData = info.filter(item => item.pin_type !== "Area Pin")
+            let poiFeature = poiToGeojson(poiData);
+            let areaInfo = info.filter(item => item.pin_type == "Area Pin");
+
+            console.log(areaInfo);
+            let areaFeatures = poiToGeojson(areaInfo);
+            let imageList = areaInfo.reduce((a,b) => {
+                if(!a.find(item => item.category == b.poi_category)) {
+                    a.push({
+                        category: b.poi_category,
+                        icon:b.icon
+                    })
+                }
+                
+                return a;
+            }, [])
+
+            console.log(imageList);
+            loadMapImages(imageList);
+           
+            renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
+            toggleMarkersByCategory();
+
+            map.getSource("pois").setData(poiFeature);
+            map.getSource("area-pins").setData(areaFeatures);
         })
         .catch(console.error);
     }
 
-    function updateMapPins(locations) {
+    function renderCategoryTabs(info) {
+        let categories = info.map(entry => entry.poi_category);
+        categories = [...new Set([...categories])];
 
+        let filterTabs = categories.map(category => {
+            let iconImage = info.find(item => item.poi_category == category).icon;
+
+            return `<div class="filter-tab" data-id="${category}">
+                <img src="/media/${iconImage}"  height="20px" />
+                <div>${category}</div>
+            </div>`;
+        });
+
+        document.querySelector(".filter-section .body").innerHTML = filterTabs.join("");
+    }
+
+    function toggleMarkersByCategory() {
+        let categoryTabs = document.querySelectorAll(".filter-tab");
+        categoryTabs.forEach(tab => {
+            tab.onclick = (e) => {
+                console.log(e.target.dataset);
+                renderCategoryMarkers(e.target.dataset.id);
+            }
+        })
+    }
+
+
+    function fitToCategoryBounds(coords) {
+        let bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
+        coords.forEach(coord => {
+            bounds.extend(coord);
+        });
+
+        map.fitBounds(bounds, { padding:50});
+    }
+
+    function renderCategoryMarkers(category) {
+        let entries = poiData.filter(poi => poi.poi_category == category);
+
+        if(categoryMarkers.length) {
+            categoryMarkers.forEach(marker => marker.remove());
+        }
+        
+        categoryMarkers = entries.map(entry => {
+            return createPoiMarker(entry)
+        });
+        
+        let coords = entries.map(entry =>  ([entry.longitude, entry.latitude]));
+        fitToCategoryBounds(coords);
+    }
+
+    function createPoiMarker(entry) {
+        let divIcon = getMarkerIcons(`/media/${entry.icon}`);
+        let popupContent = getPopupContent(entry);
+        let popup = new mapboxgl.Popup({ focusAfterOpen:false });
+        popup.setHTML(popupContent);
+
+        let marker = new mapboxgl.Marker({ element:divIcon});
+        let { latitude, longitude } = entry;
+        marker.setLngLat([longitude,latitude]).setPopup(popup).addTo(map);
+
+        return marker;
+    }
+
+    function getMarkerIcons(iconSrc) {
+        let divMarker = document.createElement("div");
+        divMarker.classList.add("div-marker");
+        
+        divMarker.innerHTML = `<img src="${iconSrc}" width="25px" />`;
+        return divMarker;
+    }
+
+    function getPopupContent(entry) {
+        let { accesibility_features } = JSON.parse(entry.accesibility_features);
+
+        let icons = accesibility_features.map(accFeature => {
+            return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
+        });
+
+        return `<div class='popup-content'>
+            <div class='image-section'>
+              <img src="/media/${entry.location_image}" alt="" />
+            </div>
+
+          <div class="info-section">
+              <h5>${entry.title}</h5>
+              <div class="description">${entry['subtitle']}</div>
+              <div class="icons">
+               ${icons.join("")}
+              </div>
+          </div>
+        </div>`;
+    }
+
+    const poiToGeojson = (pois) => {
+        let features = pois.map(poi => {
+            return {
+                "type":"Feature",
+                "geometry":{"type":"Point", "coordinates":[poi.longitude, poi.latitude]},
+                "properties":{...poi}
+            }
+        });
+
+        return { "type":"FeatureCollection", "features":[...features] };
+    }
+</script>
+
+{% if user.is_authenticated %}
+<script>
+    // pin creation
+    const uploadForm = document.getElementById('poi-form');
+    const input_file = document.getElementById('id_location_image');
+    const progress_bar = document.getElementById('progress');
+    let accessebility_icons = [];
+    let location_icon = "";
+    let pin_coords = null;
+    let pinMarker = new mapboxgl.Marker(), editMode = false;
+    let pinsIcons = document.querySelectorAll(".pin-icons");
+    let accessIcons = document.querySelectorAll(".acc-icons");
+
+    function isFormValid(fd) {
+        if(!pin_coords) {
+            alert("Kindly Add a Marker");
+            return false;
+        }
+
+        return true;
+    }
+
+    function toggleEditMode() {
+        document.getElementById("edit-mode").onclick = function(e) {
+            editMode = !editMode;
+
+            e.target.classList.toggle("btn-success");
+            e.target.innerHTML = editMode ? "Edit Mode" : "Read Mode";
+
+            let cursor = editMode ? "crosshair" : "";
+            map.getCanvas().cursor = cursor;
+
+            toggleEditSections();
+        }
+    }
+
+    toggleEditMode();
+
+    function toggleEditSections() {
+        iconsSection.classList.toggle("d-none");
+        pinsFormSection.classList.toggle("d-none");
+
+        document.getElementById("filter-section").classList.toggle("d-none");
+    }
+
+    function updatePinLocation(location) {
+        if(!location_icon) {
+            alert("Kindly Select an icon");
+            return;
+        }
+
+         if(editMode) {
+            pin_coords = [...location];
+            let iconSrc = location_icon.querySelector("img").src;
+            let divIcon = getMarkerIcons(iconSrc);
+
+            if(pinMarker) {
+                pinMarker.remove();
+            }
+
+            pinMarker = new mapboxgl.Marker({ element:divIcon });
+            pinMarker.setLngLat(location).addTo(map);
+        }   
+    }
+
+    function selectPinIcon() {
+        pinsIcons.forEach((iconDiv, i) => {
+            if(i==0) {
+                console.log(iconDiv);
+                iconDiv.classList.add("active");
+                location_icon = iconDiv;
+            }
+
+            iconDiv.onclick = (e) => {
+                location_icon.classList.remove("active");
+                if(location_icon != e.target) {
+                    e.target.classList.add("active");
+                    location_icon = e.target;
+                } else {
+                    location_icon = null;
+                }
+
+                
+            }
+        });
+    }
+
+    selectPinIcon();
+
+    // accesibility icons 
+    function updateAccesibiltyIcons() {
+        accessIcons.forEach(iconEl => { 
+            iconEl.onclick = function(e) {
+                let isAdded = accessebility_icons.find(elem => elem == e.target);
+
+                if(isAdded) {
+                    isAdded.classList.remove("active");
+                    accessebility_icons = accessebility_icons.filter(el => el != isAdded)
+                } else {
+                    e.target.classList.add("active");
+                    accessebility_icons.push(e.target);
+                }
+
+            }
+        })
+    }
+
+    updateAccesibiltyIcons();
+
+    function updateFormData(formData) {
+        console.log(pin_coords);
+        let [longitude, latitude] = pin_coords;
+
+        formData.set('latitude', latitude);
+        formData.set("longitude", longitude);
+
+        // icons
+        let acc_icons = accessebility_icons.map(el => JSON.parse(el.dataset.item));
+        formData.set("accesibility_features", JSON.stringify({ "accesibility_features": [...acc_icons] }));
+        formData.set("project", projectId);
+        formData.set("poi_type", location_icon.dataset.key)
+        formData.set("icon", location_icon.dataset.target);
+
+        return formData;
     }
 
     function handelPinCreation() {
+        $("#poi-form").submit(function(e) {
+        e.preventDefault();
+        console.log("Submit");
+        $form = $(this)
+        
+        if(!isFormValid(formData)) {
+            return;
+        }
+        var formData = new FormData(this);
+        formData = updateFormData(formData);
+
+        var object = {};
+        formData.forEach((value, key) => object[key] = value);
+        var json = JSON.stringify(object);
+        console.log(json);
+
+        const media_data = input_file.files[0];
+        if(media_data != null){
+            console.log(media_data);
+            progress_bar.classList.remove("d-none");
+        }
+
+        $.ajax({
+            type: 'POST',
+            url:'/pins/create',
+            data: formData,
+            dataType: 'json',
+            beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                        if(e.lengthComputable){
+                            const percentProgress = (e.loaded/e.total)*100;
+                            console.log(percentProgress);
+                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+                    aria-valuemax="100"></div>`
+                        }
+                    });
+                    return xhr
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response.data.includes("went wrong")) {
+                        console.log(response);
+                    } else {
+                        uploadForm.reset()
+                        progress_bar.classList.add('d-none');
+
+                        fetchPins();
+                        pinMarker.remove();
+                    }
+                   
+                    // redirect to a project detail page
+                    // window.location.assign()
+                },
+                error: function(err){
+                    console.log(err);
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            });
+        });
+    }
+
+    handelPinCreation();
+
+    function resetIcons() {
+        document.querySelector(".acc-icons").forEach(iconEl => {
+            iconEl.classList.remove("active");
+        });
+    }
+
+    function resetMap() {
 
     }
 </script>
+{% endif %}
 <script src="{% static '/js/form-control.js' %}"></script>
 
 {% endblock %}

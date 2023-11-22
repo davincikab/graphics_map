@@ -94,13 +94,21 @@
  */
 
 body {
-  background-image:url('https://picsum.photos/id/235/2000/2800') ;
+  /* background-image:url('https://picsum.photos/id/235/2000/2800') ; */
+  background-color: white;
   background-repeat: no-repeat;
 }
 
 .cover-container {
-  max-width: 60%;
+  max-width: 100%;
   
+}
+.navbar {
+  background-color: transparent !important;
+}
+
+.header-section {
+  box-shadow: none !important;
 }
 
 .nav.nav-masthead {
@@ -125,29 +133,31 @@ body {
   color: #fff;
   border-bottom-color: #fff;
 }
+
+main {
+  max-width: 60%;
+  margin: 0 auto;
+}
 </style>
 {% endblock %}
 {% block content %}  
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-<header class="mb-auto w-100">
-  <div>
-    {% include "navbar.html" %}
-  </div>
-  
-</header>
+  <header class="mb-auto w-100">
+    {% include "navbar.html" %}    
+  </header>
 
-<main class="px-3">
-  <h1>Map Maker.</h1>
-  <p class="lead">
-    Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.
+  <main class="px-3">
+    <h1>Map Maker.</h1>
+    <p class="lead">
+      Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.
+      </p>
+    <p class="lead">
+      <a href="/custommaps" class="btn btn-lg btn-light fw-bold border-none text-white bg-primary">Custom Maps</a>
     </p>
-  <p class="lead">
-    <a href="#" class="btn btn-lg btn-light fw-bold border-white bg-white">View Efteling Map</a>
-  </p>
-</main>
+  </main>
 
-<footer class="mt-auto text-white-50">
-  <p></p>
-</footer>
+  <footer class="mt-auto text-white-50">
+    <p></p>
+  </footer>
 </div>
 {% endblock %}

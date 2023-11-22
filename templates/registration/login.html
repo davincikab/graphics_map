@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Sign Up {% endblock %}
+{% block header %} 
+<style>
+    .card {
+        min-width: 30vw;
+        box-shadow: 2px 2px 0.3em #ddd;
+    }
+    .container {
+        display: flex;
+        align-self:center;
+        justify-content: center;
+    }
+
+    .main-container {
+        width: 30em !important;
+        margin: 0 auto;
+    }
+
+    .card {
+        height: 38vh;
+        color:#444;
+    }
+
+    @media only screen and (max-width: 480px) {
+        .main-container {
+            width: 90% !important;
+            margin:0 auto;
+        }
+        .card {
+            width: 100%;
+            margin:0 auto;
+        }
+
+        .card {
+            padding-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+{% include "navbar.html" %}
+    <div class="main-container">
+        <div class="container mt-5">
+            <div class="card py-2 px-2  mt-5">
+                <h5>Login</h5>
+                {% if form.errors %}
+                    <p>Your username and password didn't match. Please try again.</p>
+                {% endif %}
+
+                {% if next %}
+                    {% if user.is_authenticated %}
+                    <p>Your account doesn't have access to this page. To proceed,
+                    please login with an account that has access.</p>
+                    {% else %}
+                    <p>Please login to see this page.</p>
+                    {% endif %}
+                {% endif %}
+
+                <form method="post" action=".">
+                    {% csrf_token %}
+                    <table>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">
+                            {{ form.username.label }}
+                        </label> <br>
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+
+                        <label for="exampleFormControlInput1" class="form-label">
+                            {{ form.username.label }}
+                        </label> <br>
+                        {{ form.password }}
+                    </div>
+                    </table>
+
+                    <input type="submit" value="login" class="btn btn-primary mt-5">
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+                
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}
+{% block js%}
+<script src="{% static '/js/form-control.js' %}"></script>
+{% endblock %}

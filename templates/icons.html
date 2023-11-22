@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+    <style>
+        .main {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .form-section {
+            flex: 0.5;
+        }
+
+        .map-section {
+            flex: 0.8;
+        }
+
+        .mini-map {
+            width: 100%;
+            height: 90%;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .main {
+                width: 90%;
+                margin:0 auto;
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{% include "navbar.html" %}
+<div class="main mt-5">
+    <div class="map-section mt-3">
+        <div class="mb-3">
+            <span class="form-label">Available Icons</span> 
+        </div>
+
+        <div class="icons-sections">
+            <div class="pin-icons">
+                <div class="details-header">
+                    <h6>Pin Icon</h6>
+                </div>
+                <div class="icon-list">
+                    {% for icon in pins_icons %}
+                        <div class="icon">
+                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                            <span>{{ icon.title }}</span>
+                        </div>
+                    {% endfor %} 
+                </div>
+            </div>
+
+            <div class="accesssibility-icons mt-3">
+                <div class="details-header">
+                    <h6>Accessibility Icons</h6>
+                </div>
+                <div class="icon-list">
+                    {% for icon in accessebility_icons %}
+                        <div class="icon">
+                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                            <span>{{ icon.title }}</span>
+                        </div>
+                    {% endfor %} 
+                </div>
+            </div>
+
+            <div class="accesssibility-icons mt-3">
+                <div class="details-header">
+                    <h6>Area Icons</h6>
+                </div>
+                <div class="icon-list area_icons">
+                    {% for icon in area_icons %}
+                        <div class="icon">
+                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}" width="120px">
+                            <span>{{ icon.title }}</span>
+                        </div>
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+
+    </div>    
+
+    {% if user.is_authenticated %}
+        <div class="form-section">
+            <form action="" class="mx-3 my-2 form" method="post" id="upload_form">
+                <h5>Add An Icon</h5>
+                {% csrf_token %}
+                {% for field in form %}
+                    {{ field.errors }}
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                        {{ field }}
+                    </div>
+                    
+                {% endfor %}    
+                <input type="submit" value="Upload Icon" class="btn btn-primary">
+            </form>
+            <div class="container d-none progress" id="progress"></div>
+        </div>
+    {% endif %}
+</div>
+    <script>
+        const uploadForm = document.getElementById('upload_form');
+        const input_file = document.getElementById('id_icon');
+        const progress_bar = document.getElementById('progress');
+        
+        $("#upload_form").submit(function(e){
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            const media_data = input_file.files[0];
+            if(media_data != null){
+                console.log(media_data);
+                progress_bar.classList.remove("d-none");
+            }
+
+            $.ajax({
+                type: 'POST',
+                url:'/icons',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                        if(e.lengthComputable){
+                            const percentProgress = (e.loaded/e.total)*100;
+                            console.log(percentProgress);
+                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+                    aria-valuemax="100"></div>`
+                        }
+                    });
+                    return xhr
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response.data.includes("went wrong")) {
+                        console.log(response);
+                    } else {
+                        uploadForm.reset()
+                        progress_bar.classList.add('d-none');
+                        window.location.reload();
+                    }
+                   
+                    // redirect to a project detail page
+                    
+                },
+                error: function(err){
+                    console.log(err);
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            });
+        });
+</script>
+{% endblock %}
+
+{% block js %}
+<script src="{% static '/js/form-control.js' %}"></script>
+
+{% endblock %}

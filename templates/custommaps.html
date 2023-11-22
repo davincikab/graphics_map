@@ -44,6 +44,20 @@
         .subheader .search-bar {
             width: 70%;
         }
+
+        @media only screen and (max-width: 480px) { 
+            .subheader {
+                flex-direction: column;
+            }
+
+            .subheader > div {
+                width: 100% !important;
+            }
+
+            .subheader .search-bar {
+                margin-bottom: 5px;
+            }
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -52,24 +66,22 @@
     <div class="header my-2">
         <h3>Custom Maps</h3>
         <div class="subheader d-flex py-1">
-            <div class="search-bar">
-                <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
-            </div>
+            {% if user.is_authenticated %}
+                <div class="search-bar">
+                    <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
+                </div>
 
-            <div>
-
-            </div>
-
-            <div class="">
-                <a href="/create_custommaps/" class="btn btn-primary">Add Custom Map</a>
-            </div>
+                <div class="">
+                    <a href="/create_custommaps/" class="btn btn-primary">Add Custom Map</a>
+                </div>
+            {% endif %}
         </div>
         
     </div>
     <div class="maps-container">
         {% for custom_map in custom_maps %}
-            <div class="card">
-                <img src="/{{ custom_map.thumbnail }}" alt="{{ custom_map.title}}" width="250px">
+            <div class="card mb-3">
+                <img src="/media/{{ custom_map.thumbnail }}" alt="{{ custom_map.title}}" width="250px">
                 <div class="card-body">
                     <h4>
                         <a href="/custom_maps/{{ custom_map.title}}">{{ custom_map.title}}</a>

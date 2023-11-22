@@ -5,7 +5,7 @@ from .models import Project, CustomMaps, Pins, Icons
 class CustomMapsForm(ModelForm):
     class Meta:
         model = CustomMaps
-        fields = ['title', 'description', 'thumbnail']
+        fields = ['title', 'description', 'minzoom', 'maxzoom', 'thumbnail', 'tiles_in_folders']
 
 class ProjectForm(ModelForm):
     class Meta:
@@ -15,11 +15,11 @@ class ProjectForm(ModelForm):
 class IconsForm(ModelForm):
     class Meta:
         model = Icons
-        fields = ['title', 'icon']
+        fields = ['title', 'icon', 'icon_type']
 
 class PinsForm(ModelForm):
     class Meta:
         model = Pins
-        fields = ['title', 'subtitle', 'body', 'minzoom', 'maxzoom']
+        fields = ['title', 'subtitle', 'description', 'location_image', 'pin_type']
         # fields = '__all__'
 
