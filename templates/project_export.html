@@ -48,7 +48,7 @@
     }
 
     .details-tab {
-        width: 350px;
+        max-width: 350px;
         position: absolute;
         top:0px;
         left:0px;
@@ -212,11 +212,14 @@
 
     .popup-content .image-section {
         width: 180px;
+        max-height: 120px;
+        overflow: hidden;
+
     }
 
     .image-section img {
         width: 100%;
-        height: 120px;
+        /* height: 120px; */
     }
 
     .popup-content .info-section {
@@ -347,13 +350,13 @@
     center = center.split(",").map(val => parseFloat(val));
     let poiData = [], allData=[], categoryMarkers = [];
 
-    const pinsFormSection = document.getElementById("pins_create_tabs");
-    const iconsSection = document.querySelector(".icons-sections");
-
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
 
     xyz_options = xyz_options == "True" ? "{z}/{x}/{y}" : "{z}_{x}_{y}";
+
+    const pinsFormSection = document.getElementById("pins_create_tabs");
+    const iconsSection = document.querySelector(".icons-sections");
 
     const customMapStyle = {
         version: 8,
@@ -482,7 +485,7 @@
 
 
     function fetchPins() {
-        fetch("/pins")
+        fetch(`/pins?project_id=${projectId}`)
         .then(res => res.json())
         .then(({data}) => {
             let info = JSON.parse(data).map(entry => entry.fields);

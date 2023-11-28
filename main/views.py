@@ -43,11 +43,12 @@ def create_custommaps(request):
         form = CustomMapsForm(request.POST, request.FILES)
         if form.is_valid():
             fileUrl = handle_uploaded_project_file(request.FILES["tiles"], request.POST['title'])
-            print(fileUrl)
+            print("Center: ", request.POST.get('center'))
 
             if fileUrl:
                 custommaps_instance = form.save(commit=False)
                 custommaps_instance.tiles_folder = fileUrl
+                custommaps_instance.center = request.POST.get('center')
                 custommaps_instance.save()
                 
                 return JsonResponse({'data':'Data uploaded'})
@@ -193,9 +194,25 @@ def get_icons(request):
     icons = Icons.objects.all()
     return JsonResponse({'data':icons})
 # export projects to a downloadable html file
-
-    
-
+def export_map_to_html(request, title):
+    try:
+        pinsForm = PinsForm()
+        map_project = Project.objects.get(title=title)
+        pins_icons = Icons.objects.exclude(icon_type="Accesibility")
+        acc_icons = Icons.objects.filter(icon_type="Accesibility")
+        # custom_map = CustomMaps.objects.get()
+        context = { 
+            'project' : map_project, 
+            'pinsForm':pinsForm, 
+            'custom_map' : map_project.custom_map,
+            "pins_icons":pins_icons, 
+            "accessebility_icons":acc_icons,
+            "user":request.user
+        }
+        
+        return render(request, 'project_export.html', context)
+    except Project.DoesNotExist:
+        return render(request, '404.html')
     
 # user
 def logout_view(request):

@@ -51,19 +51,19 @@
             {% for field in form %}
                 {{ field.errors }}
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                    <label class="form-label">{{ field.label }}</label> <br>
                     {{ field }}
                 </div>
                 
             {% endfor %}
 
             <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Center</label> <br>
-                <input class="form-control" type="text" name="center" maxlength="200" id="id_center" placeholder="" required disabled>
+                <label for="id_center" class="form-label">Center</label> <br>
+                <input class="form-control" type="text" name="center" value="0,0" maxlength="200" id="id_center" placeholder="" required disabled>
             </div>
     
             <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Tiles Zip File</label> <br>
+                <label for="id_tiles" class="form-label">Tiles Zip File</label> <br>
                 <input class="form-control" type="file" name="tiles" maxlength="200" id="id_tiles" placeholder="Tiles Zip" required>
             </div>
     
@@ -83,11 +83,14 @@
         const uploadForm = document.getElementById('upload_form');
         const input_file = document.getElementById('id_tiles');
         const progress_bar = document.getElementById('progress');
+        const centerInput = document.getElementById("id_center");
         
         $("#upload_form").submit(function(e){
             e.preventDefault();
             $form = $(this)
-            var formData = new FormData(this);
+            var formData = new FormData(uploadForm);
+            formData.set("center", centerInput.value);
+
             const media_data = input_file.files[0];
             if(media_data != null){
                 console.log(media_data);

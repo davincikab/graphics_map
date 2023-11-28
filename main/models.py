@@ -6,10 +6,12 @@ TILES_OPTIONS = (
     (),
     ()
 )
+
+
 class CustomMaps(models.Model):
     title = models.CharField(max_length=200,null=False)
     description = models.TextField()
-    tiles_folder = models.FilePathField(default="/media/uploads/projects/efteling")
+    tiles_folder = models.CharField(default="/media/uploads/projects/efteling", max_length=400)
     center = models.CharField(max_length=200, default="0,0", null=False)
     tiles_in_folders = models.BooleanField(default=False)
     thumbnail = models.ImageField(upload_to="./uploads/thumbnails")
@@ -37,6 +39,9 @@ class Icons(models.Model):
     icon_type = models.CharField(max_length=100, choices=ICON_TYPES, default="Pin")
     icon = models.FileField(upload_to="./uploads/icons/")
 
+    def __str__(self):
+        return self.title
+
 PIN_TYPES = (
     ("Area Pin", "Area Pin"),
     ("Detail Pin", "Detail Pin")
@@ -50,11 +55,14 @@ class Pins(models.Model):
     latitude = models.FloatField(default=0)
     longitude = models.FloatField(default=0)
     description = models.TextField(null=True)
-    icon = models.CharField(default="icon.png")
-    poi_category = models.CharField(default="") 
+    icon = models.CharField(default="icon.png", max_length=200)
+    poi_category = models.CharField(default="", max_length=200) 
     maxzoom = models.IntegerField(default=18)
     minzoom = models.IntegerField(default=0)
     bottom_link = models.CharField(max_length=250)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     location_image = models.ImageField(default="default.png", upload_to="./uploads/thumbnails/pin_images/")
     accesibility_features = models.JSONField(null=True)
+
+    def __str__(self):
+        return self.title
