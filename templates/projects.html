@@ -37,6 +37,9 @@
             max-width: 400px;
         }
 
+        .card-body {
+            position: relative;
+        }
         .subheader {
             display: flex;
             justify-content: space-between;
@@ -54,6 +57,29 @@
         .maps-container .card {
             margin-right: 10px;
             margin-bottom: 10px;
+        }
+
+        .footer-section {
+            position: absolute;
+            bottom: 5px;
+            left: 0px;
+            right: 0px;
+            padding: 2px 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-section a {
+            height: 30px;
+            background-color: #d5cccc;
+            padding: 7px 7px;
+            border-radius: 5px;
+            color:#6d6c6c;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         @media only screen and (max-width: 480px) { 
@@ -98,14 +124,21 @@
                 <img src="/media/{{ project.custom_map.thumbnail }}" alt="{{ project.title}}" width="150px">
                 <div class="card-body">
                     <h4>
-                        <a href="/projects/{{ project.title}}">{{ project.title}}</a>
+                        <a href="/projects/{{ project.title}}/view/">{{ project.title}}</a>
                     </h4>
                     
                     <div>
-                        <a href="/project_categories/{{ project.title}}">Categories</a>
+                        
                     </div>
-                    
+
                     <p>{{ project.description }}</p>
+
+                    <div class="footer-section">
+                        <a href="/project_categories/{{ project.title}}" class="">Categories</a>
+                        <a href="/projects/{{ project.title}}" class="edit-btn">Edit Project</a>
+                    </div>
+                   
+                    
                 </div>
             </div>
         {% endfor %}

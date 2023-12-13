@@ -16,10 +16,15 @@ def index_page(request):
     context = {}
     return render(request, 'index.html', context=context)
 
+@login_required
 def custommaps(request):
-    maps = CustomMaps.objects.all()
-    context = { 'custom_maps' : maps}
-    return render(request, 'custommaps.html', context)
+    if request.user.is_superuser:
+        maps = CustomMaps.objects.all()
+    
+        context = { 'custom_maps' : maps}
+        return render(request, 'custommaps.html', context)
+    else:
+        return render(request, '404.html')
 
 def custommaps_detail(request, title):
     try:
@@ -62,14 +67,20 @@ def pins_page(request):
     context = {}
     return render(request, 'pins.html', context=context)
 
-
+@login_required
 def projects(request):
-    projects = Project.objects.all()
+    if request.user.is_superuser:
+        projects = Project.objects.all()
+    else:
+        projects = Project.objects.filter(project_owner=request.user)
     context = { 'projects' : projects }
     return render(request, 'projects.html', context)
 
 @login_required
 def create_project(request):
+    if request.user.is_superuser == False:
+        return redirect("/projects")
+    
     if request.method == "GET":
         form = ProjectForm()
 
@@ -84,10 +95,15 @@ def create_project(request):
         else:
             return render(request, 'project.html', context={'form':form})
 
+@login_required
 def project_detail(request, title):
     try:
         pinsForm = PinsForm()
         map_project = Project.objects.get(title=title)
+        print(request.user.is_superuser)
+        if request.user.is_superuser == False:
+            if request.user != map_project.project_owner:
+                return render(request, "not-authorized.html")
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
         acc_icons = Icons.objects.filter(icon_type="Accesibility")
         project_categories = PinCategory.objects.filter(project=map_project)
@@ -107,6 +123,29 @@ def project_detail(request, title):
     except Project.DoesNotExist:
         return render(request, '404.html')
 
+# export projects to a downloadable html file
+def project_view(request, title):
+    try:
+        map_project = Project.objects.get(title=title)
+        pins_icons = Icons.objects.exclude(icon_type="Accesibility")
+        acc_icons = Icons.objects.filter(icon_type="Accesibility")
+        project_categories = PinCategory.objects.filter(project=map_project)
+        # custom_map = CustomMaps.objects.get()
+
+        print(project_categories)
+        context = { 
+            'project' : map_project, 
+            'custom_map' : map_project.custom_map,
+            "pins_icons":pins_icons, 
+            "accessebility_icons":acc_icons,
+            "user":request.user,
+            "categories":project_categories
+        }
+        
+        return render(request, 'project_export.html', context)
+    except Project.DoesNotExist:
+        return render(request, '404.html')
+ 
 # pins cruds
 def create_pins(request):
     if request.method == 'POST':
@@ -274,28 +313,7 @@ def get_categories(request):
 
     # print(pins_json)
     return JsonResponse({'data':pins_json})
-
-# export projects to a downloadable html file
-def export_map_to_html(request, title):
-    try:
-        pinsForm = PinsForm()
-        map_project = Project.objects.get(title=title)
-        pins_icons = Icons.objects.exclude(icon_type="Accesibility")
-        acc_icons = Icons.objects.filter(icon_type="Accesibility")
-        # custom_map = CustomMaps.objects.get()
-        context = { 
-            'project' : map_project, 
-            'pinsForm':pinsForm, 
-            'custom_map' : map_project.custom_map,
-            "pins_icons":pins_icons, 
-            "accessebility_icons":acc_icons,
-            "user":request.user
-        }
-        
-        return render(request, 'project_export.html', context)
-    except Project.DoesNotExist:
-        return render(request, '404.html')
-    
+   
 # user
 def logout_view(request):
     logout(request)

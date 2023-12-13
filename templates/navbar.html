@@ -9,10 +9,21 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"> <a class="nav-link fw-bold py-1 px-0" aria-current="page" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link fw-bold py-1 px-0" href="/custommaps/">Custom Maps</a></li>
-          <li class="nav-item"><a class="nav-link fw-bold py-1 px-0" href="/projects">Map Projects</a></li>
-          <li class="nav-item"> <a class="nav-link fw-bold py-1 px-0" href="/icons">Icons</a></li>
+          
+
+          {% if user.is_authenticated and user.is_superuser %}
+            <li class="nav-item"><a class="nav-link fw-bold py-1 px-0" href="/custommaps/">Custom Maps</a></li>
+            <li class="nav-item"><a class="nav-link fw-bold py-1 px-0" href="/projects">Map Projects</a></li>
+            <li class="nav-item"> <a class="nav-link fw-bold py-1 px-0" href="/icons">Icons</a></li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link fw-bold py-1 px-0" href="/projects">My Projects</a></li>
+            <li class="nav-item"> <a class="nav-link fw-bold py-1 px-0" href="/icons">My Icons</a></li>
+          {% endif %}
+
           <!-- <li class="nav-item"> <a class="nav-link fw-bold py-1 px-0" href="/icons">Categories</a></li> -->
+          <li class="nav-item">
+            <a class="nav-link fw-bold py-1 px-0" href="/icons"> {{ user.username }}</a>
+          </li>
         </ul>
 
         <div class="navbar-nav">
