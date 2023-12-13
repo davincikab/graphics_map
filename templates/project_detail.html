@@ -8,26 +8,27 @@
     .map-container {
         width: 100vw;
         /* overflow: hidden; */
-        height:90vh;
+        height:100vh;
         position: relative;
     }
 
     .filter-section {
-        width: 200px;
+        width: 270px;
         position: absolute;
-        top:80px;
+        top:0px;
         left:0px;
         z-index: 3;
         background-color: #fff;
         margin: 10px;
         border-radius: 5px;
         box-shadow: 0px 0px 0.5rem #555;
+        transition: all 300ms ease 0s;
     }
 
     #edit-mode {
         position: absolute;
-        top:0px;
-        right:00px;
+        top:10px;
+        right:50px;
         margin:10px;
         z-index: 3;
         box-shadow: 0px 0px 0.5rem #555;
@@ -36,13 +37,13 @@
     .pins_create_tabs {
         width: 350px;
         position: absolute;
-        top:80px;
+        top:0px;
         left:0px;
         z-index: 2;
         background-color: white;
         margin: 10px;
         border-radius: 5px;
-        max-height:70vh;
+        max-height:90vh;
         overflow-y: auto;
         box-shadow: 0px 0px 0.5rem #555;
     }
@@ -70,6 +71,9 @@
 
     .details-header h6 {
         margin-bottom: 0px;
+        flex: 1 1 100%;
+        padding: 10px 6px;
+        font-size: 18px !important;
     }
 
     .details-description {
@@ -78,7 +82,7 @@
 
     .icons-sections {
         position: absolute;
-        top:35px;
+        top:50px;
         right:0px;
         margin:10px;
         width: 250px;
@@ -119,7 +123,7 @@
 
     #map-project {
         width:100vw;
-        height:90vh;
+        height:100vh;
     }
 
     #map-project canvas {
@@ -127,15 +131,75 @@
     }
 
     .div-marker {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .marker-wrapper {
         background-color: white;
+        box-shadow: 0px 0px 0.15rem #222;
         border-radius: 50%;
-        width: 36px;
-        height: 36px;
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+        margin-bottom: 8px;
+        transition: all 200ms;  
+        will-change: width;
 
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0px 0px 0.15rem #222;
+        cursor: pointer;
+    }
+
+    .marker-wrapper::before {
+        content: "";
+        /* background-color: orange; */
+        /* box-shadow: 0px 0px 0.15rem #222; */
+        position: absolute;
+        bottom: -8px;
+        border: 10px solid #fff;
+        border-color: #fff transparent transparent;
+    }
+
+    .marker-wrapper > * {
+        pointer-events: none;
+        
+    }
+
+    .marker-wrapper.active {
+        width: 32px;
+        height: 32px;
+        opacity:1
+    }
+
+    .marker-wrapper.click-marker.active-click {
+        background-color: var(--primary);
+        width: 38px;
+        height: 38px;
+        opacity:1;
+    }
+
+    .marker-wrapper.click-marker {
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+        margin-bottom: 8px;
+        transition: all 200ms;  
+        will-change: width;
+
+        opacity:0;
+        background-color: var(--primary);
+    }
+
+    .marker-wrapper.click-marker::before {
+        border-color: var(--primary) transparent transparent;
+    }
+    
+
+    .marker-wrapper img {
+        width: 22px;
     }
 
     /* filter-tabs */
@@ -185,23 +249,11 @@
         max-width: 380px !important;
     }
 
-    .mapboxgl-popup-content {
-        padding: 0px;
-        /* overflow: hidden; */
-        display: flex;
-        width: 376px;
-        max-width: 100%;
-        min-height: 120px;
-        box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 40px 0px;
-        transform: translateY(0px) scale(1);
-        transition: all 300ms ease 0s;
-        will-change: transform;
-    }
-
     .mapboxgl-popup-content > div {
         display: flex;
         height: 100%;
         width: 100%;
+        height: 180px;
     }
 
     .popup-content {
@@ -212,21 +264,20 @@
 
     .popup-content .image-section {
         width: 180px;
-        max-height: 120px;
+        max-height: 200px;
         overflow: hidden;
-
     }
 
     .image-section img {
-        width: 100%;
-        /* height: 120px; */
+        /* width: 100%; */
+        height: 180px;
     }
 
     .popup-content .info-section {
         padding:10px;
         flex: 1;
 
-        padding: 10px;
+        padding: 10px 10px 0px;
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -256,32 +307,240 @@
         padding: 4px !important;
         color:#000;
     }
+
+    .filter-toggler {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        cursor: pointer;
+        line-height: 1.5;
+        padding: 16px 0px 15px;
+        border-bottom: 1px solid rgb(237, 229, 213);
+    }
+
+    .filter-list {
+        padding:10px;
+    }
+
+    .filter-toggler .header-text {
+        display: flex;
+        align-items: center;
+    }   
+
+    .filter-toggler h6 {
+        margin:0px;
+    }
+
+    .filter-toggler img {
+        margin-right: 5px;
+    }
+
+    .collapse-toggler.active {
+        color:var(--primary);
+        background: rgb(246, 242, 234);
+    }
+
+    .collapse-toggler > * {
+        pointer-events: none;
+    }
+
+    .collapse-toggler span {
+        color:#000;
+        font-size: 16px;
+        margin-right: 0.5rem;
+    }
+
+    .collapse-section.active {
+        background: rgb(246, 242, 234);
+    }
+
+    .collapse-toggler.active span {
+        transform: rotate(180deg);
+    }
+
+    .collapse-section {
+        padding: 0 0.5rem;
+        width: 100%;
+        max-height: 0px;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        font-size: 14px;
+    }
+
+    .sub-category-group {
+        line-height: 2;
+        display: flex;
+        align-items: center;
+    }
+
+    input[type=radio] {
+        appearance: none;
+        padding: 5px;
+        background-color: #fff;
+        border-radius:50%;
+        border-color: #666;
+    }
+
+    input[type=radio]:checked {
+       background-color: var(--primary);
+    }
+
+    /* popup */
+    .mapboxgl-popup-tip {
+        display: none;
+    }
+
+    .mapboxgl-popup-content {
+        padding: 0px;
+        overflow: hidden;
+        display: flex;
+        width: 376px;
+        max-width: 100%;
+        min-height:120px;
+        box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.6);
+        transition: all 300ms;
+        opacity: 1;
+        will-change: transform;
+    }
+
+    .mapboxgl-popup-content.close-popup { 
+        opacity: 0;       
+        transform: translateY(25px) scale(0.8);
+    }
+
+    .mapboxgl-popup-close-button {
+        display: none;
+    }
+
+    .back-button {
+        position: absolute;
+        right: 0px;
+        top:0px;
+        z-index: 3;
+        margin:10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 10px;
+        background-color: #fff;
+        box-shadow:0px 0px 0.5rem #555;
+        font-size: 18px !important;
+    }
+
+    .toggle-filter {
+        background-color: #fff;
+        /* box-shadow:0px 0px 0.5rem #555; */
+        border:1px solid #ddd !important;
+        display: none;
+        color:black;
+        width: 100%;
+        font-size: 18px !important;
+    }
+
+    .apply-button {
+        position: fixed;
+        bottom: 0px;
+        margin:10px;
+        left: 0px;
+        background-color: var(--primary);
+        width: calc(100% - 20px);
+        color:#fff;
+        height: 50px;
+        z-index: 1;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        box-shadow: 0px 0px 0.5rem #444;
+    }
+
+
+
+    @media screen and (max-width:480px) {
+        .filter-section {
+            height: 50px;
+            width: auto;
+            max-width: none;
+            padding: 5px;
+            border-radius: 5px;
+            border-width: 1px;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .filter-section.expanded  .apply-button {
+            display: flex;
+        }
+
+        .filter-section.expanded {
+            width: 100%;
+            top: 0px;
+            left: 0px;
+            margin: 0px;
+            height: 100vh;
+            border-radius: 0px;
+        }
+        .filter-section.expanded .toggle-filter {
+            width: 100px;
+        }
+
+        .toggle-filter {
+            display: block;
+        }
+
+        .filter-section.close {
+            width: 100px;
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .mapboxgl-popup-content { 
+            width: 100%;
+            border-radius: 0px;
+        }
+
+        .mapboxgl-popup {
+            opacity: 1;
+            z-index: 2;
+            width: 100%;
+            max-width: 100% !important;
+            inset: auto 0px 0px;
+            transition: bottom 600ms ease 0s;
+            transform: none !important;
+        }
+
+        .mapboxgl-popup-content.close-popup { 
+            opacity: 0;       
+            transform: translateY(135px) scale(1);
+        }
+    }
+
+   
 </style>
 {% endblock %}
 {% block content %}
-{% include "navbar.html" %}
 <div class="map-container">
-    <div class="details-tab">
+    <div class="details-tab d-none">
         <div class="detail-header">
             <h4>{{ project.title }}</h4>
         </div>
     </div>
 
-    
-
     {% if user.is_authenticated %}
     <button class="btn btn-secondary py-0" id="edit-mode">Read Mode</button>
     <div class="icons-sections d-none">
         <div class="details-header py-2">
-            <h6>Pin Icon</h6>
+            <h6>Category Icons</h6>
         </div>
         <div class="icon-list">
-            {% for icon in pins_icons %}
-                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
-                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                        <span>{{ icon.title }}</span>
-                    </div>
-                {% endfor %} 
+            {% for icon in categories %}
+                <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                    <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                    <span>{{ icon.title }}</span>
+                </div>
+            {% endfor %} 
         </div>
         <div class="accesssibility-icons">
             <div class="details-header">
@@ -300,14 +559,60 @@
 
     {% endif %}
 
+    <a class="back-button btn" id="back-button" href="/">
+        <i class="fa fa-xmark"></i>
+    </a>
+
     <div class="filter-section" id="filter-section">
+        <div class="toggle-filter btn">
+            Filters
+        </div>
+
         <div class="details-header px-2 py-2">
             <h6>Filters</h6>
+        </div>
+
+        <!-- div.fi -->
+
+        <div class="filter-list">
+            {% for category in categories %}
+            <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
+                <div class="d-flex header-text">
+                    <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
+                    <h6 class="my-0"> {{ category.title }}</h6>
+                </div>
+
+                {% if category.pinsubcategory_set.all %}
+                    <span>
+                        <i class="fa fa-angle-down"></i>
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if category.pinsubcategory_set.all %}
+                <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
+                    <div class="d-flex sub-category-group sub_category-0" >
+                        <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
+                        <label class="label mx-2" for="all-{{ category.id}}">Show All</label>
+                    </div>
+
+                    {% for sub_category in category.pinsubcategory_set.all %}
+                        <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
+                            <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
+                            <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% endfor %}
         </div>
 
         <div class="body">
 
         </div>
+
+        <div class="apply-button">Apply</div>
     </div>
 
     {% if user.is_authenticated %}
@@ -327,6 +632,20 @@
                     </div>
                     
                 {% endfor %} 
+
+                <div class="mb-1">
+                    <label for="id_category" class="form-label">Category</label> <br>
+                    <input type="text" name="category" maxlength="100" required="" id="id_category" class="form-control" />
+                </div>
+
+                <div class="mb-1">
+                    <label for="id_subcategory" class="form-label">Subcategory</label> <br>
+                    <select name="subcategory" maxlength="100" required="" id="id_subcategory" class="form-control">
+
+                    </select>
+                </div>
+
+
                 <input type="submit" value="Add Pin" class="btn btn-primary mt-2">
 
                 <div class="container d-none progress" id="progress"></div>
@@ -348,7 +667,7 @@
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
-    let poiData = [], allData=[], categoryMarkers = [];
+    let poiData = [], allData=[], categoryMarkers = [], projectCategories;
 
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
@@ -388,14 +707,28 @@
         maxZoom:maxZoom
     });
 
+    const mainPopup = new mapboxgl.Popup({ closeOnClick:false, closeOnMove:false, focusAfterOpen:false, anchor:"bottom", offset:[0, -50] });
+    var mainMarker = new mapboxgl.Marker({ anchor:'bottom'});
+
     const navigationCtrl = new mapboxgl.NavigationControl({ showCompass:false });
     map.addControl(navigationCtrl, 'bottom-right');
 
     map.on("style.load", function () {
+
+        map.loadImage("/media/uploads/icons/image.png", (err, image) => {
+            if(err) throw err;
+
+            console.log("Image Loading")
+            console.log(image);
+                    
+            map.addImage('image-icon', image);
+        });
+
         // area layer
         map.addSource("area-pins", {
             type:"geojson",
             data:{"type":"FeatureCollection", "features":[]}
+
         });
 
         map.addLayer({
@@ -404,7 +737,8 @@
             source:"area-pins",
             layout:{
                 'icon-allow-overlap': true,
-                'icon-image': ['get', 'poi_category'],
+                // 'icon-image': ['get', 'poi_category'],
+                "icon-image":"image-icon",
                 'icon-size': 0.75,
                 'text-allow-overlap': true,
                 'text-field': ['get','title'],
@@ -424,6 +758,7 @@
         // map.addSource();
         map.addSource("pois", {
             type:"geojson",
+            // data:"{% static 'js/sample_points.geojson' %}",
             data:{"type":"FeatureCollection", "features":[]}
         });
 
@@ -431,7 +766,7 @@
             type:'circle',
             source:"pois",
             id:"pois",
-            minzoom:minZoom + 1,
+            // minzoom:minZoom + 1,
             "paint":{
                 "circle-color":"#4D3929",
                 "circle-stroke-color":"#fff",
@@ -440,7 +775,7 @@
                     ['linear'],
                     ['zoom'],
                     0,
-                    2.5,
+                    3.5,
                     19,
                     5
                 ],
@@ -449,12 +784,31 @@
         });
 
         fetchPins();
+
+        map.on("mouseover", "pois", (e) => {
+            map.getCanvas().style.cursor = "pointer";
+        })
+
+        map.on("mouseleave", "pois", (e) => {
+            map.getCanvas().style.cursor = "";
+        })
+
         // addMarkerHandler();
         map.on("click", (e) => {
             let btn = document.getElementById("edit-mode");
             if(btn) {
                 updatePinLocation(e.lngLat.toArray());
             }
+
+            console.log(e.features);
+            let fts = map.queryRenderedFeatures(e.point, {layers:['pois']});
+            console.log(fts);
+            if(fts[0]) {
+                updatePopupInfo(fts[0])
+            } else {
+                closePopup();
+            }
+           
         });
 
         map.on("zoomend", (e) => {
@@ -466,6 +820,22 @@
         });
 
     });
+
+    function getCategoriesData() {
+        fetch("/project/get_categories?project_id={{project.id}}")
+        .then(res => res.json())
+        .then(({data}) => {
+            console.log(data);
+
+            projectCategories = JSON.parse(data);
+
+            updateSubCategoryInput(location_icon.dataset.key);
+            document.getElementById("id_category").value = location_icon.dataset.key;
+        })
+        .catch(console.error)
+    }
+
+    getCategoriesData();
 
     function loadMapImages(imageList) {
         imageList.forEach(imgObj => {
@@ -483,14 +853,22 @@
         });
     }
 
-
+    var allPoints;
     function fetchPins() {
+
+        // fetch("/static/js/sample_points.geojson")
+        // .then(res => res.json())
+        // .then(data => {
+        //     allPoints = data;
+
+        //     renderAllPoints(allPoints.features);
+        // })
+        // .catch(console.error);
+
         fetch(`/pins?project_id=${projectId}`)
         .then(res => res.json())
         .then(({data}) => {
             let info = JSON.parse(data).map(entry => entry.fields);
-
-            
             allData = JSON.parse(JSON.stringify(info))
             poiData = info.filter(item => item.pin_type !== "Area Pin")
             let poiFeature = poiToGeojson(poiData);
@@ -498,6 +876,8 @@
 
             console.log(areaInfo);
             let areaFeatures = poiToGeojson(areaInfo);
+            allPoints = JSON.parse(JSON.stringify(poiFeature))
+
             let imageList = areaInfo.reduce((a,b) => {
                 if(!a.find(item => item.category == b.poi_category)) {
                     a.push({
@@ -512,9 +892,10 @@
             console.log(imageList);
             loadMapImages(imageList);
            
-            renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
-            toggleMarkersByCategory();
+            // renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
+            // toggleMarkersByCategory();
 
+            console.log(poiFeature);
             map.getSource("pois").setData(poiFeature);
             map.getSource("area-pins").setData(areaFeatures);
         })
@@ -549,12 +930,20 @@
 
 
     function fitToCategoryBounds(coords) {
+        closePopup();
+        if(!coords.length) { return; }
+        
+
         let bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
         coords.forEach(coord => {
             bounds.extend(coord);
         });
 
-        map.fitBounds(bounds, { padding:50});
+        map.fitBounds(bounds, { padding:100});
+
+        map.once("moveend", (e) => {
+            toggleMarkers();
+        });
     }
 
     function renderCategoryMarkers(category) {
@@ -594,7 +983,8 @@
     }
 
     function getPopupContent(entry) {
-        let { accesibility_features } = JSON.parse(entry.accesibility_features);
+        // let { accesibility_features } = JSON.parse(entry.accesibility_features);
+        let accesibility_features  = [];
 
         let icons = accesibility_features.map(accFeature => {
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
@@ -608,9 +998,12 @@
           <div class="info-section">
               <h5>${entry.title}</h5>
               <div class="description">${entry['subtitle']}</div>
+
               <div class="icons">
                ${icons.join("")}
               </div>
+
+              <p>${entry.description}</p>
           </div>
         </div>`;
     }
@@ -625,6 +1018,326 @@
         });
 
         return { "type":"FeatureCollection", "features":[...features] };
+    }
+
+    let collapseTogglers = document.querySelectorAll(".collapse-toggler");
+    let activeToggler, activeCollapse, activeCategory, activeSubCategory;
+
+    collapseTogglers.forEach(toggler => {
+        toggler.addEventListener("click", (e) => {
+            toggleCollapse(e.target);
+        })
+    });
+
+    const toggleCollapse = (toggler) => {
+        console.log(toggler);
+        let {target, category, id } = toggler.dataset;
+        var content = document.getElementById(target);
+
+        if(activeToggler && activeToggler != toggler) {
+            activeToggler.classList.remove("active");
+
+            if(activeCollapse) {
+                activeCollapse.classList.remove("active");
+                activeCollapse.style.maxHeight = 0;
+            }     
+        }
+
+        console.log(category);
+
+        if(content) {
+            let maxHeight = getComputedStyle(content).maxHeight;
+
+            if(activeCollapse && activeCollapse != content) {
+                activeCollapse.classList.remove("active");
+                activeToggler.classList.remove("active");
+                activeCollapse.style.maxHeight = 0;
+            }
+            
+            if(maxHeight != "0px") {
+                content.style.maxHeight = 0;
+                content.classList.remove("active");
+                toggler.classList.remove("active");
+                activeCollapse = undefined;
+
+                let radioTogglers = document.querySelectorAll(`#collapse-section-${id} .sub-category`);
+                radioTogglers.forEach(radionBtn=> radionBtn.checked=false)
+                toggleMarkers(false);
+            } else {
+                toggler.classList.add("active");
+                content.classList.add("active");
+
+                content.style.maxHeight = content.scrollHeight+15 + "px";
+                activeCollapse = content;
+                activeToggler = toggler;
+
+                console.log(`all-${id}`);
+                document.getElementById(`all-${id}`).checked = true;
+                
+                // filters pois
+                let pois = filterPoisByCategogry(category);
+                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                renderAllPoints(pois);
+            }
+        } else {
+            toggler.classList.add("active");
+            activeToggler = toggler;
+
+           // filters pois
+           let pois = filterPoisByCategogry(category);
+           console.log(pois);
+
+            fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+            renderAllPoints(pois);
+
+            toggleMarkers();
+            console.log("Category with no Sub Categories");
+        }
+
+       
+    }
+
+    // sub category togglers
+    let subCategoryTogglers = document.querySelectorAll(".sub-category");
+    console.log(subCategoryTogglers);
+
+    subCategoryTogglers.forEach(sbToggler => {
+
+        sbToggler.onclick = (e) => {
+            let { value } = e.target;
+            toggleMarkerBySubCategory(value);
+        } 
+
+    });
+
+    function toggleMarkerBySubCategory(subCategoryValue) {
+        let pois = [];
+        if(subCategoryValue.includes("all")) {
+            let category = subCategoryValue.split("-")[1];
+            console.log(category);
+            pois = filterPoisByCategogry(category);
+        } else {
+            console.log(subCategoryValue);
+            pois = filterPoisBySubCategogry(subCategoryValue);
+        }
+
+        fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+        renderAllPoints(pois);
+    }
+
+    const filterPoisByCategogry = (category) => {
+        return allPoints.features.filter(ft => ft.properties.category == category);
+    }
+
+    const filterPoisBySubCategogry = (subcategory) => {
+        return allPoints.features.filter(ft => ft.properties.subcategory == subcategory);
+    }
+
+    let ftsMarkers = [];
+    function renderAllPoints(fts) {
+        if(ftsMarkers.length) {
+            ftsMarkers.forEach(marker => marker.remove());
+        }
+
+        ftsMarkers = fts.map(ft => {
+            return createFtsMarker(ft);
+        });
+    }
+
+    let clickedMarker;
+    function toggleMarkers(display=true) {
+        let wrappers = document.querySelectorAll(".marker-wrapper");
+
+        // wrappers.forEach(markerWrapper => {
+        //     markerWrapper.onclick = (e) => {
+        //         if(clickedMarker && clickedMarker != e.target) {
+        //             clickedMarker.classList.remove("active-click");
+        //         } 
+
+        //         e.target.classList.add("active-click");
+        //         clickedMarker = e.target;
+                
+        //     }
+        // })
+
+        if(display) {
+            wrappers.forEach(wrp => wrp.classList.add("active"));
+        } else {
+            wrappers.forEach(wrp => wrp.classList.remove("active"));
+        }
+    }
+
+    let entryData = {
+        "title": "Sample Point", "subtitle": "Axe", "pin_type": "Detail Pin", "latitude": 51.6510339032819, 
+        "longitude": 5.0507890003802345, "description": "Lorem Ipsum", "icon": "uploads/icons/axe_colored.png", "poi_category": "axe", 
+        "maxzoom": 18, "minzoom": 16, "bottom_link": "", "project": 1, "location_image": "uploads/thumbnails/pin_images/aftershock.png", 
+        "accesibility_features": '{"accesibility_features":[]}}'
+    };
+
+    function createFtsMarker(ft) {
+        let divMarker = document.createElement("div");
+        divMarker.classList.add("div-marker");
+        
+        divMarker.innerHTML = `<div class="marker-wrapper">
+            <img src="/media/uploads/icons/axe_colored.png" />
+        </div>`;
+       
+
+        divMarker.onclick = (e) => {
+            e.stopPropagation();
+            updatePopupInfo(ft);
+        };
+
+        let marker = new mapboxgl.Marker({element:divMarker, anchor:'bottom'});
+        marker.setLngLat(ft.geometry.coordinates);
+        marker.addTo(map);
+
+
+        return marker;
+    }
+
+    function updatePopupInfo(ft) {
+        let popupContent = getPopupContent(ft.properties);
+        mainPopup.setHTML(popupContent);
+        mainPopup.setLngLat(ft.geometry.coordinates);
+        // .addTo(map);
+        
+        // active marker
+        if(mainMarker) {
+            mainMarker.remove();
+        } 
+
+        let { active_icon } = ft.properties;
+        let divMarker = document.createElement("div");
+        divMarker.classList.add("div-marker");
+        
+        divMarker.innerHTML = `<div class="marker-wrapper click-marker" id="active-marker">
+            <img src="/media/${active_icon}" />
+        </div>`;
+
+        mainMarker =  new mapboxgl.Marker({element:divMarker, anchor:'bottom'});
+        mainMarker.setLngLat(ft.geometry.coordinates);
+        mainMarker.addTo(map);       
+
+
+        map.flyTo({
+            center:ft.geometry.coordinates,
+            duration:500
+        });
+
+        map.once("moveend", (e) => {
+            let targetMarker = document.getElementById("active-marker");
+
+            if(targetMarker) {
+                targetMarker.classList.add("active-click");
+
+                targetMarker.addEventListener("transitionend", (e) => {
+                    mainPopup.addTo(map);
+                });
+            }
+            
+        })
+    }
+
+    function closePopup() {
+        console.log("Removing Marker");
+        let popupContainer = document.querySelector(".mapboxgl-popup-content");
+
+        if(popupContainer) {
+            let activeMarker = document.getElementById("active-marker");
+            popupContainer.classList.add("close-popup");
+            
+            popupContainer.addEventListener("transitionend", () => {
+                activeMarker.classList.remove("active-click");
+                mainPopup.remove();
+                mainMarker.remove();
+
+                popupContainer.classList.remove("close-popup");
+            });
+        }
+    }
+    
+
+    function animatePinsOnDisplay() {
+        // Setting a constant number to change
+        const changeNumber = 0.1;
+            // Setting some default values used in the animation
+            let changeUp = 0;
+            let changeDown = 1;
+
+            const pinIconAnimation = () => {
+                const opacityExpression = [
+                    'match',
+                    ['get', 'POI_ID'],
+                    ...this.matchExpression(pois, prevPois, changeUp, changeDown),
+                    0,
+                ];
+                // First set the opacity of the POIs in the new and prev category
+                // and set all the other POIs to opacity 1
+                mapbox.setPaintProperty('area-pins', 'icon-opacity', opacityExpression);
+                // Set the correct size of the symbol icon
+                mapbox.setLayoutProperty('area-pins', 'icon-size', opacityExpression);
+                // Changing the numbers for the animation
+                changeUp = Math.round((changeUp + changeNumber) * 1e2) / 1e2;
+                changeDown = Math.round((changeDown - changeNumber) * 1e2) / 1e2;
+
+            // Stop the animation if we reach 1
+            if (changeUp > 1.0) {
+                return true;
+            }
+
+            requestAnimationFrame(pinIconAnimation);
+        };
+        pinIconAnimation();
+    }
+
+    const animateActiveMarker = (enable = true) => {
+        const opacity = enable ? 1 : 0;
+        if (rootHTML.classList.contains('ie')) {
+            mapbox.setPaintProperty('active-layer', 'icon-opacity', opacity);
+            mapbox.setLayoutProperty('active-layer', 'icon-size', 1.2);
+        } else {
+            const changeNumber = 0.01;
+            const startValue = 1.0;
+            const endValue = 1.2;
+            let iconSize = enable ? startValue : endValue;
+
+            // Set the icon-opacity to be either visible (1) or invisible (0)
+            mapbox.setPaintProperty('active-layer', 'icon-opacity', opacity);
+            const activeMarkerAnimation = () => {
+                mapbox.setLayoutProperty('active-layer', 'icon-size', iconSize);
+                if (enable) {
+                    iconSize += changeNumber;
+                    if (iconSize.toFixed(2) >= endValue) {
+                        return true;
+                    }
+                } else {
+                    iconSize -= changeNumber;
+                    if (iconSize.toFixed(2) <= startValue) {
+                        return true;
+                    }
+                }
+
+                requestAnimationFrame(activeMarkerAnimation);
+            };
+            activeMarkerAnimation();
+        }
+    };
+
+    // toggle filters
+    let filterToggler = document.querySelector(".toggle-filter");
+    let applyButton = document.querySelector(".apply-button");
+    let filterSection = document.querySelector(".filter-section");
+
+    filterToggler.onclick = (e) => {
+        console.log(e);        
+        filterSection.classList.toggle("expanded");
+        filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+    }
+
+    applyButton.onclick = (e) => {
+        filterSection.classList.remove("expanded");
+        filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
     }
 </script>
 
@@ -702,10 +1415,13 @@
             }
 
             iconDiv.onclick = (e) => {
-                location_icon.classList.remove("active");
+                location_icon ? location_icon.classList.remove("active") : "";
+
                 if(location_icon != e.target) {
                     e.target.classList.add("active");
                     location_icon = e.target;
+                    updateSubCategoryInput(e.target.dataset.key);
+                    document.getElementById("id_category").value = e.target.dataset.key;
                 } else {
                     location_icon = null;
                 }
@@ -713,6 +1429,26 @@
                 
             }
         });
+    }
+
+    function updateSubCategoryInput(category) {
+        let options = projectCategories[category].map((subcategory,i) => {
+            if(i == 0) {
+                return `<option value="${subcategory}" selected>${subcategory}</option>`;
+            } else {
+                return `<option value="${subcategory}">${subcategory}</option>`;
+            }
+            
+        });
+
+        if(options.length) {
+            document.getElementById("id_subcategory").innerHTML = options.join("");
+            document.getElementById("id_subcategory").classList.remove("d-none");
+        } else {
+            document.getElementById("id_subcategory").classList.add("d-none");
+        }
+
+        
     }
 
     selectPinIcon();
@@ -756,33 +1492,35 @@
 
     function handelPinCreation() {
         $("#poi-form").submit(function(e) {
-        e.preventDefault();
-        console.log("Submit");
-        $form = $(this)
-        
-        if(!isFormValid(formData)) {
-            return;
-        }
-        var formData = new FormData(this);
-        formData = updateFormData(formData);
+            e.preventDefault();
+            console.log("Submit");
+            $form = $(this)
+            
+            if(!isFormValid(formData)) {
+                return;
+            }
+            var formData = new FormData(this);
+            formData = updateFormData(formData);
 
-        var object = {};
-        formData.forEach((value, key) => object[key] = value);
-        var json = JSON.stringify(object);
-        console.log(json);
+            var object = {};
+            formData.forEach((value, key) => object[key] = value);
+            var json = JSON.stringify(object);
+            console.log(json);
 
-        const media_data = input_file.files[0];
-        if(media_data != null){
-            console.log(media_data);
-            progress_bar.classList.remove("d-none");
-        }
+            // return;
 
-        $.ajax({
-            type: 'POST',
-            url:'/pins/create',
-            data: formData,
-            dataType: 'json',
-            beforeSend: function(){
+            const media_data = input_file.files[0];
+            if(media_data != null){
+                console.log(media_data);
+                progress_bar.classList.remove("d-none");
+            }
+
+            $.ajax({
+                type: 'POST',
+                url:'/pins/create',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function(){
 
                 },
                 xhr:function(){
@@ -798,18 +1536,18 @@
                     });
                     return xhr
                 },
-                success: function(response){
+                success: function(response) {
                     console.log(response);
                     if(response.data.includes("went wrong")) {
                         console.log(response);
                     } else {
-                        uploadForm.reset()
+                        // uploadForm.reset()
                         progress_bar.classList.add('d-none');
 
                         fetchPins();
                         pinMarker.remove();
                     }
-                   
+                    
                     // redirect to a project detail page
                     // window.location.assign()
                 },

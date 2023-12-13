@@ -6,7 +6,7 @@ function updateInputClassName() {
     [...inputs, ...textAreas, ...selectDivs].forEach(input => {
         if(!input.classList.contains("form-control")) {
             console.log(input.type);
-            if(input.type == "checkbox") {
+            if(input.type == "checkbox" || input.type == "radio") {
                 input.classList.add("form-check-input");
             }else {
                 input.classList.add("form-control");

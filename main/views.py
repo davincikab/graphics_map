@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.contrib.gis.db import models
 from django.shortcuts import get_object_or_404, redirect
 from django.core import serializers
+import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
-from . import models
-from .forms import ProjectForm, CustomMapsForm, PinsForm, IconsForm
-from .models import Project, CustomMaps, Icons, Pins
+from .forms import ProjectForm, CustomMapsForm, PinsForm, IconsForm, PinCategoryForm, PinSubCategoryForm
+from .models import Project, CustomMaps, Icons, Pins, PinSubCategory, PinCategory
 from .functions import handle_uploaded_project_file
 from zipfile import ZipFile
 
@@ -91,14 +90,18 @@ def project_detail(request, title):
         map_project = Project.objects.get(title=title)
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
         acc_icons = Icons.objects.filter(icon_type="Accesibility")
+        project_categories = PinCategory.objects.filter(project=map_project)
         # custom_map = CustomMaps.objects.get()
+
+        print(project_categories)
         context = { 
             'project' : map_project, 
             'pinsForm':pinsForm, 
             'custom_map' : map_project.custom_map,
             "pins_icons":pins_icons, 
             "accessebility_icons":acc_icons,
-            "user":request.user
+            "user":request.user,
+            "categories":project_categories
         }
         return render(request, 'project_detail.html', context)
     except Project.DoesNotExist:
@@ -109,6 +112,7 @@ def create_pins(request):
     if request.method == 'POST':
         form = PinsForm(request.POST, request.FILES)
         project = Project.objects.get(pk=request.POST.get('project'))
+        pin_category = PinCategory.objects.get(title=request.POST.get("category"))
 
         poi_type = request.POST.get('poi_type')
 
@@ -126,6 +130,10 @@ def create_pins(request):
             pin_instance.icon = request.POST.get('icon')
             pin_instance.project = project
             pin_instance.poi_category =  request.POST.get('poi_type')
+            pin_instance.category = request.POST.get('category')
+            pin_instance.subcategory = request.POST.get('subcategory')
+            pin_instance.icon = pin_category.icon
+            pin_instance.active_icon = pin_category.active_icon
             pin_instance.latitude = request.POST.get('latitude')
             pin_instance.longitude = request.POST.get('longitude')
             pin_instance.accesibility_features = request.POST.get('accesibility_features')
@@ -193,6 +201,80 @@ def icons_list(request):
 def get_icons(request):
     icons = Icons.objects.all()
     return JsonResponse({'data':icons})
+
+
+# categories and sub categories
+def project_categories(request, project_title):
+    if request.method == 'GET':
+        project = Project.objects.get(title=project_title)
+
+        pin_categories = PinCategory.objects.filter(project=project.pk).select_related()
+
+        categoryForm = PinCategoryForm()
+        subCategoryForm = PinSubCategoryForm()
+
+        print(pin_categories[0].pinsubcategory_set.all())
+        context = {
+            "categories":pin_categories,
+            "sub_category_form":subCategoryForm,
+            "category_form":categoryForm
+        }
+
+        return render(request, "project_categories.html", context)
+
+    if request.method == 'POST':
+        form = IconsForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'data':'Success!'})
+        else:
+            # print(form.errors)
+            return JsonResponse({'data':'Something went wrong!!'}) 
+
+# add a category
+def add_category(request):
+    if request.method == 'POST':
+        form = PinCategoryForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'data':'Success!'})
+        else:
+            print(form.errors)
+            return JsonResponse({'data':'Something went wrong!!'})
+
+# add a category
+def add_sub_category(request):
+    if request.method == 'POST':
+        form = PinSubCategoryForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'data':'Success!'})
+        else:
+            # print(form.errors)
+            return JsonResponse({'data':'Something went wrong!!'}) 
+
+def get_categories(request):
+    projectId =request.GET['project_id']
+    if projectId:
+        project = Project.objects.get(pk=projectId)
+        categories = PinCategory.objects.filter(project=project).prefetch_related('pinsubcategory_set')
+    else:
+        categories = Pins.objects.all().prefetch_related('pinsubcategory_set')
+
+    categoriesDict = {}
+    for e in categories:
+        subcategories = [l.title for l in e.pinsubcategory_set.all()]
+        categoriesDict[e.title] = subcategories
+        
+    print(categoriesDict)
+    pins_json = json.dumps(categoriesDict)
+
+    # print(pins_json)
+    return JsonResponse({'data':pins_json})
+
 # export projects to a downloadable html file
 def export_map_to_html(request, title):
     try:

@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Project, CustomMaps, Pins, Icons
+from .models import Project, CustomMaps, Pins, Icons, PinCategory, PinSubCategory
 
 
 class CustomMapsForm(ModelForm):
@@ -10,7 +10,7 @@ class CustomMapsForm(ModelForm):
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ['title', 'custom_map']
+        fields = ['title', 'custom_map', 'project_owner', 'reading_mode']
 
 class IconsForm(ModelForm):
     class Meta:
@@ -23,3 +23,12 @@ class PinsForm(ModelForm):
         fields = ['title', 'subtitle', 'description', 'location_image', 'pin_type']
         # fields = '__all__'
 
+class PinCategoryForm(ModelForm):
+    class Meta:
+        model = PinCategory
+        fields = ['title', 'project', 'icon', 'active_icon']
+
+class PinSubCategoryForm(ModelForm):
+    class Meta:
+        model = PinSubCategory
+        fields = ['category', 'title']

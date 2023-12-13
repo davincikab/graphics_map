@@ -1,6 +1,10 @@
 * {
-    font-family: 'Poppins', sans-serif !important;
+    /* font-family: 'Poppins', sans-serif !important; */
     --primary:#ff5c35;
+}
+
+body .fa, body .fa-classic, body .fa-regular, .body .fa-solid, body .far, body .fas {
+    font-family: "Font Awesome 6 Free" !important;
 }
 
 body {

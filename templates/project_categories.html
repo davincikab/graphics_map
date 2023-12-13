@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+{% block header %}
+    <style>
+        .details-header {
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding:5px;
+        }
+
+        .details-header h6 {
+            margin:0px;
+            margin-left: 10px;
+        }
+
+        .main {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .form-section {
+            flex: 0.5;
+        }
+
+        .map-section {
+            flex: 0.8;
+        }
+
+        .mini-map {
+            width: 100%;
+            height: 90%;
+        }
+
+        @media only screen and (max-width: 480px) {
+            .main {
+                width: 90%;
+                margin:0 auto;
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{% include "navbar.html" %}
+<div class="main mt-5">
+    <div class="map-section mt-3">
+        <div class="mb-3">
+            <span class="form-label">Categories</span> 
+        </div>
+
+        <div class="card-section">
+            {% for category in categories %}
+            <div class="details-header d-flex">
+                <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="25px">
+                <h6 class=""> {{ category.title }}</h6>
+            </div>
+            <div class="body my-3">
+                {% for sub_category in category.pinsubcategory_set.all %}
+                    <div>{{  sub_category.title }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>    
+
+    {% if user.is_authenticated %}
+        <div class="form-section">
+            <form action="" class="mx-3 my-2 form" method="post" id="upload_form">
+                <h5>Add A Category</h5>
+                {% csrf_token %}
+                {% for field in category_form %}
+                    {{ field.errors }}
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                        {{ field }}
+                    </div>
+                    
+                {% endfor %}    
+                <input type="submit" value="Add a Category" class="btn btn-primary">
+            </form>
+            <div class="container d-none progress" id="progress"></div>
+
+            <form action="" class="mx-3 my-2 mt-5 form" method="post" id="sub_category_form">
+                <h5>Add A SubCategory</h5>
+                {% csrf_token %}
+                {% for field in sub_category_form %}
+                    {{ field.errors }}
+                    <div class="mb-3">
+                        <label for="" class="form-label">{{ field.label }}</label> <br>
+                        {{ field }}
+                    </div>
+                    
+                {% endfor %}    
+                <input type="submit" value="Add Sub Category" class="btn btn-primary">
+            </form>
+        </div>
+
+        
+    {% endif %}
+</div>
+    <script>
+        const uploadForm = document.getElementById('upload_form');
+        const input_file = document.getElementById('id_icon');
+        const progress_bar = document.getElementById('progress');
+        
+        $("#upload_form").submit(function(e){
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            const media_data = input_file.files[0];
+            if(media_data != null){
+                console.log(media_data);
+                progress_bar.classList.remove("d-none");
+            }
+
+            $.ajax({
+                type: 'POST',
+                url:'/project/add_category',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                        if(e.lengthComputable){
+                            const percentProgress = (e.loaded/e.total)*100;
+                            console.log(percentProgress);
+                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+                    aria-valuemax="100"></div>`
+                        }
+                    });
+                    return xhr
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response.data.includes("went wrong")) {
+                        console.log(response);
+                    } else {
+                        uploadForm.reset()
+                        progress_bar.classList.add('d-none');
+                        window.location.reload();
+                    }
+                   
+                    // redirect to a project detail page
+                    
+                },
+                error: function(err){
+                    console.log(err);
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            });
+        });
+
+        let subCategoryForm = document.getElementById("sub_category_form");
+        $("#sub_category_form").submit(function(e) {
+            e.preventDefault();
+            let formSubs = document.getElementById("sub_category_form");
+            let fD = new FormData(formSubs); 
+            console.log("Sub Category");
+
+            $.ajax({
+                type: 'POST',
+                url:'/project/add_sub_category',
+                data: fD,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(response) {
+                    console.log(response);
+                    if(response.data.includes("went wrong")) {
+                        console.log(response);
+                    } else {
+                        subCategoryForm.reset()
+                        window.location.reload();
+                    }
+                    
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+
+
+        });
+</script>
+{% endblock %}
+
+{% block js %}
+<script src="{% static '/js/form-control.js' %}"></script>
+
+{% endblock %}

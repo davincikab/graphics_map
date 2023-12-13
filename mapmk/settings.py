@@ -14,7 +14,7 @@ SECRET_KEY = "django-insecure-o!-n_t&5pyw8xh0p!qvuc%i3++=b5ek(q1*5r5!)uka&x#!9-n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     ##apps
+    "gunicorn",
     "main.apps.MainConfig",
     ##3rd party
 ]
@@ -82,8 +83,8 @@ DATABASES = {
         "NAME":"mapmk",
         "USER":"root",
         "PASSWORD":"",
-        "HOST":"127.0.0.1",
-        # "PORT":8080, 
+        "HOST":"localhost",
+        # "PORT":3306, 
     }
 }
 
@@ -135,8 +136,44 @@ MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-GEOS_LIBRARY_PATH =r"C:\Program Files\QGIS 3.30.0\bin\geos_c"
-GDAL_LIBRARY_PATH =r"C:\Program Files\QGIS 3.30.0\bin\gdal306"
+# GEOS_LIBRARY_PATH =r"C:\Program Files\QGIS 3.30.0\bin\geos_c"
+# GDAL_LIBRARY_PATH =r"C:\Program Files\QGIS 3.30.0\bin\gdal306"
 
 # GEOS_LIBRARY_PATH =r"C:\Program Files\QGIS 3.32.0\bin\geos_c"
 # GDAL_LIBRARY_PATH =r"C:\Program Files\QGIS 3.32.0\bin\gdal307"
+
+
+# sitepass:wayfmap
+# dbpasss:wKTyQPygyM86JAi4aqkm
+# Host: 127.0.0.1 Port: 3306
+
+# ssh
+# david-ssh
+# DBFC8RXN47e7B5RIo9KM
+
+# allset-wayfmap: wKTyQPygyM86JAi4aqkm wayfmap321#
+# password: goTomway321#
+
+# server {
+#     listen 80;
+#     server_name 178.16.129.238;
+
+#     access_log off;
+
+#     location /static/ {
+#         alias /home/allset-wayfmap/htdocs/wayfmap.allset.co.il/static/;
+#     }
+
+#     location / {
+#         proxy_pass http://178.16.129.238:8000;
+#         proxy_set_header X-Forwarded-Host $server_name;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         add_header P3P 'CP="ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV"';
+#     }
+# }
+
+# wayfmap.allset.co.il.uwsgi.ini
+# command = '/home/allset-wayfmap/htdocs/wayfmap.allset.co.il/myvenv/bin/gunicorn'
+# pythonpath = "/home/allset-wayfmap/htdocs/wayfmap.allset.co.il/mapmk"
+# bind = "178.16.129.238:8000"
+# workers = 3
