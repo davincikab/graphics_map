@@ -39,6 +39,7 @@
 
         .card-body {
             position: relative;
+            height: 180px;
         }
         .subheader {
             display: flex;
@@ -64,7 +65,7 @@
             bottom: 5px;
             left: 0px;
             right: 0px;
-            padding: 2px 5px;
+            padding: 2px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -73,13 +74,78 @@
         .footer-section a {
             height: 30px;
             background-color: #d5cccc;
-            padding: 7px 7px;
+            padding: 7px 10px;
             border-radius: 5px;
             color:#6d6c6c;
 
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .iframe-link {
+            display: flex;
+            font-size: 13px;
+            flex-direction: column;
+        }
+
+        .iframe-link .link-div {
+            background-color: rgb(184, 181, 181);
+            padding:5px 4px;
+            border-radius: 5px;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .iframe-link button {
+            width:100px;
+            color:white;
+            text-decoration: none;
+            font-size: 12px;
+            background-color: rgb(101, 24, 24);
+        }
+
+        .iframe-link button:hover {
+            background-color: rgb(86, 20, 20);
+            color:white;
+        }
+
+        .tooltip-div {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-div .tooltiptext {
+            visibility: hidden;
+            width: 140px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 150%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip-div .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip-div:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
         
         @media only screen and (max-width: 480px) { 
@@ -127,8 +193,14 @@
                         <a href="/projects/{{ project.title}}/view/">{{ project.title}}</a>
                     </h4>
                     
-                    <div>
-                        
+                    <div class="iframe-link">
+                        <span class="link-div">
+                            {{request.get_host}}/projects/{{ project.title}}/view/
+                        </span>
+                        <button class="btn btn-link tooltip-div" data-url="{{request.get_host}}/projects/{{ project.title}}/view/" data-tooltip="Copy Link" aria-label="Copy URL" data-tlite="" title="">
+                            <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                            <i class="fa fa-clipboard"></i> Copy Link
+                        </button>
                     </div>
 
                     <p>{{ project.description }}</p>
@@ -136,9 +208,7 @@
                     <div class="footer-section">
                         <a href="/project_categories/{{ project.title}}" class="">Categories</a>
                         <a href="/projects/{{ project.title}}" class="edit-btn">Edit Project</a>
-                    </div>
-                   
-                    
+                    </div>                    
                 </div>
             </div>
         {% endfor %}
@@ -146,5 +216,31 @@
 </div>
 {% endblock %}
 {% block js%}
+<script>
+    let linkBtns = document.querySelectorAll(".btn-link");
+    linkBtns.forEach(btn => {
+        btn.onclick = (e) => {
+            handleClick(e.target.dataset.url);
+        }
+
+        btn.onmouseout = (e) => {
+            outFunc();
+        }
+    });
+
+    function handleClick(linkValue) {
+        let iframeLink = `<iframe src="${linkValue}" width="100%" height="300" style="border:1px solid black;">
+        </iframe>`
+        navigator.clipboard.writeText(iframeLink);
+
+        var tooltip = document.getElementById("myTooltip");
+        tooltip.innerHTML = "Link Copied";
+    }
+
+    function outFunc() {
+        var tooltip = document.getElementById("myTooltip");
+        tooltip.innerHTML = "Copy to clipboard";
+    }
+</script>
 <script src="{% static '/js/form-control.js' %}"></script>
 {% endblock %}
