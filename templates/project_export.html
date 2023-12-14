@@ -669,6 +669,7 @@
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
+    let ftsMarkers = [];
 
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
@@ -738,8 +739,8 @@
             source:"area-pins",
             layout:{
                 'icon-allow-overlap': true,
-                // 'icon-image': ['get', 'poi_category'],
-                "icon-image":"image-icon",
+                'icon-image': ['get', 'category'],
+                // "icon-image":"image-icon",
                 'icon-size': 0.75,
                 'text-allow-overlap': true,
                 'text-field': ['get','title'],
@@ -767,7 +768,7 @@
             type:'circle',
             source:"pois",
             id:"pois",
-            // minzoom:minZoom + 1,
+            minzoom:minZoom + 1,
             "paint":{
                 "circle-color":"#4D3929",
                 "circle-stroke-color":"#fff",
@@ -814,9 +815,9 @@
 
         map.on("zoomend", (e) => {
             if(map.getZoom() < (minZoom + 1) ) {
-                categoryMarkers.forEach(marker => marker.remove())
+                ftsMarkers.forEach(marker => marker.remove())
             } else {
-                categoryMarkers.forEach(marker => marker.addTo(map))
+                ftsMarkers.forEach(marker => marker.addTo(map))
             }
         });
 
@@ -872,6 +873,7 @@
             let info = JSON.parse(data).map(entry => entry.fields);
             allData = JSON.parse(JSON.stringify(info))
             poiData = info.filter(item => item.pin_type !== "Area Pin")
+
             let poiFeature = poiToGeojson(poiData);
             let areaInfo = info.filter(item => item.pin_type == "Area Pin");
 
@@ -880,9 +882,9 @@
             allPoints = JSON.parse(JSON.stringify(poiFeature))
 
             let imageList = areaInfo.reduce((a,b) => {
-                if(!a.find(item => item.category == b.poi_category)) {
+                if(!a.find(item => item.category == b.category)) {
                     a.push({
-                        category: b.poi_category,
+                        category: b.category || 'area-pin',
                         icon:b.icon
                     })
                 }
@@ -1134,7 +1136,7 @@
         return allPoints.features.filter(ft => ft.properties.subcategory == subcategory);
     }
 
-    let ftsMarkers = [];
+    
     function renderAllPoints(fts) {
         if(ftsMarkers.length) {
             ftsMarkers.forEach(marker => marker.remove());
