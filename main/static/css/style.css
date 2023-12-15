@@ -78,9 +78,11 @@ body {
 }
   
 .lang-toggle {
-    position: absolute;
-    right: 10px;
+    position: fixed;
+    top:5px;
+    right: 5px;
     font-size: 13px;
+    z-index: 5;
 }
   
 .lang-toggle button {

@@ -5,6 +5,11 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
 <style>
+    .lang-toggle {
+        right:50px;
+        top:10px;
+    }
+
     .map-container {
         width: 100vw;
         /* overflow: hidden; */
@@ -27,9 +32,9 @@
 
     #edit-mode {
         position: absolute;
-        top:10px;
+        top:35px;
         right:50px;
-        margin:10px;
+        margin:10px 0px 10px;
         z-index: 3;
         box-shadow: 0px 0px 0.5rem #555;
     }
@@ -667,6 +672,7 @@
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
+    let readingMode = `{{ project.reading_mode }}`;
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
 
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
@@ -725,6 +731,7 @@
         });
 
         // area layer
+        // area layer
         map.addSource("area-pins", {
             type:"geojson",
             data:{"type":"FeatureCollection", "features":[]}
@@ -737,8 +744,8 @@
             source:"area-pins",
             layout:{
                 'icon-allow-overlap': true,
-                // 'icon-image': ['get', 'poi_category'],
-                "icon-image":"image-icon",
+                'icon-image': ['get', 'category'],
+                // "icon-image":"image-icon",
                 'icon-size': 0.75,
                 'text-allow-overlap': true,
                 'text-field': ['get','title'],
@@ -766,7 +773,7 @@
             type:'circle',
             source:"pois",
             id:"pois",
-            // minzoom:minZoom + 1,
+            minzoom:minZoom + 1,
             "paint":{
                 "circle-color":"#4D3929",
                 "circle-stroke-color":"#fff",
@@ -813,9 +820,9 @@
 
         map.on("zoomend", (e) => {
             if(map.getZoom() < (minZoom + 1) ) {
-                categoryMarkers.forEach(marker => marker.remove())
+                ftsMarkers.forEach(marker => marker.remove())
             } else {
-                categoryMarkers.forEach(marker => marker.addTo(map))
+                ftsMarkers.forEach(marker => marker.addTo(map))
             }
         });
 
@@ -879,15 +886,17 @@
             allPoints = JSON.parse(JSON.stringify(poiFeature))
 
             let imageList = areaInfo.reduce((a,b) => {
-                if(!a.find(item => item.category == b.poi_category)) {
+                if(!a.find(item => item.category == b.category)) {
                     a.push({
-                        category: b.poi_category,
+                        category: b.category || 'area-pin',
                         icon:b.icon
                     })
                 }
                 
                 return a;
             }, [])
+
+            
 
             console.log(imageList);
             loadMapImages(imageList);

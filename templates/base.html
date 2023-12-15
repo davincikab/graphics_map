@@ -25,31 +25,45 @@
     {% endblock %}
 </head>
 <body>
+    <div class="lang-toggle">
+        <select name="lang-select" id="lang-select" class="form-control" style="font-size: 10px;">
+          <option value="en">Engilsh</option>
+          <option value="he">Hebrew</option>
+          <option value="ar" href="#" data>Arabic</option>
+        </select>
+    </div>
     {% block content %}
     {% endblock %}
+    <script>
+        let lang = {
+            'ar':"rtl",
+            'en':"ltr",
+            'he':"rtl"
+        };
+
+        let isRtl = true;
+        function changeLanguage(langCode) {
+            langCode = langCode.toLocaleLowerCase();
+
+            // isRtl = !isRtl;
+            let html  = document.querySelector("html");
+            
+            let  = langCode == "ltr" ? 'en' : 'ar';
+            html.dir = lang[langCode];
+            html.lang = langCode;
+
+            // document.getElementById("rtl-toggler").innerHTML = lang[langCode];
+        }
+
+        let langToggler = document.getElementById("lang-select")
+        langToggler.onchange = (e) => {
+            changeLanguage(e.target.value);
+        }
+    </script>
 
     {% block js %}
 
     {% endblock %}
-
-    <script>
-        let lang = {
-            'ar':"rtl",
-            'en':"ltr"
-        };
-
-        let isRtl = true;
-        function changeLanguage() {
-            isRtl = !isRtl;
-            let html  = document.querySelector("html");
-            
-            let langCode = isRtl ? 'en' : 'ar';
-            html.dir = lang[langCode];
-            html.lang = langCode;
-
-            document.getElementById("rtl-toggler").innerHTML = lang[langCode];
-        }
-    </script>
     <script src="{% static 'js/color-modes.js' %}"></script>
 </body>
 </html>
