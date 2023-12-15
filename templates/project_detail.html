@@ -673,6 +673,7 @@
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
     let readingMode = `{{ project.reading_mode }}`;
+    let bearing = parseInt(`{{project.custom_map.bearing }}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
 
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
@@ -708,6 +709,7 @@
         container: 'map-project', // container ID
         style: customMapStyle,
         center:[...center],
+        bearing:bearing,
         zoom: minZoom,
         minZoom:minZoom,
         maxZoom:maxZoom
@@ -759,7 +761,7 @@
             paint:{
                 'text-color': '#fff',
             },
-            maxzoom:minZoom + 1
+            maxzoom:minZoom + 0.75
         })
 
         // map.addSource();
@@ -773,7 +775,7 @@
             type:'circle',
             source:"pois",
             id:"pois",
-            minzoom:minZoom + 1,
+            minzoom:minZoom + 0.75,
             "paint":{
                 "circle-color":"#4D3929",
                 "circle-stroke-color":"#fff",
@@ -819,7 +821,7 @@
         });
 
         map.on("zoomend", (e) => {
-            if(map.getZoom() < (minZoom + 1) ) {
+            if(map.getZoom() < (minZoom + 0.75) ) {
                 ftsMarkers.forEach(marker => marker.remove())
             } else {
                 ftsMarkers.forEach(marker => marker.addTo(map))
@@ -948,7 +950,7 @@
             bounds.extend(coord);
         });
 
-        map.fitBounds(bounds, { padding:100});
+        map.fitBounds(bounds, { padding:30});
 
         map.once("moveend", (e) => {
             toggleMarkers();
@@ -1099,8 +1101,8 @@
             fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
             renderAllPoints(pois);
 
-            toggleMarkers();
-            console.log("Category with no Sub Categories");
+            // toggleMarkers();
+            // console.log("Category with no Sub Categories");
         }
 
        

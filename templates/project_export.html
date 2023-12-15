@@ -708,6 +708,7 @@
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
     let readingMode = `{{ project.reading_mode }}`;
+    let bearing = parseInt(`{{project.custom_map.bearing }}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
     let ftsMarkers = [];
 
@@ -744,6 +745,7 @@
         container: 'map-project', // container ID
         style: customMapStyle,
         center:[...center],
+        bearing:bearing,
         zoom: minZoom,
         minZoom:minZoom,
         maxZoom:maxZoom

@@ -5,7 +5,7 @@ from .models import Project, CustomMaps, Pins, Icons, PinCategory, PinSubCategor
 class CustomMapsForm(ModelForm):
     class Meta:
         model = CustomMaps
-        fields = ['title', 'description', 'minzoom', 'maxzoom', 'thumbnail', 'tiles_in_folders']
+        fields = ['title', 'description', 'bearing', 'minzoom', 'maxzoom', 'thumbnail', 'tiles_in_folders']
 
 class ProjectForm(ModelForm):
     class Meta:

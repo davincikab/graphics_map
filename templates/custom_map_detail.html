@@ -63,6 +63,7 @@
     let center = `{{ custom_map.center }}`;
     let maxZoom = parseInt(`{{ custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ custom_map.minzoom }}`);
+    let bearing = parseInt(`{{custom_map.bearing}}`);
     center = center.split(",").map(val => parseFloat(val))
     // center = center ? center.split(",").map(val => parseFloat(val)) : [0,0];
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
@@ -92,6 +93,7 @@
         container: 'map', // container ID
         style: customMapStyle,
         center:[...center],
+        bearing:bearing,
         zoom: minZoom + 1,
         minZoom:minZoom,
         maxZoom:maxZoom
