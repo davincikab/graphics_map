@@ -498,6 +498,22 @@
         box-shadow: 0px 0px 0.5rem #444;
     }
 
+    .filter-section .text-collapse {
+        display: block;
+    }
+
+    .filter-section.expanded .text-collapse {
+        display: none;
+    }
+
+    .filter-section .text-expanded {
+        display: none;
+    }
+
+    .filter-section.expanded .text-expanded {
+        display: block;
+    }
+
 
 
     @media screen and (max-width:480px) {
@@ -628,7 +644,8 @@
 
     <div class="filter-section" id="filter-section">
         <div class="toggle-filter btn">
-            {% translate "Filters" %}
+            <span class="text-collapse">{% translate "Filters" %}</span>
+            <span class="text-expanded">{% translate "Close" %}</span>
         </div>
 
         <div class="details-header px-2 py-2">
@@ -744,7 +761,7 @@
         "ar":"معلومات اكثر",
         "he":"למידע נוסף"
     }
-    
+
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
 
@@ -1400,7 +1417,7 @@
     filterToggler.onclick = (e) => {
         console.log(e);        
         filterSection.classList.toggle("expanded");
-        filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+        // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
     }
 
     applyButton.onclick = (e) => {
