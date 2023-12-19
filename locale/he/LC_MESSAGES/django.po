@@ -1,0 +1,209 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-17 14:42+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % "
+"1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+#: .\mapmk\settings.py:110
+msgid "Arabic"
+msgstr ""
+
+#: .\mapmk\settings.py:111
+msgid "Hebrew"
+msgstr ""
+
+#: .\mapmk\settings.py:112
+msgid "English"
+msgstr ""
+
+#: .\templates\base.html:10 .\templates\index.html:157
+#: .\templates\navbar.html:6
+msgid "Wayfinding Map"
+msgstr ""
+
+#: .\templates\create_custommap.html:50 .\templates\custommaps.html:76
+msgid "Add Custom Map"
+msgstr ""
+
+#: .\templates\create_custommap.html:62
+msgid "Center"
+msgstr ""
+
+#: .\templates\create_custommap.html:67
+msgid "Tiles Zip File"
+msgstr ""
+
+#: .\templates\create_custommap.html:71
+msgid "Upload Custom Map"
+msgstr ""
+
+#: .\templates\create_custommap.html:78
+msgid "Click or search to set map center"
+msgstr ""
+
+#: .\templates\custommaps.html:68 .\templates\navbar.html:20
+msgid "Custom Maps"
+msgstr ""
+
+#: .\templates\icons.html:40
+msgid "Available Icons"
+msgstr ""
+
+#: .\templates\icons.html:46
+msgid "Pin Icon"
+msgstr ""
+
+#: .\templates\icons.html:60 .\templates\project_detail.html:556
+msgid "Accessibility Icons"
+msgstr ""
+
+#: .\templates\icons.html:74
+msgid "Area Icons"
+msgstr ""
+
+#: .\templates\icons.html:92
+msgid "Add An Icon"
+msgstr ""
+
+#: .\templates\icons.html:104
+msgid "Upload Icon"
+msgstr ""
+
+#: .\templates\index.html:151
+msgid "All Set On-Line Wayfinding Map Admin."
+msgstr ""
+
+#: .\templates\index.html:153
+msgid "Welcome to All Set On-Line Wayfinding Map Admin."
+msgstr ""
+
+#: .\templates\navbar.html:15
+msgid "Home"
+msgstr ""
+
+#: .\templates\navbar.html:21 .\templates\projects.html:176
+msgid "Map Projects"
+msgstr ""
+
+#: .\templates\navbar.html:22
+msgid "Icons"
+msgstr ""
+
+#: .\templates\navbar.html:24
+msgid "My Projects"
+msgstr ""
+
+#: .\templates\navbar.html:25
+msgid "My Icons"
+msgstr ""
+
+#: .\templates\navbar.html:36
+msgid "Log Out"
+msgstr ""
+
+#: .\templates\navbar.html:38
+msgid "Log In"
+msgstr ""
+
+#: .\templates\project.html:37
+msgid "Create Project"
+msgstr ""
+
+#: .\templates\project.html:49 .\templates\projects.html:182
+msgid "Add Project"
+msgstr ""
+
+#: .\templates\project_categories.html:51 .\templates\projects.html:211
+msgid "Categories"
+msgstr ""
+
+#: .\templates\project_categories.html:72
+msgid "Add A Category"
+msgstr ""
+
+#: .\templates\project_categories.html:82
+msgid "Add a Category"
+msgstr ""
+
+#: .\templates\project_categories.html:87
+msgid "Add A Subcategory"
+msgstr ""
+
+#: .\templates\project_categories.html:97
+msgid "Add Subcategory"
+msgstr ""
+
+#: .\templates\project_detail.html:539
+msgid "Read Mode"
+msgstr ""
+
+#: .\templates\project_detail.html:544
+msgid "Category Icons"
+msgstr ""
+
+#: .\templates\project_detail.html:577 .\templates\project_detail.html:581
+#: .\templates\project_export.html:609 .\templates\project_export.html:613
+msgid "Filters"
+msgstr ""
+
+#: .\templates\project_detail.html:606 .\templates\project_export.html:637
+msgid "Show All"
+msgstr ""
+
+#: .\templates\project_detail.html:626 .\templates\project_export.html:658
+msgid "Apply"
+msgstr ""
+
+#: .\templates\project_detail.html:632 .\templates\project_export.html:664
+msgid "Add A Pin"
+msgstr ""
+
+#: .\templates\project_detail.html:648 .\templates\project_export.html:682
+msgid "Category"
+msgstr ""
+
+#: .\templates\project_detail.html:653 .\templates\project_export.html:687
+msgid "Subcategory"
+msgstr ""
+
+#: .\templates\project_detail.html:660 .\templates\project_export.html:694
+msgid "Add Pin"
+msgstr ""
+
+#: .\templates\project_export.html:564
+msgid "Custom"
+msgstr ""
+
+#: .\templates\project_export.html:569
+msgid "Street"
+msgstr ""
+
+#: .\templates\project_not_found.html:5
+msgid "Project Not Found"
+msgstr ""
+
+#: .\templates\projects.html:203
+msgid "Copy to clipboard"
+msgstr ""
+
+#: .\templates\projects.html:204
+msgid "Copy Link"
+msgstr ""
+
+#: .\templates\projects.html:212
+msgid "Edit Project"
+msgstr ""

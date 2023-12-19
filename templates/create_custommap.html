@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
@@ -46,35 +47,35 @@
 <div class="main mt-5">
     <div class="form-section">
         <form action="" class="mx-3 my-2 form" method="post" id="upload_form">
-            <h5>Add Custom Map</h5>
+            <h5>{% translate "Add Custom Map" %}</h5>
             {% csrf_token %}
             {% for field in form %}
                 {{ field.errors }}
                 <div class="mb-3">
-                    <label class="form-label">{{ field.label }}</label> <br>
+                    <label class="form-label">{% translate field.label %}</label> <br>
                     {{ field }}
                 </div>
                 
             {% endfor %}
 
             <div class="mb-3">
-                <label for="id_center" class="form-label">Center</label> <br>
+                <label for="id_center" class="form-label">{% translate "Center" %}</label> <br>
                 <input class="form-control" type="text" name="center" value="0,0" maxlength="200" id="id_center" placeholder="" required>
             </div>
     
             <div class="mb-3">
-                <label for="id_tiles" class="form-label">Tiles Zip File</label> <br>
+                <label for="id_tiles" class="form-label">{% translate "Tiles Zip File" %}</label> <br>
                 <input class="form-control" type="file" name="tiles" maxlength="200" id="id_tiles" placeholder="Tiles Zip" required>
             </div>
     
-            <input type="submit" value="Upload Custom Map" class="btn btn-primary">
+            <input type="submit" value="{% translate 'Upload Custom Map' %}" class="btn btn-primary">
         </form>
         <div class="container d-none progress" id="progress"></div>
     </div>
 
     <div class="map-section mt-3">
         <div class="mb-3">
-            <span class="form-label">Click/ or search to set map center</span> 
+            <span class="form-label"> {% translate "Click or search to set map center" %}</span> 
         </div>
         <div class="mini-map" id="mini-map"></div>
     </div>    

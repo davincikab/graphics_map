@@ -125,6 +125,7 @@ def project_detail(request, title):
 
 # export projects to a downloadable html file
 def project_view(request, title):
+    print(title)
     try:
         map_project = Project.objects.get(title=title)
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
@@ -132,7 +133,8 @@ def project_view(request, title):
         project_categories = PinCategory.objects.filter(project=map_project)
         # custom_map = CustomMaps.objects.get()
 
-        print(project_categories)
+        # print(map_project.project_language)
+        # request.session['django_language'] = map_project.project_language
         context = { 
             'project' : map_project, 
             'custom_map' : map_project.custom_map,

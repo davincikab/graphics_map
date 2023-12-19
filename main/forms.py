@@ -10,7 +10,7 @@ class CustomMapsForm(ModelForm):
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ['title', 'custom_map', 'project_owner', 'reading_mode']
+        fields = ['title', 'custom_map', 'project_owner', 'project_language']
 
 class IconsForm(ModelForm):
     class Meta:

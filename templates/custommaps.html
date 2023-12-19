@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
@@ -64,7 +65,7 @@
 {% include "navbar.html" %}
 <div class="container mt-5">
     <div class="header my-2">
-        <h3>Custom Maps</h3>
+        <h3>{% translate "Custom Maps" %}</h3>
         <div class="subheader d-flex py-1">
             {% if user.is_authenticated %}
                 <div class="search-bar">
@@ -72,7 +73,7 @@
                 </div>
 
                 <div class="">
-                    <a href="/create_custommaps/" class="btn btn-primary">Add Custom Map</a>
+                    <a href="/create_custommaps/" class="btn btn-primary">{% translate "Add Custom Map" %}</a>
                 </div>
             {% endif %}
         </div>
@@ -93,4 +94,10 @@
         {% endfor %}
     </div>  
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+  changeLanguage(lang_code);
+</script>
 {% endblock %}

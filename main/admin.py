@@ -11,8 +11,8 @@ class CustomMapsAdmin(admin.ModelAdmin):
 
 @admin.register(models.Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['title', 'custom_map']
-    search_fields = ['title', 'custom_map']
+    list_display = ['custom_map', 'title', 'project_language']
+    search_fields = ['title', 'project_language', 'custom_map']
 
 @admin.register(models.Pins)
 class PinsAdmin(admin.ModelAdmin):

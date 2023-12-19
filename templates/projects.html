@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
@@ -172,42 +173,50 @@
 {% include "navbar.html" %}
 <div class="container mt-5">
     <div class="header my-2">
-        <h3>Maps Projects</h3>
+        <h3>{% translate "Map Projects" %}</h3>
         <div class="subheader d-flex py-1">
             {% if user.is_authenticated %}
             <div class="search-bar">
                 <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
             </div>
-                    <a href="/create_project/" class="btn btn-primary">Add Project</a>
+                    <a href="/create_project/" class="btn btn-primary">{% translate "Add Project" %}</a>
                 </div>
             {% endif %}
         </div>
         
     </div>
+
     <div class="maps-container container">
         {% for project in projects %}
             <div class="card">
                 <img src="/media/{{ project.custom_map.thumbnail }}" alt="{{ project.title}}" width="150px">
                 <div class="card-body">
-                    <h4>
-                        <a href="/projects/{{ project.title}}/view/">{{ project.title}}</a>
-                    </h4>
-                    
+                        <h4>
+                            {% if project.project_language == "ar" %}
+                                <a href="/projects/{{ project.title_ar}}/view/">{{ project.title}}</a>
+                            {% elif project.project_language == "he" %}
+                                <a href="/projects/{{ project.title_he}}/view/">{{ project.title}}</a>
+                            {% else %}
+                                <a href="/projects/{{ project.title}}/view/">{{ project.title}}</a>
+                            {% endif %}
+                        </h4>
+
+
                     <div class="iframe-link">
                         <span class="link-div">
                             {{request.get_host}}/projects/{{ project.title}}/view/
                         </span>
                         <button class="btn btn-link tooltip-div" data-url="{{request.get_host}}/projects/{{ project.title}}/view/" data-tooltip="Copy Link" aria-label="Copy URL" data-tlite="" title="">
-                            <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                            <i class="fa fa-clipboard"></i> Copy Link
+                            <span class="tooltiptext" id="myTooltip">{% translate "Copy to clipboard" %}</span>
+                            <i class="fa fa-clipboard"></i> {% translate "Copy Link" %}
                         </button>
                     </div>
 
                     <p>{{ project.description }}</p>
 
                     <div class="footer-section">
-                        <a href="/project_categories/{{ project.title}}" class="">Categories</a>
-                        <a href="/projects/{{ project.title}}" class="edit-btn">Edit Project</a>
+                        <a href="/project_categories/{{ project.title}}" class="">{% translate "Categories" %}</a>
+                        <a href="/projects/{{ project.title}}" class="edit-btn">{% translate "Edit Project" %}</a>
                     </div>                    
                 </div>
             </div>

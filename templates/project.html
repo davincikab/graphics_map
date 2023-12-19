@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
@@ -33,17 +34,19 @@
 <div class="main mt-5">
     <div class="form-section">
         <form action="/create_project/" class="mx-3 my-2 form" method="post" id="upload_form">
-            <h5>Create Project</h5>
+            <h5>{% translate "Create Project" %}</h5>
             {% csrf_token %}
             {% for field in form %}
                 {{ field.errors }}
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                    <label for="exampleFormControlInput1" class="form-label">
+                        {% translate field.label %}
+                    </label> <br>
                     {{ field }}
                 </div>
                 
             {% endfor %}    
-            <input type="submit" value="Add Project" class="btn btn-primary">
+            <input type="submit" value="{% translate 'Add Project' %}" class="btn btn-primary">
         </form>
         <div class="container d-none progress" id="progress"></div>
     </div>       

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
     <style>
@@ -36,13 +37,13 @@
 <div class="main mt-5">
     <div class="map-section mt-3">
         <div class="mb-3">
-            <span class="form-label">Available Icons</span> 
+            <span class="form-label">{% translate "Available Icons" %}</span> 
         </div>
 
         <div class="icons-sections">
             <div class="pin-icons">
                 <div class="details-header">
-                    <h6>Pin Icon</h6>
+                    <h6>{% translate "Pin Icon" %}</h6>
                 </div>
                 <div class="icon-list">
                     {% for icon in pins_icons %}
@@ -56,13 +57,13 @@
 
             <div class="accesssibility-icons mt-3">
                 <div class="details-header">
-                    <h6>Accessibility Icons</h6>
+                    <h6>{% translate "Accessibility Icons" %}</h6>
                 </div>
                 <div class="icon-list">
                     {% for icon in accessebility_icons %}
                         <div class="icon">
                             <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                            <span>{{ icon.title }}</span>
+                            <span>{% translate icon.title %}</span>
                         </div>
                     {% endfor %} 
                 </div>
@@ -70,13 +71,13 @@
 
             <div class="accesssibility-icons mt-3">
                 <div class="details-header">
-                    <h6>Area Icons</h6>
+                    <h6>{% translate "Area Icons" %}</h6>
                 </div>
                 <div class="icon-list area_icons">
                     {% for icon in area_icons %}
                         <div class="icon">
                             <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}" width="120px">
-                            <span>{{ icon.title }}</span>
+                            <span>{% translate icon.title %}</span>
                         </div>
                     {% endfor %} 
                 </div>
@@ -88,17 +89,19 @@
     {% if user.is_authenticated %}
         <div class="form-section">
             <form action="" class="mx-3 my-2 form" method="post" id="upload_form">
-                <h5>Add An Icon</h5>
+                <h5>{% translate "Add An Icon" %}</h5>
                 {% csrf_token %}
                 {% for field in form %}
                     {{ field.errors }}
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                        <label for="exampleFormControlInput1" class="form-label">
+                            {% translate field.label %}
+                        </label> <br>
                         {{ field }}
                     </div>
                     
                 {% endfor %}    
-                <input type="submit" value="Upload Icon" class="btn btn-primary">
+                <input type="submit" value="{% translate 'Upload Icon' %}" class="btn btn-primary">
             </form>
             <div class="container d-none progress" id="progress"></div>
         </div>
@@ -166,5 +169,7 @@
 
 {% block js %}
 <script src="{% static '/js/form-control.js' %}"></script>
-
+<script>
+  changeLanguage(lang_code);
+</script>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
     <style>
@@ -47,7 +48,7 @@
 <div class="main mt-5">
     <div class="map-section mt-3">
         <div class="mb-3">
-            <span class="form-label">Categories</span> 
+            <span class="form-label">{% translate "Categories" %}</span> 
         </div>
 
         <div class="card-section">
@@ -68,32 +69,32 @@
     {% if user.is_authenticated %}
         <div class="form-section">
             <form action="" class="mx-3 my-2 form" method="post" id="upload_form">
-                <h5>Add A Category</h5>
+                <h5>{% translate "Add A Category" %}</h5>
                 {% csrf_token %}
                 {% for field in category_form %}
                     {{ field.errors }}
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                        <label for="exampleFormControlInput1" class="form-label">{% translate field.label %}</label> <br>
                         {{ field }}
                     </div>
                     
                 {% endfor %}    
-                <input type="submit" value="Add a Category" class="btn btn-primary">
+                <input type="submit" value="{% translate 'Add a Category' %}" class="btn btn-primary">
             </form>
             <div class="container d-none progress" id="progress"></div>
 
             <form action="" class="mx-3 my-2 mt-5 form" method="post" id="sub_category_form">
-                <h5>Add A SubCategory</h5>
+                <h5>{% translate "Add A Subcategory" %}</h5>
                 {% csrf_token %}
                 {% for field in sub_category_form %}
                     {{ field.errors }}
                     <div class="mb-3">
-                        <label for="" class="form-label">{{ field.label }}</label> <br>
+                        <label for="" class="form-label">{% translate field.label %}</label> <br>
                         {{ field }}
                     </div>
                     
                 {% endfor %}    
-                <input type="submit" value="Add Sub Category" class="btn btn-primary">
+                <input type="submit" value="{% translate 'Add Subcategory' %}" class="btn btn-primary">
             </form>
         </div>
 

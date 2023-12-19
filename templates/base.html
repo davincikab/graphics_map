@@ -6,7 +6,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>
+        {% translate "Wayfinding Map" %}
+    </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,13 +27,34 @@
     {% endblock %}
 </head>
 <body>
-    <div class="lang-toggle">
-        <select name="lang-select" id="lang-select" class="form-control" style="font-size: 10px;">
-          <option value="en">Engilsh</option>
-          <option value="he">Hebrew</option>
-          <option value="ar" href="#" data>Arabic</option>
+
+    
+    <form action="{% url 'set_language' %}" method="post" class="d-none" id="lang-form">{% csrf_token %}
+        <div class="d-none"></div>
+        <input name="next" type="hidden" value="{{ redirect_to }}">
+        <select name="language" id="lang-div">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                    {{ language.name_local }} ({{ language.code }})
+                </option>
+            {% endfor %}
         </select>
-    </div>
+        <input type="submit" value="Go" id="lang-submit">
+    </form>
+    
+
+    {% if user.is_superuser %}
+        <div class="lang-toggle">
+            <select name="lang-select" id="lang-select" class="form-control" style="font-size: 10px;">
+                <option value="en" {% if "en" == LANGUAGE_CODE %} selected{% endif %}>Engilsh</option>
+                <option value="he" {% if "he" == LANGUAGE_CODE %} selected{% endif %}>Hebrew</option>
+                <option value="ar" {% if "ar" == LANGUAGE_CODE %} selected{% endif %}>Arabic</option>
+            </select>
+        </div>
+    {% endif %}
     {% block content %}
     {% endblock %}
     <script>
@@ -40,6 +63,8 @@
             'en':"ltr",
             'he':"rtl"
         };
+
+        let lang_code = "{{ LANGUAGE_CODE }}"
 
         let isRtl = true;
         function changeLanguage(langCode) {
@@ -58,6 +83,10 @@
         let langToggler = document.getElementById("lang-select")
         langToggler.onchange = (e) => {
             changeLanguage(e.target.value);
+
+            // update the page language
+            document.getElementById("lang-div").value = e.target.value;
+            document.getElementById("lang-submit").click();
         }
     </script>
 

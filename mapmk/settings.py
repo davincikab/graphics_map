@@ -1,14 +1,9 @@
 import os;
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-o!-n_t&5pyw8xh0p!qvuc%i3++=b5ek(q1*5r5!)uka&x#!9-n"
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -18,7 +13,6 @@ ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -30,11 +24,13 @@ INSTALLED_APPS = [
     "gunicorn",
     "main.apps.MainConfig",
     ##3rd party
+    "modeltranslation"
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -111,8 +107,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
+LANGUAGES = [
+    ('ar', _('Arabic')),
+    ('he', _('Hebrew')),
+    ('en', _('English')),
+]
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
+
+# LOCALE_PATHS = (
+#     '/var/www/djangoApp/Billing/object/locale',
+# )
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 TIME_ZONE = "UTC"
 

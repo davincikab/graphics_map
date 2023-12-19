@@ -31,11 +31,18 @@ READING_MODES = (
     ("LTR", "Left To Right")
 )
 
+PROJECT_LANG = (
+    ("en", "English"),
+    ("ar", "Arabic"),
+    ("he", "Hebrew"),
+)
+
 class Project(models.Model):
     title = models.CharField(max_length=200,null=False)
     project_owner = models.ForeignKey(User, on_delete=models.CASCADE, default=default_user.pk)
     custom_map = models.ForeignKey(CustomMaps, on_delete=models.SET_NULL, null=True)
-    reading_mode = models.CharField(choices=READING_MODES, default="RTL", max_length=50)
+    reading_mode = models.CharField(choices=READING_MODES, default="en", max_length=50)
+    project_language = models.CharField(choices=PROJECT_LANG, default="en", max_length=50)
 
     class Meta:
         verbose_name_plural = "Projects"

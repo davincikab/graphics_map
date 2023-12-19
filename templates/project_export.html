@@ -1,5 +1,6 @@
 
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block header %}
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
@@ -544,6 +545,14 @@
             opacity: 0;       
             transform: translateY(135px) scale(1);
         }
+
+        .style-toggler {
+            left:10px;
+            top:70px;
+            width: 90px;
+            padding:5px;
+            font-size: 14px;
+        }
     }
 
    
@@ -557,17 +566,19 @@
         </div>
     </div>
 
-    <div class="style-toggler">
-        <div class="d-flex">
-            <input type="radio" name="style" id="custom" class="map-style" checked>
-            <label for="custom"> Custom </label>                
-        </div>
+    {% if project.custom_map.center != "0,0" or user.is_superuser %}
+        <div class="style-toggler">
+            <div class="d-flex">
+                <input type="radio" name="style" id="custom" class="map-style" checked>
+                <label for="custom"> {% translate "Custom" %} </label>                
+            </div>
 
-        <div class="d-flex">
-            <input type="radio" name="style" id="street" class="map-style">
-            <label for="street"> Street </label>
+            <div class="d-flex">
+                <input type="radio" name="style" id="street" class="map-style">
+                <label for="street"> {% translate "Street" %} </label>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% if user.is_authenticated %}
     <div class="icons-sections d-none">
@@ -605,11 +616,11 @@
 
     <div class="filter-section" id="filter-section">
         <div class="toggle-filter btn">
-            Filters
+            {% translate "Filters" %}
         </div>
 
         <div class="details-header px-2 py-2">
-            <h6>Filters</h6>
+            <h6>{% translate "Filters" %}</h6>
         </div>
 
         <!-- div.fi -->
@@ -619,7 +630,7 @@
             <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
                 <div class="d-flex header-text">
                     <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
-                    <h6 class="my-0"> {{ category.title }}</h6>
+                    <h6 class="my-0">{% translate category.title %}</h6>
                 </div>
 
                 {% if category.pinsubcategory_set.all %}
@@ -633,13 +644,15 @@
                 <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
                     <div class="d-flex sub-category-group sub_category-0" >
                         <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
-                        <label class="label mx-2" for="all-{{ category.id}}">Show All</label>
+                        <label class="label mx-2" for="all-{{ category.id}}">>{% translate "Show All" %}</label>
                     </div>
 
                     {% for sub_category in category.pinsubcategory_set.all %}
                         <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
                             <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
-                            <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
+                            <label class="label mx-2" for="sub-category-{{ sub_category.id }}">
+                                {% translate sub_category.title %}
+                            </label>
                         </div>
                     {% endfor %}
                 </div>
@@ -652,13 +665,13 @@
 
         </div>
 
-        <div class="apply-button">Apply</div>
+        <div class="apply-button">>{% translate "Apply" %}</div>
     </div>
 
     {% if user.is_authenticated %}
     <div class="pins_create_tabs d-none" id="pins_create_tabs">
         <div class="details-header px-2 py-2">
-            <h6>Add A Pin</h6>
+            <h6>>{% translate "Add A Pin" %}</h6>
         </div>
 
         <div class="body">
@@ -667,26 +680,28 @@
                 {% for field in pinsForm %}
                     {{ field.errors }}
                     <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label">{{ field.label }}</label> <br>
+                        <label for="exampleFormControlInput1" class="form-label">
+                            {% translate field.label %}
+                        </label> <br>
                         {{ field }}
                     </div>
                     
                 {% endfor %} 
 
                 <div class="mb-1">
-                    <label for="id_category" class="form-label">Category</label> <br>
+                    <label for="id_category" class="form-label"> {% translate "Category" %}</label> <br>
                     <input type="text" name="category" maxlength="100" required="" id="id_category" class="form-control" />
                 </div>
 
                 <div class="mb-1">
-                    <label for="id_subcategory" class="form-label">Subcategory</label> <br>
+                    <label for="id_subcategory" class="form-label"> {% translate "Subcategory" %}</label> <br>
                     <select name="subcategory" maxlength="100" required="" id="id_subcategory" class="form-control">
 
                     </select>
                 </div>
 
 
-                <input type="submit" value="Add Pin" class="btn btn-primary mt-2">
+                <input type="submit" value=" {% translate 'Add Pin' %}" class="btn btn-primary mt-2">
 
                 <div class="container d-none progress" id="progress"></div>
             </form>
@@ -707,7 +722,7 @@
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
-    let readingMode = `{{ project.reading_mode }}`;
+    let projectLanguage = `{{ project.project_language }}`;
     let bearing = parseInt(`{{project.custom_map.bearing }}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
     let ftsMarkers = [];
@@ -1033,7 +1048,7 @@
             bounds.extend(coord);
         });
 
-        map.fitBounds(bounds, { padding:30});
+        map.fitBounds(bounds, { padding:30, bearing:bearing });
 
         map.once("moveend", (e) => {
             toggleMarkers();
@@ -1274,7 +1289,7 @@
         divMarker.classList.add("div-marker");
         
         divMarker.innerHTML = `<div class="marker-wrapper">
-            <img src="/media/uploads/icons/axe_colored.png" />
+            <img src="/media/${ft.properties.icon}" />
         </div>`;
        
 
@@ -1368,9 +1383,13 @@
         filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
     }
 
-    let language = readingMode == "RTL" ? "ar" : "en";
-    document.getElementById("lang-select").value = language;
-    changeLanguage(language);
+    // let language = readingMode == "RTL" ? "ar" : "en";
+    if(lang_code !== projectLanguage) {
+        document.getElementById("lang-div").value = projectLanguage;
+        document.getElementById("lang-submit").click();
+    }
+    
+    document.getElementById("lang-select").value = projectLanguage;
+    changeLanguage(projectLanguage);
 </script>
 {% endblock %}
-{}

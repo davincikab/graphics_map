@@ -1,0 +1,236 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-17 14:34+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: .\mapmk\settings.py:110
+msgid "Arabic"
+msgstr ""
+
+#: .\mapmk\settings.py:111
+msgid "Hebrew"
+msgstr ""
+
+#: .\mapmk\settings.py:112
+msgid "English"
+msgstr ""
+
+#: .\templates\base.html:10 .\templates\index.html:157
+#: .\templates\navbar.html:6
+msgid "Wayfinding Map"
+msgstr "خريطة إيجاد الطريق"
+
+#: .\templates\create_custommap.html:50 .\templates\custommaps.html:76
+msgid "Add Custom Map"
+msgstr "خرائط مخصصة"
+
+#: .\templates\create_custommap.html:62
+msgid "Center"
+msgstr "مركز"
+
+#: .\templates\create_custommap.html:67
+msgid "Tiles Zip File"
+msgstr "البلاط ملف مضغوط"
+
+#: .\templates\create_custommap.html:71
+#, fuzzy
+#| msgid "Custom Maps"
+msgid "Upload Custom Map"
+msgstr "خرائط مخصصة"
+
+#: .\templates\create_custommap.html:78
+msgid "Click or search to set map center"
+msgstr "انقر أو ابحث لتعيين مركز الخريطة"
+
+#: .\templates\custommaps.html:68 .\templates\navbar.html:20
+msgid "Custom Maps"
+msgstr "خرائط مخصصة"
+
+#: .\templates\icons.html:40
+msgid "Available Icons"
+msgstr "الرموز المتاحة"
+
+#: .\templates\icons.html:46
+msgid "Pin Icon"
+msgstr "رمز الدبوس"
+
+#: .\templates\icons.html:60 .\templates\project_detail.html:556
+msgid "Accessibility Icons"
+msgstr "أيقونات إمكانية الوصول"
+
+#: .\templates\icons.html:74
+msgid "Area Icons"
+msgstr "أيقونات المنطقة"
+
+#: .\templates\icons.html:92
+msgid "Add An Icon"
+msgstr "إضافة رمز"
+
+#: .\templates\icons.html:102
+msgid "Upload Icon"
+msgstr "أيقونة التحميل"
+
+#: .\templates\index.html:151
+msgid "All Set On-Line Wayfinding Map Admin."
+msgstr "تم تعيين كل شيء على الإنترنت لإدارة خريطة الطريق."
+
+#: .\templates\index.html:153
+msgid "Welcome to All Set On-Line Wayfinding Map Admin."
+msgstr "مرحبًا بك في All Set On-Line Wayfinding Map Admin."
+
+#: .\templates\navbar.html:15
+msgid "Home"
+msgstr "بيت"
+
+#: .\templates\navbar.html:21 .\templates\projects.html:176
+msgid "Map Projects"
+msgstr "مشاريع الخريطة"
+
+#: .\templates\navbar.html:22
+msgid "Icons"
+msgstr "أيقونات"
+
+#: .\templates\navbar.html:24
+msgid "My Projects"
+msgstr "مشاريعي"
+
+#: .\templates\navbar.html:25
+msgid "My Icons"
+msgstr "أيقوناتي"
+
+#: .\templates\navbar.html:36
+msgid "Log Out"
+msgstr "تسجيل خروج"
+
+#: .\templates\navbar.html:38
+msgid "Log In"
+msgstr "تسجيل الدخول"
+
+#: .\templates\project.html:37
+msgid "Create Project"
+msgstr "مشاريع الخريطة"
+
+#: .\templates\project.html:49 .\templates\projects.html:182
+msgid "Add Project"
+msgstr "مشاريعي"
+
+#: .\templates\project_categories.html:51 .\templates\projects.html:211
+msgid "Categories"
+msgstr "فئات"
+
+#: .\templates\project_categories.html:72
+msgid "Add A Category"
+msgstr "أضف فئة"
+
+#: .\templates\project_categories.html:82
+msgid "Add a Category"
+msgstr "أضف فئة"
+
+#: .\templates\project_categories.html:87
+msgid "Add A Subcategory"
+msgstr "إضافة فئة فرعية"
+
+#: .\templates\project_categories.html:97
+msgid "Add Subcategory"
+msgstr "إضافة فئة فرعية"
+
+#: .\templates\project_detail.html:539
+msgid "Read Mode"
+msgstr "وضع القراءة"
+
+#: .\templates\project_detail.html:544
+msgid "Category Icons"
+msgstr "أيقوناتيأيقونات الفئة"
+
+#: .\templates\project_detail.html:577 .\templates\project_detail.html:581
+#: .\templates\project_export.html:609 .\templates\project_export.html:613
+msgid "Filters"
+msgstr "المرشحات"
+
+#: .\templates\project_detail.html:606 .\templates\project_export.html:637
+msgid "Show All"
+msgstr "عرض الكل"
+
+#: .\templates\project_detail.html:626 .\templates\project_export.html:658
+msgid "Apply"
+msgstr "يتقدم"
+
+#: .\templates\project_detail.html:632 .\templates\project_export.html:664
+msgid "Add A Pin"
+msgstr "إضافة دبوس"
+
+#: .\templates\project_detail.html:648 .\templates\project_export.html:682
+msgid "Category"
+msgstr "فئة"
+
+#: .\templates\project_detail.html:653 .\templates\project_export.html:687
+msgid "Subcategory"
+msgstr "تصنيف فرعي"
+
+#: .\templates\project_detail.html:660 .\templates\project_export.html:694
+msgid "Add Pin"
+msgstr "إضافة دبوس"
+
+#: .\templates\project_export.html:564
+msgid "Custom"
+msgstr "مخصص"
+
+#: .\templates\project_export.html:569
+msgid "Street"
+msgstr "شارع"
+
+#: .\templates\project_not_found.html:5
+msgid "Project Not Found"
+msgstr "لم يتم العثور على المشروع"
+
+#: .\templates\projects.html:203
+msgid "Copy to clipboard"
+msgstr "نسخ إلى الحافظة"
+
+#: .\templates\projects.html:204
+msgid "Copy Link"
+msgstr "نسخ الوصلة"
+
+#: .\templates\projects.html:212
+msgid "Edit Project"
+msgstr "تحرير المشروع"
+
+msgid "Icon"
+msgstr "أيقونة"
+
+msgid "Icon type"
+msgstr "نوع الأيقونة"
+
+#~ msgid "Title"
+#~ msgstr "عنوان"
+
+#~ msgid "Project"
+#~ msgstr "مشروع"
+
+#~ msgid "Custom map"
+#~ msgstr "خريطة مخصصة"
+
+#~ msgid "Project owner"
+#~ msgstr "صاحب المشروع"
+
+#~ msgid "Project language"
+#~ msgstr "لغة المشروع"
+
+#~ msgid "Active icon"
+#~ msgstr "أيقونة نشطة"
