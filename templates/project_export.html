@@ -307,27 +307,39 @@
 
         padding: 10px 10px 0px;
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: baseline;
+        display: block;
+        /* flex-direction: column;
+        align-items: baseline; */
     }
 
     .popup-content .info-section h5 {
         margin:5px 0px;
-        text-align: left;
+        text-align: start;
         font-size: 18px;
     }
 
     .info-section .icons {
         display: flex;
         margin-top: 0.5rem;
-        justify-content: space-between;
+        /* justify-content: space-between; */
     }
 
     .info-section .icons img {
         width: 30px;
         height: 30px;
         margin: 0 5px;
+    }
+
+    .link-section {
+        width: 100%;
+        /* text-align: left; */
+        font-size: 15px;
+        margin-top: 0.5rem;
+    }
+
+    .link-section a {
+        text-decoration: underline;
+        color:#555;
     }
 
     .mapboxgl-popup-close-button {
@@ -610,7 +622,7 @@
 
     {% endif %}
 
-    <a class="back-button btn" id="back-button" href="/">
+    <a class="back-button btn d-none" id="back-button" href="/">
         <i class="fa fa-xmark"></i>
     </a>
 
@@ -727,6 +739,12 @@
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
     let ftsMarkers = [];
 
+    let moreInfoText = {
+        "en":"More Information",
+        "ar":"معلومات اكثر",
+        "he":"למידע נוסף"
+    }
+    
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
 
@@ -954,7 +972,7 @@
                     console.log("Image Loading")
                     console.log(image);
                     
-                    map.addImage(imgObj.category, image);
+                    map.addImage(imgObj.category, image, {width: 310, height: 140});
                 });
             }  
            
@@ -1092,12 +1110,15 @@
     }
 
     function getPopupContent(entry) {
-        // let { accesibility_features } = JSON.parse(entry.accesibility_features);
-        let accesibility_features  = [];
+        let { accesibility_features } = JSON.parse(entry.accesibility_features);
+        // let accesibility_features  = [];
 
         let icons = accesibility_features.map(accFeature => {
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
         });
+
+        let moreInfo = entry.more_info_link ? `<a href="${entry.more_info_link}">${moreInfoText[lang_code]}</a>` : "";
+        console.log(lang_code);
 
         return `<div class='popup-content'>
             <div class='image-section'>
@@ -1108,11 +1129,15 @@
               <h5>${entry.title}</h5>
               <div class="description">${entry['subtitle']}</div>
 
+              <p>${entry.description}</p>
+
               <div class="icons">
                ${icons.join("")}
               </div>
 
-              <p>${entry.description}</p>
+               <div class="link-section">
+                    ${moreInfo}
+                </div>
           </div>
         </div>`;
     }
@@ -1384,9 +1409,10 @@
     }
 
     // let language = readingMode == "RTL" ? "ar" : "en";
-    if(lang_code !== projectLanguage) {
+    if(projectLanguage !== lang_code) {
         document.getElementById("lang-div").value = projectLanguage;
         document.getElementById("lang-submit").click();
+        //  lang_code = projectLanguage
     }
     
     document.getElementById("lang-select").value = projectLanguage;

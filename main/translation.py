@@ -16,4 +16,4 @@ class PinSubCategoryTranslationOptions(TranslationOptions):
 
 @register(Pins)
 class PinsTranslationOptions(TranslationOptions):
-    fields = ('title', 'subtitle', 'description', 'category', 'subcategory')
+    fields = ('title', 'subtitle', 'description', 'category', 'subcategory', 'more_info_link')

@@ -11,6 +11,9 @@ from .models import Project, CustomMaps, Icons, Pins, PinSubCategory, PinCategor
 from .functions import handle_uploaded_project_file
 from zipfile import ZipFile
 
+from django.utils import translation
+from django.db.models import Q
+
 # Create your views here.
 def index_page(request):
     context = {}
@@ -69,6 +72,8 @@ def pins_page(request):
 
 @login_required
 def projects(request):
+    print("Projects Page")
+    print(translation.get_language_from_request(request=request))
     if request.user.is_superuser:
         projects = Project.objects.all()
     else:
@@ -99,7 +104,7 @@ def create_project(request):
 def project_detail(request, title):
     try:
         pinsForm = PinsForm()
-        map_project = Project.objects.get(title=title)
+        map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title))
         print(request.user.is_superuser)
         if request.user.is_superuser == False:
             if request.user != map_project.project_owner:
@@ -125,9 +130,8 @@ def project_detail(request, title):
 
 # export projects to a downloadable html file
 def project_view(request, title):
-    print(title)
     try:
-        map_project = Project.objects.get(title=title)
+        map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title))
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
         acc_icons = Icons.objects.filter(icon_type="Accesibility")
         project_categories = PinCategory.objects.filter(project=map_project)
@@ -245,23 +249,27 @@ def get_icons(request):
 
 
 # categories and sub categories
-def project_categories(request, project_title):
+def project_categories(request, title):
+    print(title)
     if request.method == 'GET':
-        project = Project.objects.get(title=project_title)
+        try:
+            project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title))
+            pin_categories = PinCategory.objects.filter(project=project.pk).select_related()
 
-        pin_categories = PinCategory.objects.filter(project=project.pk).select_related()
+            categoryForm = PinCategoryForm()
+            subCategoryForm = PinSubCategoryForm()
 
-        categoryForm = PinCategoryForm()
-        subCategoryForm = PinSubCategoryForm()
+            # print(pin_categories[0].pinsubcategory_set.all())
+            context = {
+                "categories":pin_categories,
+                "sub_category_form":subCategoryForm,
+                "category_form":categoryForm
+            }
 
-        print(pin_categories[0].pinsubcategory_set.all())
-        context = {
-            "categories":pin_categories,
-            "sub_category_form":subCategoryForm,
-            "category_form":categoryForm
-        }
+            return render(request, "project_categories.html", context)
 
-        return render(request, "project_categories.html", context)
+        except Project.DoesNotExist:
+            return render(request, '404.html')
 
     if request.method == 'POST':
         form = IconsForm(request.POST, request.FILES)

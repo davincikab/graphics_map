@@ -16,7 +16,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(models.Pins)
 class PinsAdmin(admin.ModelAdmin):
-    list_display = ['title', 'pin_type', 'category', 'icon']
+    list_display = ['pin_type', 'title', 'category', 'icon']
     search_fields = ['title', 'pin_type']
 
 @admin.register(models.Icons)
@@ -27,7 +27,7 @@ class IconsAdmin(admin.ModelAdmin):
 
 @admin.register(models.PinCategory)
 class PinCategoryAdmin(admin.ModelAdmin):
-    list_display = ['title', 'icon', 'project']
+    list_display = ['pk', 'title', 'icon', 'project']
     search_fields = ['title', 'icon', 'project']
 
 @admin.register(models.PinSubCategory)

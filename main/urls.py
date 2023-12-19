@@ -15,7 +15,7 @@ urlpatterns = [
   path('create_project/', views.create_project),
   path('projects/<title>', views.project_detail),
   path('projects/<title>/view/', views.project_view),
-  path('project_categories/<project_title>', views.project_categories),
+  path('project_categories/<title>', views.project_categories),
 
   path('project/add_category', views.add_category),
   path('project/add_sub_category', views.add_sub_category),

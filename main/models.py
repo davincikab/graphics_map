@@ -111,6 +111,7 @@ class Pins(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     location_image = models.ImageField(default="default.png", upload_to="./uploads/thumbnails/pin_images/")
     accesibility_features = models.JSONField(null=True)
+    more_info_link = models.CharField(null=True, max_length=350)
 
     class Meta:
         verbose_name_plural = "Pins"

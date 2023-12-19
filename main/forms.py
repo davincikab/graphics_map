@@ -20,7 +20,7 @@ class IconsForm(ModelForm):
 class PinsForm(ModelForm):
     class Meta:
         model = Pins
-        fields = ['title', 'subtitle', 'description', 'location_image', 'pin_type']
+        fields = ['title', 'subtitle', 'description', 'location_image', 'pin_type', 'more_info_link']
         # fields = '__all__'
 
 class PinCategoryForm(ModelForm):

@@ -190,15 +190,18 @@
         {% for project in projects %}
             <div class="card">
                 <img src="/media/{{ project.custom_map.thumbnail }}" alt="{{ project.title}}" width="150px">
+
                 <div class="card-body">
+                        <!-- {{ project.project_language }} -->
                         <h4>
-                            {% if project.project_language == "ar" %}
+                            <a href="/projects/{{ project.title}}/view/">{{ project.title}}</a>
+                            <!-- {% if project.project_language == "ar" %}
                                 <a href="/projects/{{ project.title_ar}}/view/">{{ project.title}}</a>
                             {% elif project.project_language == "he" %}
                                 <a href="/projects/{{ project.title_he}}/view/">{{ project.title}}</a>
                             {% else %}
                                 <a href="/projects/{{ project.title}}/view/">{{ project.title}}</a>
-                            {% endif %}
+                            {% endif %} -->
                         </h4>
 
 
@@ -214,9 +217,21 @@
 
                     <p>{{ project.description }}</p>
 
-                    <div class="footer-section">
-                        <a href="/project_categories/{{ project.title}}" class="">{% translate "Categories" %}</a>
-                        <a href="/projects/{{ project.title}}" class="edit-btn">{% translate "Edit Project" %}</a>
+                    <div class="footer-section">  
+                        <!-- <a href="/project_categories/{{ project.title}}" class="">{% translate "Categories" %}</a>
+                            <a href="/projects/{{ project.title}}" class="edit-btn">{% translate "Edit Project" %}</a>                       -->
+                        {% if project.project_language == "ar" %}
+                            <a href="/project_categories/{{ project.title_ar}}" class="">{% translate "Categories" %}</a>
+                            <a href="/projects/{{ project.title_ar}}" class="edit-btn">{% translate "Edit Project" %}</a>
+                        {% elif project.project_language == "he" %}
+                            <a href="/project_categories/{{ project.title_he}}" class="">{% translate "Categories" %}</a>
+                            <a href="/projects/{{ project.title_he}}" class="edit-btn">{% translate "Edit Project" %}</a>
+                        {% else %}
+                            <a href="/project_categories/{{ project.title}}" class="">{% translate "Categories" %}</a>
+                            <a href="/projects/{{ project.title}}" class="edit-btn">{% translate "Edit Project" %}</a>
+                        {% endif %}
+
+                        
                     </div>                    
                 </div>
             </div>
@@ -249,7 +264,7 @@
     function outFunc() {
         var tooltip = document.getElementById("myTooltip");
         tooltip.innerHTML = "Copy to clipboard";
-    }
+    }    
 </script>
 <script src="{% static '/js/form-control.js' %}"></script>
 {% endblock %}

@@ -306,27 +306,39 @@
 
         padding: 10px 10px 0px;
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: baseline;
+        display: block;
+        /* flex-direction: column;
+        align-items: baseline; */
     }
 
     .popup-content .info-section h5 {
         margin:5px 0px;
-        text-align: left;
+        text-align: start;
         font-size: 18px;
     }
 
     .info-section .icons {
         display: flex;
         margin-top: 0.5rem;
-        justify-content: space-between;
+        /* justify-content: space-between; */
     }
 
     .info-section .icons img {
         width: 30px;
         height: 30px;
         margin: 0 5px;
+    }
+
+    .link-section {
+        width: 100%;
+        /* text-align: left; */
+        font-size: 15px;
+        margin-top: 0.5rem;
+    }
+
+    .link-section a {
+        text-decoration: underline;
+        color:#555;
     }
 
     .mapboxgl-popup-close-button {
@@ -722,8 +734,15 @@
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     center = center.split(",").map(val => parseFloat(val));
     let readingMode = `{{ project.reading_mode }}`;
+    let projectLanguage = `{{ project.project_language }}`;
     let bearing = parseInt(`{{project.custom_map.bearing }}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
+
+    let moreInfoText = {
+        "en":"More Information",
+        "ar":"معلومات اكثر",
+        "he":"למידע נוסף"
+    }
 
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
@@ -791,13 +810,21 @@
 
         map.addLayer({
             type:"symbol",
-            id:"area-pins",
+            id:"area-pins-icons",
             source:"area-pins",
             layout:{
                 'icon-allow-overlap': true,
                 'icon-image': ['get', 'category'],
-                // "icon-image":"image-icon",
                 'icon-size': 0.75,
+            },
+            maxzoom:minZoom + 0.75
+        })
+
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins",
+            source:"area-pins",
+            layout:{
                 'text-allow-overlap': true,
                 'text-field': ['get','title'],
                 'text-max-width': 13, // ems
@@ -925,8 +952,11 @@
 
             projectCategories = JSON.parse(data);
 
-            updateSubCategoryInput(location_icon.dataset.key);
-            document.getElementById("id_category").value = location_icon.dataset.key;
+            if(location_icon) {
+                updateSubCategoryInput(location_icon.dataset.key);
+                document.getElementById("id_category").value = location_icon.dataset.key;
+            }
+           
         })
         .catch(console.error)
     }
@@ -942,7 +972,7 @@
                     console.log("Image Loading")
                     console.log(image);
                     
-                    map.addImage(imgObj.category, image);
+                    map.addImage(imgObj.category, image, {width: 310, height: 140});
                 });
             }  
            
@@ -1081,27 +1111,33 @@
     }
 
     function getPopupContent(entry) {
-        // let { accesibility_features } = JSON.parse(entry.accesibility_features);
-        let accesibility_features  = [];
+        let { accesibility_features } = JSON.parse(entry.accesibility_features);
+        // let accesibility_features  = [];
 
         let icons = accesibility_features.map(accFeature => {
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
         });
 
+        let moreInfo = entry.more_info_link ? `<a href="${entry.more_info_link}">${moreInfoText[lang_code]}</a>` : "";
         return `<div class='popup-content'>
             <div class='image-section'>
               <img src="/media/${entry.location_image}" alt="" />
             </div>
 
           <div class="info-section">
-              <h5>${entry.title}</h5>
-              <div class="description">${entry['subtitle']}</div>
+            <h5>${entry.title}</h5>
+            <div class="description">${entry['subtitle']}</div>
 
-              <div class="icons">
-               ${icons.join("")}
-              </div>
+            <p>${entry.description}</p>
 
-              <p>${entry.description}</p>
+            <div class="icons">
+             ${icons.join("")}
+            </div>
+
+            <div class="link-section">
+                ${moreInfo}
+            </div>
+              
           </div>
         </div>`;
     }
@@ -1672,6 +1708,11 @@
     }
 </script>
 {% endif %}
-<script src="{% static '/js/form-control.js' %}"></script>
 
+<script>
+    // let language = readingMode == "RTL" ? "ar" : "en";
+    // document.getElementById("lang-select").value = projectLanguage;
+    // changeLanguage(projectLanguage);
+</script>
+<script src="{% static '/js/form-control.js' %}"></script>
 {% endblock %}
