@@ -7,7 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        {% translate "Wayfinding Map" %}
+        {% block title %}
+            {% translate "Wayfinding Map" %}
+        {% endblock %}
     </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -29,7 +31,8 @@
 <body>
 
     
-    <form action="{% url 'set_language' %}" method="post" class="d-none" id="lang-form">{% csrf_token %}
+    <form action="{% url 'set_language' %}" method="post" class="d-none" id="lang-form">
+        {% csrf_token %}
         <div class="d-none"></div>
         <input name="next" type="hidden" value="{{ redirect_to }}">
         <select name="language" id="lang-div">
@@ -46,7 +49,7 @@
     </form>
     
 
-    {% if user.is_superuser %}
+   
         <div class="lang-toggle">
             <select name="lang-select" id="lang-select" class="form-control" style="font-size: 10px;">
                 <option value="en" {% if "en" == LANGUAGE_CODE %} selected{% endif %}>Engilsh</option>
@@ -54,7 +57,7 @@
                 <option value="ar" {% if "ar" == LANGUAGE_CODE %} selected{% endif %}>Arabic</option>
             </select>
         </div>
-    {% endif %}
+    
     {% block content %}
     {% endblock %}
     <script>
@@ -70,10 +73,7 @@
         function changeLanguage(langCode) {
             langCode = langCode.toLocaleLowerCase();
 
-            // isRtl = !isRtl;
             let html  = document.querySelector("html");
-            
-            let  = langCode == "ltr" ? 'en' : 'ar';
             html.dir = lang[langCode];
             html.lang = langCode;
 

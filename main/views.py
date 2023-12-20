@@ -104,7 +104,7 @@ def create_project(request):
 def project_detail(request, title):
     try:
         pinsForm = PinsForm()
-        map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title))
+        map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title) | Q(title_en=title))
         print(request.user.is_superuser)
         if request.user.is_superuser == False:
             if request.user != map_project.project_owner:
@@ -130,8 +130,9 @@ def project_detail(request, title):
 
 # export projects to a downloadable html file
 def project_view(request, title):
+    print(title)
     try:
-        map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title))
+        map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title) | Q(title_en=title))
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
         acc_icons = Icons.objects.filter(icon_type="Accesibility")
         project_categories = PinCategory.objects.filter(project=map_project)
@@ -157,7 +158,7 @@ def create_pins(request):
     if request.method == 'POST':
         form = PinsForm(request.POST, request.FILES)
         project = Project.objects.get(pk=request.POST.get('project'))
-        pin_category = PinCategory.objects.get(title=request.POST.get("category"))
+        pin_category = PinCategory.objects.get(Q(title=request.POST.get("category")) & Q(project=project))
 
         poi_type = request.POST.get('poi_type')
 
@@ -253,7 +254,7 @@ def project_categories(request, title):
     print(title)
     if request.method == 'GET':
         try:
-            project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title))
+            project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title) | Q(title_en=title))
             pin_categories = PinCategory.objects.filter(project=project.pk).select_related()
 
             categoryForm = PinCategoryForm()

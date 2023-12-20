@@ -22,11 +22,15 @@ class PinsForm(ModelForm):
         model = Pins
         fields = ['title', 'subtitle', 'description', 'location_image', 'pin_type', 'more_info_link']
         # fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super(PinsForm, self).__init__(*args, **kwargs)
+        self.fields['more_info_link'].required = False
 
 class PinCategoryForm(ModelForm):
     class Meta:
         model = PinCategory
-        fields = ['title', 'project', 'icon', 'active_icon']
+        fields = ['title', 'project', 'is_area_category', 'icon', 'active_icon']
 
 class PinSubCategoryForm(ModelForm):
     class Meta:

@@ -296,7 +296,7 @@
     }
 
     .image-section img {
-        /* width: 100%; */
+        width: 100%;
         height: 180px;
     }
 
@@ -320,13 +320,12 @@
     .info-section .icons {
         display: flex;
         margin-top: 0.5rem;
-        /* justify-content: space-between; */
     }
 
     .info-section .icons img {
-        width: 30px;
-        height: 30px;
-        margin: 0 5px;
+        width: 25px;
+        height: 25px;
+        margin: 0 5px 0px 0px;
     }
 
     .link-section {
@@ -372,7 +371,7 @@
     }
 
     .filter-toggler img {
-        margin-right: 5px;
+        margin: 0px 8px;
     }
 
     .collapse-toggler.active {
@@ -495,6 +494,22 @@
         box-shadow: 0px 0px 0.5rem #444;
     }
 
+    .filter-section .text-collapse {
+        display: block;
+    }
+
+    .filter-section.expanded .text-collapse {
+        display: none;
+    }
+
+    .filter-section .text-expanded {
+        display: none;
+    }
+
+    .filter-section.expanded .text-expanded {
+        display: block;
+    }
+
 
 
     @media screen and (max-width:480px) {
@@ -598,17 +613,36 @@
         <div class="details-header py-2">
             <h6>{% translate "Category Icons" %}</h6>
         </div>
+
         <div class="icon-list">
             {% for icon in categories %}
-                <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
-                    <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                    <span>{% translate icon.title %}</span>
-                </div>
+                {% if icon.is_area_category == False %}
+                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <span>{% translate icon.title %}</span>
+                    </div>
+                {% endif %}
             {% endfor %} 
         </div>
+
+        <div class="details-header py-2">
+            <h6>{% translate "Area Icons" %}</h6>
+        </div>
+        
+        <div class="icon-list">
+            {% for icon in categories %}
+                {% if icon.is_area_category %}
+                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <span>{% translate icon.title %}</span>
+                    </div>
+                {% endif %}
+            {% endfor %} 
+        </div>
+
         <div class="accesssibility-icons">
             <div class="details-header">
-                <h6>{% translate "Accessibility Icons" %}</h6>
+                <h6>{% translate "Feature Icons" %}</h6>
             </div>
             <div class="icon-list">
                 {% for icon in accessebility_icons %}
@@ -629,7 +663,8 @@
 
     <div class="filter-section" id="filter-section">
         <div class="toggle-filter btn">
-            {% translate "Filters" %}
+            <span class="text-collapse">{% translate "Filters" %}</span>
+            <span class="text-expanded">{% translate "Close" %}</span>
         </div>
 
         <div class="details-header px-2 py-2">
@@ -640,37 +675,38 @@
 
         <div class="filter-list">
             {% for category in categories %}
-            <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
-                <div class="d-flex header-text">
-                    <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
-                    <h6 class="my-0"> {{ category.title }}</h6>
-                </div>
+                {% if category.is_area_category == False %}
+                    <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
+                        <div class="d-flex header-text">
+                            <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
+                            <h6 class="my-0"> {{ category.title }}</h6>
+                        </div>
 
-                {% if category.pinsubcategory_set.all %}
-                    <span>
-                        <i class="fa fa-angle-down"></i>
-                    </span>
-                {% endif %}
-            </div>
-
-            {% if category.pinsubcategory_set.all %}
-                <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
-                    <div class="d-flex sub-category-group sub_category-0" >
-                        <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
-                        <label class="label mx-2" for="all-{{ category.id}}">
-                            {% translate "Show All" %}
-                        </label>
+                        {% if category.pinsubcategory_set.all %}
+                            <span>
+                                <i class="fa fa-angle-down"></i>
+                            </span>
+                        {% endif %}
                     </div>
 
-                    {% for sub_category in category.pinsubcategory_set.all %}
-                        <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
-                            <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
-                            <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                    {% if category.pinsubcategory_set.all %}
+                        <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
+                            <div class="d-flex sub-category-group sub_category-0" >
+                                <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
+                                <label class="label mx-2" for="all-{{ category.id}}">
+                                    {% translate "Show All" %}
+                                </label>
+                            </div>
 
+                            {% for sub_category in category.pinsubcategory_set.all %}
+                                <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
+                                    <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
+                                    <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
             {% endfor %}
         </div>
 
@@ -706,7 +742,7 @@
 
                 <div class="mb-1">
                     <label for="id_subcategory" class="form-label">{% translate "Subcategory" %}</label> <br>
-                    <select name="subcategory" maxlength="100" required="" id="id_subcategory" class="form-control">
+                    <select name="subcategory" maxlength="100" id="id_subcategory" class="form-control">
 
                     </select>
                 </div>
@@ -1119,11 +1155,11 @@
         });
 
         let moreInfo = entry.more_info_link ? `<a href="${entry.more_info_link}">${moreInfoText[lang_code]}</a>` : "";
-        return `<div class='popup-content'>
-            <div class='image-section'>
+        let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
               <img src="/media/${entry.location_image}" alt="" />
-            </div>
-
+            </div>` : "";
+        return `<div class='popup-content'>
+            ${imgSection}
           <div class="info-section">
             <h5>${entry.title}</h5>
             <div class="description">${entry['subtitle']}</div>
@@ -1466,12 +1502,12 @@
     filterToggler.onclick = (e) => {
         console.log(e);        
         filterSection.classList.toggle("expanded");
-        filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+        // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
     }
 
     applyButton.onclick = (e) => {
         filterSection.classList.remove("expanded");
-        filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+        // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
     }
 </script>
 

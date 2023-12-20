@@ -41,7 +41,6 @@ class Project(models.Model):
     title = models.CharField(max_length=200,null=False)
     project_owner = models.ForeignKey(User, on_delete=models.CASCADE, default=default_user.pk)
     custom_map = models.ForeignKey(CustomMaps, on_delete=models.SET_NULL, null=True)
-    reading_mode = models.CharField(choices=READING_MODES, default="en", max_length=50)
     project_language = models.CharField(choices=PROJECT_LANG, default="en", max_length=50)
 
     class Meta:
@@ -71,6 +70,7 @@ class PinCategory(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     title = models.CharField(default="", max_length=200)
     icon = models.FileField(upload_to="./uploads/icons/")
+    is_area_category = models.BooleanField(default=False)
     active_icon = models.FileField(upload_to="./uploads/icons/", default="uploads/icons/axe_active.png")
 
     class Meta:
@@ -102,16 +102,15 @@ class Pins(models.Model):
     longitude = models.FloatField(default=0)
     description = models.TextField(null=True)
     category = models.CharField(null=False, max_length=100, default="Attraction")
-    subcategory = models.CharField(null=True, max_length=100)
+    subcategory = models.CharField(null=True, max_length=100, blank=True)
     icon = models.CharField(null=False, max_length=1000)
     active_icon = models.CharField(null=False, max_length=1000, default="uploads/icons/axe_active.png")
     maxzoom = models.IntegerField(default=18)
     minzoom = models.IntegerField(default=0)
-    bottom_link = models.CharField(max_length=250)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     location_image = models.ImageField(default="default.png", upload_to="./uploads/thumbnails/pin_images/")
     accesibility_features = models.JSONField(null=True)
-    more_info_link = models.CharField(null=True, max_length=350)
+    more_info_link = models.CharField(null=True, blank=True, max_length=350)
 
     class Meta:
         verbose_name_plural = "Pins"

@@ -2,6 +2,9 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% block title %}
+    {% translate project.title %}
+{% endblock %}
 {% block header %}
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
@@ -15,7 +18,7 @@
     .map-container {
         width: 100vw;
         /* overflow: hidden; */
-        height:100vh;
+        height: calc(100vh - calc(100vh - 100%));
         position: relative;
     }
 
@@ -281,7 +284,7 @@
         display: flex;
         height: 100%;
         width: 100%;
-        height: 180px;
+        max-height: 180px;
     }
 
     .popup-content {
@@ -297,7 +300,7 @@
     }
 
     .image-section img {
-        /* width: 100%; */
+        width: 100%;
         height: 180px;
     }
 
@@ -321,13 +324,12 @@
     .info-section .icons {
         display: flex;
         margin-top: 0.5rem;
-        /* justify-content: space-between; */
     }
 
     .info-section .icons img {
-        width: 30px;
-        height: 30px;
-        margin: 0 5px;
+        width: 25px;
+        height: 25px;
+        margin: 0 5px 0px 0px;
     }
 
     .link-section {
@@ -373,7 +375,7 @@
     }
 
     .filter-toggler img {
-        margin-right: 5px;
+        margin: 0px 8px;
     }
 
     .collapse-toggler.active {
@@ -439,7 +441,7 @@
         display: flex;
         width: 376px;
         max-width: 100%;
-        min-height:120px;
+        min-height:100px;
         box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.6);
         transition: all 300ms;
         opacity: 1;
@@ -476,7 +478,7 @@
         border:1px solid #ddd !important;
         display: none;
         color:black;
-        width: 100%;
+        width: 100px;
         font-size: 18px !important;
     }
 
@@ -517,9 +519,13 @@
 
 
     @media screen and (max-width:480px) {
+        #map-project {
+            height: calc(100vh - calc(100vh - 100%));
+            max-height: 100%;
+        }
         .filter-section {
             height: 50px;
-            width: auto;
+            width: 110px;
             max-width: none;
             padding: 5px;
             border-radius: 5px;
@@ -574,12 +580,20 @@
             transform: translateY(135px) scale(1);
         }
 
+        .popup-content p {
+            margin:0px;
+        }
+
         .style-toggler {
             left:10px;
             top:70px;
             width: 90px;
             padding:5px;
             font-size: 14px;
+        }
+
+        .lang-toggle {
+            display: none;
         }
     }
 
@@ -656,37 +670,38 @@
 
         <div class="filter-list">
             {% for category in categories %}
-            <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
-                <div class="d-flex header-text">
-                    <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
-                    <h6 class="my-0">{% translate category.title %}</h6>
-                </div>
+                {% if category.is_area_category == False %}
+                    <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
+                        <div class="d-flex header-text">
+                            <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
+                            <h6 class="my-0"> {{ category.title }}</h6>
+                        </div>
 
-                {% if category.pinsubcategory_set.all %}
-                    <span>
-                        <i class="fa fa-angle-down"></i>
-                    </span>
-                {% endif %}
-            </div>
-
-            {% if category.pinsubcategory_set.all %}
-                <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
-                    <div class="d-flex sub-category-group sub_category-0" >
-                        <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
-                        <label class="label mx-2" for="all-{{ category.id}}">>{% translate "Show All" %}</label>
+                        {% if category.pinsubcategory_set.all %}
+                            <span>
+                                <i class="fa fa-angle-down"></i>
+                            </span>
+                        {% endif %}
                     </div>
 
-                    {% for sub_category in category.pinsubcategory_set.all %}
-                        <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
-                            <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
-                            <label class="label mx-2" for="sub-category-{{ sub_category.id }}">
-                                {% translate sub_category.title %}
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                    {% if category.pinsubcategory_set.all %}
+                        <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
+                            <div class="d-flex sub-category-group sub_category-0" >
+                                <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
+                                <label class="label mx-2" for="all-{{ category.id}}">
+                                    {% translate "Show All" %}
+                                </label>
+                            </div>
 
+                            {% for sub_category in category.pinsubcategory_set.all %}
+                                <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
+                                    <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
+                                    <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
             {% endfor %}
         </div>
 
@@ -694,49 +709,8 @@
 
         </div>
 
-        <div class="apply-button">>{% translate "Apply" %}</div>
+        <div class="apply-button">{% translate "Apply" %}</div>
     </div>
-
-    {% if user.is_authenticated %}
-    <div class="pins_create_tabs d-none" id="pins_create_tabs">
-        <div class="details-header px-2 py-2">
-            <h6>>{% translate "Add A Pin" %}</h6>
-        </div>
-
-        <div class="body">
-            <form action="" method="post" class="px-3" id="poi-form">
-                {% csrf_token %}
-                {% for field in pinsForm %}
-                    {{ field.errors }}
-                    <div class="mb-1">
-                        <label for="exampleFormControlInput1" class="form-label">
-                            {% translate field.label %}
-                        </label> <br>
-                        {{ field }}
-                    </div>
-                    
-                {% endfor %} 
-
-                <div class="mb-1">
-                    <label for="id_category" class="form-label"> {% translate "Category" %}</label> <br>
-                    <input type="text" name="category" maxlength="100" required="" id="id_category" class="form-control" />
-                </div>
-
-                <div class="mb-1">
-                    <label for="id_subcategory" class="form-label"> {% translate "Subcategory" %}</label> <br>
-                    <select name="subcategory" maxlength="100" required="" id="id_subcategory" class="form-control">
-
-                    </select>
-                </div>
-
-
-                <input type="submit" value=" {% translate 'Add Pin' %}" class="btn btn-primary mt-2">
-
-                <div class="container d-none progress" id="progress"></div>
-            </form>
-        </div>
-    </div>
-    {% endif %}
 
     <div id="map-project"></div>
 </div>
@@ -827,7 +801,7 @@
             }
 
             console.log(e.features);
-            let fts = map.queryRenderedFeatures(e.point, {layers:['pois']});
+            let fts = map.queryRenderedFeatures(e.point, {layers:['pois', "area-pins-higher"]});
             console.log(fts);
             if(fts[0]) {
                 updatePopupInfo(fts[0])
@@ -919,7 +893,7 @@
                 'icon-allow-overlap': true,
                 'icon-image': ['get', 'category'],
                 // "icon-image":"image-icon",
-                'icon-size': 0.75,
+                'icon-size': 0.5,
                 'text-allow-overlap': true,
                 'text-field': ['get','title'],
                 'text-max-width': 13, // ems
@@ -932,7 +906,19 @@
             paint:{
                 'text-color': '#fff',
             },
-            maxzoom:minZoom + 0.75
+            maxzoom:minZoom + 1
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins-higher",
+            source:"area-pins",
+            minzoom:minZoom + 1,
+            layout:{
+                'icon-allow-overlap': true,
+                'icon-image': ['concat', ['get', 'category'], "-active"],
+                'icon-size': 0.5,
+            }
         })
 
         // map.addSource();
@@ -957,7 +943,7 @@
                     0,
                     3.5,
                     19,
-                    5
+                    7
                 ],
                 "circle-stroke-width":3
             },
@@ -1027,6 +1013,11 @@
                     a.push({
                         category: b.category || 'area-pin',
                         icon:b.icon
+                    })
+
+                    a.push({
+                        category: `${b.category}-active` || 'area-pin-active',
+                        icon:b.active_icon
                     })
                 }
                 
@@ -1135,13 +1126,14 @@
         });
 
         let moreInfo = entry.more_info_link ? `<a href="${entry.more_info_link}">${moreInfoText[lang_code]}</a>` : "";
+        let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
+              <img src="/media/${entry.location_image}" alt="" />
+            </div>` : "";
+
         console.log(lang_code);
 
         return `<div class='popup-content'>
-            <div class='image-section'>
-              <img src="/media/${entry.location_image}" alt="" />
-            </div>
-
+           ${imgSection}
           <div class="info-section">
               <h5>${entry.title}</h5>
               <div class="description">${entry['subtitle']}</div>
@@ -1359,7 +1351,11 @@
             mainMarker.remove();
         } 
 
-        let { active_icon } = ft.properties;
+        let { active_icon, pin_type } = ft.properties;
+        if(pin_type == "Area Pin") {
+            console.log("Area Pin Click");
+        }
+
         let divMarker = document.createElement("div");
         divMarker.classList.add("div-marker");
         
@@ -1422,17 +1418,33 @@
 
     applyButton.onclick = (e) => {
         filterSection.classList.remove("expanded");
-        filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+        // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
     }
 
+    // check the query params
+    let queryLanguage = new URLSearchParams(window.location.search).get("lang");
+    console.log(queryLanguage);
+    let activeLanguage;
+
     // let language = readingMode == "RTL" ? "ar" : "en";
-    if(projectLanguage !== lang_code) {
-        document.getElementById("lang-div").value = projectLanguage;
+    if(queryLanguage) {
+        activeLanguage = queryLanguage
+    } else {
+        activeLanguage = projectLanguage;
+    }
+    
+    console.log(activeLanguage);
+    console.log(lang_code);
+
+    if (activeLanguage !== lang_code) {
+        document.getElementById("lang-div").value = activeLanguage;
         document.getElementById("lang-submit").click();
         //  lang_code = projectLanguage
     }
     
-    document.getElementById("lang-select").value = projectLanguage;
-    changeLanguage(projectLanguage);
+    document.getElementById("lang-select").value = activeLanguage;
+    changeLanguage(activeLanguage);
+
+    // document.querySelector(".style-toggler").innerHTML += lang[activeLanguage];
 </script>
 {% endblock %}

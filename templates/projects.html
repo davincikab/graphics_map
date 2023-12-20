@@ -35,14 +35,14 @@
             color: black;
             box-shadow: 0px 0px 0.25rem #999;
             overflow: hidden;
-            max-width: 500px;
+            max-width: 100%;
         }
 
         .card-body {
             position: relative;
-            height: 180px;
+            height: auto;
         }
-        .subheader {
+        .subheader, .header {
             display: flex;
             justify-content: space-between;
         }
@@ -87,7 +87,11 @@
         .iframe-link {
             display: flex;
             font-size: 13px;
-            flex-direction: column;
+            align-items: center;
+            margin: 5px 10px 0px 0px;
+            height:35px;
+            position: relative;
+            /* flex-direction: column; */
         }
 
         .iframe-link .link-div {
@@ -95,19 +99,23 @@
             padding:5px 4px;
             border-radius: 5px;
             font-size: 13px;
-            margin-bottom: 5px;
+            display: none;
+            /* margin-bottom: 5px; */
         }
 
         .iframe-link button {
-            width:100px;
+            width:auto;
             color:white;
             text-decoration: none;
-            font-size: 12px;
-            background-color: rgb(101, 24, 24);
+            font-size: 10px;
+            padding:5px;
+            /* position: absolute; */
+            right: 0px;
+            background-color: #b78376;
         }
 
         .iframe-link button:hover {
-            background-color: rgb(86, 20, 20);
+            background-color: #ac5a46;
             color:white;
         }
 
@@ -155,6 +163,28 @@
                 grid-template-columns: 1fr;
             }
 
+            .iframe-link {
+                margin: 5px 8px 0px 0px;
+                width: 100%;
+            }
+
+            /* .ifrma */
+            .link-group {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                /* grid-gap:10px; */
+                height: 80px;
+                margin-bottom: 40px;
+            }
+
+            .link-group button {
+                width: 95%;
+            }
+
+            .maps-container .card {
+                margin-right: 0px;
+            }
+
             .subheader {
                 flex-direction: column;
             }
@@ -172,13 +202,13 @@
 {% block content %}
 {% include "navbar.html" %}
 <div class="container mt-5">
-    <div class="header my-2">
+    <div class="header my-2 d-flex">
         <h3>{% translate "Map Projects" %}</h3>
         <div class="subheader d-flex py-1">
             {% if user.is_authenticated %}
-            <div class="search-bar">
-                <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
-            </div>
+                <!-- <div class="search-bar">
+                    <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
+                </div> -->
                     <a href="/create_project/" class="btn btn-primary">{% translate "Add Project" %}</a>
                 </div>
             {% endif %}
@@ -204,15 +234,36 @@
                             {% endif %} -->
                         </h4>
 
+                    <div class="link-group d-flex">
+                        <div class="iframe-link">
+                            <span class="link-div">
+                                {{request.get_host}}/projects/{{ project.title}}/view/?lang=ar
+                            </span>
+                            <button class="btn btn-link tooltip-div" data-url="{{request.get_host}}/projects/{{ project.title}}/view/?lang=ar" data-tooltip="Copy Link" aria-label="Copy URL" data-tlite="" title="">
+                                <span class="tooltiptext" id="myTooltip">{% translate "Copy to clipboard" %}</span>
+                                <i class="fa fa-clipboard"></i> {% translate "Copy Link" %} ar
+                            </button>
+                        </div>
 
-                    <div class="iframe-link">
-                        <span class="link-div">
-                            {{request.get_host}}/projects/{{ project.title}}/view/
-                        </span>
-                        <button class="btn btn-link tooltip-div" data-url="{{request.get_host}}/projects/{{ project.title}}/view/" data-tooltip="Copy Link" aria-label="Copy URL" data-tlite="" title="">
-                            <span class="tooltiptext" id="myTooltip">{% translate "Copy to clipboard" %}</span>
-                            <i class="fa fa-clipboard"></i> {% translate "Copy Link" %}
-                        </button>
+                        <div class="iframe-link">
+                            <span class="link-div">
+                                {{request.get_host}}/projects/{{ project.title}}/view/?lang=en
+                            </span>
+                            <button class="btn btn-link tooltip-div" data-url="{{request.get_host}}/projects/{{ project.title}}/view/?lang=en" data-tooltip="Copy Link" aria-label="Copy URL" data-tlite="" title="">
+                                <span class="tooltiptext" id="myTooltip">{% translate "Copy to clipboard" %}</span>
+                                <i class="fa fa-clipboard"></i> {% translate "Copy Link" %} en
+                            </button>
+                        </div>
+
+                        <div class="iframe-link">
+                            <span class="link-div">
+                                {{request.get_host}}/projects/{{ project.title}}/view/?lang=he
+                            </span>
+                            <button class="btn btn-link tooltip-div" data-url="{{request.get_host}}/projects/{{ project.title}}/view/?lang=he" data-tooltip="Copy Link" aria-label="Copy URL" data-tlite="" title="">
+                                <span class="tooltiptext" id="myTooltip">{% translate "Copy to clipboard" %}</span>
+                                <i class="fa fa-clipboard"></i> {% translate "Copy Link" %} he
+                            </button>
+                        </div>
                     </div>
 
                     <p>{{ project.description }}</p>
@@ -253,8 +304,7 @@
     });
 
     function handleClick(linkValue) {
-        let iframeLink = `<iframe src="${linkValue}" width="100%" height="300" style="border:1px solid black;">
-        </iframe>`
+        let iframeLink = `<iframe src="https://${linkValue}" width="100%" height="300px" style="border:1px solid black;"></iframe>`
         navigator.clipboard.writeText(iframeLink);
 
         var tooltip = document.getElementById("myTooltip");
