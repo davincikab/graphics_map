@@ -16,6 +16,7 @@ class CustomMaps(models.Model):
     center = models.CharField(max_length=200, default="0,0", null=False)
     tiles_in_folders = models.BooleanField(default=False)
     is_osm_based_map = models.BooleanField(default=False)
+    map_style_url = models.CharField(blank=True, null=True, max_length=500)
     thumbnail = models.ImageField(upload_to="./uploads/thumbnails")
     bearing = models.IntegerField(default=0, null=False)
     minzoom = models.IntegerField(default=0)

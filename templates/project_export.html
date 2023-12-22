@@ -28,11 +28,11 @@
 
     .map-container {
         {% if LANGUAGE_CODE == "ar" %}
-            font-family: var(--project-font-ar);
+            font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
         {% elif LANGUAGE_CODE == "he" %}
-            font-family: var(--project-font-he);
+            font-family: var(--project-font-he), var(--project-font), var(--project-font-ar);;
         {% else %}
-            font-family: var(--project-font);
+            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);;
         {% endif %}        
     }
 
@@ -306,12 +306,12 @@
     /* popup */
     .mapboxgl-map {
         {% if LANGUAGE_CODE == "ar" %}
-            font-family: var(--project-font-ar);
+            font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
         {% elif LANGUAGE_CODE == "he" %}
-            font-family: var(--project-font-he);
+            font-family: var(--project-font-he), var(--project-font), var(--project-font-ar);
         {% else %}
-            font-family: var(--project-font);
-        {% endif %} 
+            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);
+        {% endif %}   
     }
 
     .mapboxgl-popup {
@@ -327,12 +327,12 @@
         color:var(--text-color);
 
         {% if LANGUAGE_CODE == "ar" %}
-            font-family: var(--project-font-ar);
+            font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
         {% elif LANGUAGE_CODE == "he" %}
-            font-family: var(--project-font-he);
+            font-family: var(--project-font-he), var(--project-font), var(--project-font-ar);;
         {% else %}
-            font-family: var(--project-font);
-        {% endif %} 
+            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);;
+        {% endif %}   
     }
 
     .popup-content {
@@ -773,7 +773,7 @@
     // User agent string method
     let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuZXplcSIsImEiOiJjbGlqeHExZGswY280M2NxcXVnc2J4NzRjIn0.roOLfnIg0hQnfisyhrRpPQ';
     let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
     let center = `{{ project.custom_map.center }}`;
@@ -782,7 +782,7 @@
     const isOsmMap = `{{ project.custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val));
     let projectLanguage = `{{ project.project_language }}`;
-    let bearing = parseInt(`{{project.custom_map.bearing }}`);
+    let bearing = parseInt(`{{ project.custom_map.bearing }}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
     let ftsMarkers = [];
 
@@ -800,7 +800,7 @@
 
     // let language = readingMode == "RTL" ? "ar" : "en";
     if(queryLanguage) {
-        activeLanguage = queryLanguage
+        activeLanguage = queryLanguage.toLocaleLowerCase();
     } else {
         activeLanguage = projectLanguage;
     }
@@ -824,6 +824,8 @@
 
     const pinsFormSection = document.getElementById("pins_create_tabs");
     const iconsSection = document.querySelector(".icons-sections");
+    let mapboxStyleUrl = `{{ project.custom_map.map_style_url }}`;
+    mapboxStyleUrl = mapboxStyleUrl  == 'None' ? null : mapboxStyleUrl;
 
     const customMapStyle = isOsmMap == "False" ? {
         version: 8,
@@ -843,7 +845,7 @@
             },
         ],
         "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
-    } : "mapbox://styles/mapbox/streets-v12";
+    } : (mapboxStyleUrl || "mapbox://styles/mapbox/streets-v12");
 
     
     const map = new mapboxgl.Map({

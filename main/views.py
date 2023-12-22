@@ -185,8 +185,19 @@ def create_pins(request):
             pin_instance.icon = request.POST.get('icon')
             pin_instance.project = project
             pin_instance.poi_category =  request.POST.get('poi_type')
-            pin_instance.category = request.POST.get('category')
-            pin_instance.subcategory = request.POST.get('subcategory')
+            pin_instance.category = pin_category.title
+
+            pin_instance.category_en = pin_category.title_en
+            pin_instance.category_ar = pin_category.title_ar
+            pin_instance.category_he = pin_category.title_he
+            
+            if request.POST.get('subcategory'):
+                subcategory = PinSubCategory.get(category=pin_category)
+                pin_instance.subcategory = subcategory.title
+                pin_instance.subcategory_en = subcategory.title_en
+                pin_instance.subcategory_ar = subcategory.title_ar
+                pin_instance.subcategory_he = subcategory.title_he
+
             pin_instance.icon = pin_category.icon
             pin_instance.active_icon = pin_category.active_icon
             pin_instance.latitude = request.POST.get('latitude')
