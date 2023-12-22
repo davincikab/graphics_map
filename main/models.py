@@ -15,6 +15,7 @@ class CustomMaps(models.Model):
     tiles_folder = models.CharField(default="/media/uploads/projects/efteling", max_length=400)
     center = models.CharField(max_length=200, default="0,0", null=False)
     tiles_in_folders = models.BooleanField(default=False)
+    is_osm_based_map = models.BooleanField(default=False)
     thumbnail = models.ImageField(upload_to="./uploads/thumbnails")
     bearing = models.IntegerField(default=0, null=False)
     minzoom = models.IntegerField(default=0)
@@ -37,11 +38,32 @@ PROJECT_LANG = (
     ("he", "Hebrew"),
 )
 
+DEFAULT_STYLESHEET = """
+    --project-font:Poppins, sans-serif !important;
+    --project-font-he:Poppins, sans-serif !important;
+    --project-font-ar:Poppins, sans-serif !important;
+
+    --canvas-bg-color:#000000;
+    --area-text-color:#ffffff;
+    --filter-bg-color:#5F6F52;
+    --icons-bg:#A9B388;
+    --infobox-bg:#FEFAE0;
+    --text-color:#B99470;
+    --filter-card-active:#5F6F52;
+"""
+
+# 1 for the filters windows background, 
+# 1 for the icons bg, 
+# 1 for the infobox backgroud, 
+# 1 for the texts,
+#  1 for the chosen area around texts on filters menu
+
 class Project(models.Model):
     title = models.CharField(max_length=200,null=False)
     project_owner = models.ForeignKey(User, on_delete=models.CASCADE, default=default_user.pk)
     custom_map = models.ForeignKey(CustomMaps, on_delete=models.SET_NULL, null=True)
     project_language = models.CharField(choices=PROJECT_LANG, default="en", max_length=50)
+    project_theme = models.TextField(default=DEFAULT_STYLESHEET, max_length=1000)
 
     class Meta:
         verbose_name_plural = "Projects"
@@ -72,6 +94,7 @@ class PinCategory(models.Model):
     icon = models.FileField(upload_to="./uploads/icons/")
     is_area_category = models.BooleanField(default=False)
     active_icon = models.FileField(upload_to="./uploads/icons/", default="uploads/icons/axe_active.png")
+    ranking_value = models.IntegerField(default=0, )
 
     class Meta:
         verbose_name_plural = "Pin Categories"

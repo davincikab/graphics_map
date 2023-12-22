@@ -16,8 +16,8 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(models.Pins)
 class PinsAdmin(admin.ModelAdmin):
-    list_display = ['pin_type', 'title', 'category', 'icon']
-    search_fields = ['title', 'pin_type']
+    list_display = ['pk', 'icon', 'title', 'pin_type', 'category', 'project']
+    search_fields = ['icon', 'title', 'pin_type', 'project']
 
 @admin.register(models.Icons)
 class IconsAdmin(admin.ModelAdmin):
@@ -32,7 +32,7 @@ class PinCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.PinSubCategory)
 class PinSubCategoryAdmin(admin.ModelAdmin):
-    list_display = ['title', 'category']
+    list_display = ['pk', 'title', 'category']
     search_fields = ['title', 'category']
 
 AdminSite.site_title = "Map Maker"

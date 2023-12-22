@@ -41,20 +41,6 @@
         </div>
 
         <div class="icons-sections">
-            <div class="pin-icons">
-                <div class="details-header">
-                    <h6>{% translate "Pin Icon" %}</h6>
-                </div>
-                <div class="icon-list">
-                    {% for icon in pins_icons %}
-                        <div class="icon">
-                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                            <span>{{ icon.title }}</span>
-                        </div>
-                    {% endfor %} 
-                </div>
-            </div>
-
             <div class="accesssibility-icons mt-3">
                 <div class="details-header">
                     <h6>{% translate "Accessibility Icons" %}</h6>
@@ -63,20 +49,6 @@
                     {% for icon in accessebility_icons %}
                         <div class="icon">
                             <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                            <span>{% translate icon.title %}</span>
-                        </div>
-                    {% endfor %} 
-                </div>
-            </div>
-
-            <div class="accesssibility-icons mt-3">
-                <div class="details-header">
-                    <h6>{% translate "Area Icons" %}</h6>
-                </div>
-                <div class="icon-list area_icons">
-                    {% for icon in area_icons %}
-                        <div class="icon">
-                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}" width="120px">
                             <span>{% translate icon.title %}</span>
                         </div>
                     {% endfor %} 

@@ -85,6 +85,18 @@
         const input_file = document.getElementById('id_tiles');
         const progress_bar = document.getElementById('progress');
         const centerInput = document.getElementById("id_center");
+
+        // const tilesInput = document.getElementById("id_tiles");
+        const osmBasedMapInput = document.getElementById("id_is_osm_based_map");
+
+        osmBasedMapInput.onclick = (e) => {
+            if(e.target.checked) {
+                input_file.removeAttribute("required");
+            } else {
+                input_file.setAttribute("required", "required");                
+            }
+        }
+
         
         $("#upload_form").submit(function(e){
             e.preventDefault();
@@ -97,7 +109,12 @@
                 console.log(media_data);
                 progress_bar.classList.remove("d-none");
             }
+            var object = {};
+            formData.forEach((value, key) => object[key] = value);
+            var json = JSON.stringify(object);
+            console.log(json);
 
+            // return;
             $.ajax({
                 type: 'POST',
                 url:'/create_custommaps/',

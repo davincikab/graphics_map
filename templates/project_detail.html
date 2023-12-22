@@ -591,7 +591,7 @@
     </div>
 
     {% if user.is_superuser %}
-        <div class="style-toggler">
+        <div class="style-toggler d-none">
             <div class="d-flex">
                 <input type="radio" name="style" id="custom" class="map-style" checked>
                 <label for="custom"> {% translate "Custom" %} </label>                
@@ -717,6 +717,8 @@
         <div class="apply-button">{% translate "Apply" %}</div>
     </div>
 
+   
+
     {% if user.is_authenticated %}
     <div class="pins_create_tabs d-none" id="pins_create_tabs">
         <div class="details-header px-2 py-2">
@@ -768,6 +770,7 @@
     let center = `{{ project.custom_map.center }}`;
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
+    const isOsmMap = `{{ project.custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val));
     let readingMode = `{{ project.reading_mode }}`;
     let projectLanguage = `{{ project.project_language }}`;
@@ -788,7 +791,7 @@
     const pinsFormSection = document.getElementById("pins_create_tabs");
     const iconsSection = document.querySelector(".icons-sections");
 
-    const customMapStyle = {
+    const customMapStyle = isOsmMap == "False" ? {
         version: 8,
         sources: {
             'wms-layers':{
@@ -802,12 +805,11 @@
                 "id": 'image-tile',
                 "source":"wms-layers",
                 "type": "raster",
-                "paint": {"raster-fade-duration": 100},
                 "layout": {},
             },
         ],
         "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
-    };
+    } : "mapbox://styles/mapbox/streets-v12";
 
     const map = new mapboxgl.Map({
         container: 'map-project', // container ID
@@ -824,6 +826,12 @@
 
     const navigationCtrl = new mapboxgl.NavigationControl({ showCompass:false });
     map.addControl(navigationCtrl, 'bottom-right');
+
+    const geolocationControl = new mapboxgl.GeolocateControl({
+        showAccuracyCircle:false
+    });
+    
+    map.addControl(geolocationControl, "bottom-left");
 
     map.on("style.load", function () {
 
@@ -999,8 +1007,8 @@
 
     getCategoriesData();
 
-    function loadMapImages(imageList) {
-        imageList.forEach(imgObj => {
+    function loadMapImages(imageList, cb) {
+        imageList.forEach((imgObj,i) => {
             if(!map.hasImage(imgObj.category)) {
                 map.loadImage(`/media/${imgObj.icon}`, (err, image) => {
                     if(err) throw err;
@@ -1009,6 +1017,10 @@
                     console.log(image);
                     
                     map.addImage(imgObj.category, image, {width: 310, height: 140});
+
+                    if(i == imageList.length - 1) {
+                        cb();
+                    }
                 });
             }  
            
@@ -1054,7 +1066,10 @@
             
 
             console.log(imageList);
-            loadMapImages(imageList);
+            loadMapImages(imageList, () => {
+                console.log("Finished");
+                map.getSource("area-pins").setData(areaFeatures);
+            });
            
             // renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
             // toggleMarkersByCategory();
@@ -1517,13 +1532,15 @@
     const uploadForm = document.getElementById('poi-form');
     const input_file = document.getElementById('id_location_image');
     const progress_bar = document.getElementById('progress');
+    
+
     let accessebility_icons = [];
     let location_icon = "";
     let pin_coords = null;
     let pinMarker = new mapboxgl.Marker(), editMode = false;
     let pinsIcons = document.querySelectorAll(".pin-icons");
     let accessIcons = document.querySelectorAll(".acc-icons");
-
+    
     function isFormValid(fd) {
         if(!pin_coords) {
             alert("Kindly Add a Marker");

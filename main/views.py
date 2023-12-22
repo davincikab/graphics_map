@@ -49,7 +49,11 @@ def create_custommaps(request):
         print("Uploading data")
         form = CustomMapsForm(request.POST, request.FILES)
         if form.is_valid():
-            fileUrl = handle_uploaded_project_file(request.FILES["tiles"], request.POST['title'])
+            
+            if request.POST.get('is_osm_based_map') != "on":
+                fileUrl = handle_uploaded_project_file(request.FILES["tiles"], request.POST['title'])
+            else:
+                fileUrl = "osm_map"
             print("Center: ", request.POST.get('center'))
 
             if fileUrl:
@@ -135,11 +139,16 @@ def project_view(request, title):
         map_project = Project.objects.get(Q(title=title) | Q(title_ar=title) | Q(title_he=title) | Q(title_en=title))
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
         acc_icons = Icons.objects.filter(icon_type="Accesibility")
-        project_categories = PinCategory.objects.filter(project=map_project)
+        project_categories = PinCategory.objects.filter(project=map_project).order_by('ranking_value')
         # custom_map = CustomMaps.objects.get()
 
         # print(map_project.project_language)
-        # request.session['django_language'] = map_project.project_language
+        if request.GET.get('lang'):
+            translation.activate(request.GET.get('lang'))
+            # request.session['django_language'] = map_project.project_language
+        else:
+           translation.activate(map_project.project_language)
+
         context = { 
             'project' : map_project, 
             'custom_map' : map_project.custom_map,

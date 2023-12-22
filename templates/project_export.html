@@ -8,6 +8,8 @@
 {% block header %}
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
+{% get_current_language as LANGUAGE_CODE %}
 <style>
     .lang-toggle {
         right:50px;
@@ -20,6 +22,26 @@
         /* overflow: hidden; */
         height: calc(100vh - calc(100vh - 100%));
         position: relative;
+
+        {{ project.project_theme }}
+    }
+
+    .map-container {
+        {% if LANGUAGE_CODE == "ar" %}
+            font-family: var(--project-font-ar);
+        {% elif LANGUAGE_CODE == "he" %}
+            font-family: var(--project-font-he);
+        {% else %}
+            font-family: var(--project-font);
+        {% endif %}        
+    }
+
+    .mapboxgl-ctrl .mapboxgl-ctrl-icon {
+        background-color: var(--filter-bg-color);
+    }
+
+    .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon svg {
+        fill:var(--text-color);
     }
 
     .filter-section {
@@ -28,7 +50,8 @@
         top:0px;
         left:0px;
         z-index: 3;
-        background-color: #fff;
+        color:var(--text-color);
+        background-color: var(--filter-bg-color);
         margin: 10px;
         border-radius: 5px;
         box-shadow: 0px 0px 0.5rem #555;
@@ -64,7 +87,8 @@
         top:10px;
         left:300px;
         z-index: 2;
-        background-color: white;
+        background-color: var(--filter-bg-color);
+        color:var(--text-color);
         border-radius: 5px;
         padding:10px;
         box-shadow: 0px 0px 0.5rem #555;
@@ -72,6 +96,10 @@
 
     .style-toggler > div {
         align-items: center;
+    }
+
+    .style-toggler label {
+        color:var(--text-color);
     }
 
     .style-toggler  input[type=radio] {
@@ -158,7 +186,7 @@
     }
 
     #map-project canvas {
-        background-color: #2b2d20;
+        background-color:  var(--canvas-bg-color);
     }
 
     .div-marker {
@@ -168,7 +196,7 @@
     }
 
     .marker-wrapper {
-        background-color: white;
+        background-color: var(--icons-bg);
         box-shadow: 0px 0px 0.15rem #222;
         border-radius: 50%;
         width: 20px;
@@ -191,7 +219,7 @@
         position: absolute;
         bottom: -8px;
         border: 10px solid #fff;
-        border-color: #fff transparent transparent;
+        border-color: var(--icons-bg) transparent transparent;
     }
 
     .marker-wrapper > * {
@@ -206,7 +234,7 @@
     }
 
     .marker-wrapper.click-marker.active-click {
-        background-color: var(--primary);
+        background-color: var(--filter-bg-color);
         width: 38px;
         height: 38px;
         opacity:1;
@@ -225,7 +253,7 @@
     }
 
     .marker-wrapper.click-marker::before {
-        border-color: var(--primary) transparent transparent;
+        border-color: var(--filter-bg-color) transparent transparent;
     }
     
 
@@ -276,6 +304,16 @@
     }
 
     /* popup */
+    .mapboxgl-map {
+        {% if LANGUAGE_CODE == "ar" %}
+            font-family: var(--project-font-ar);
+        {% elif LANGUAGE_CODE == "he" %}
+            font-family: var(--project-font-he);
+        {% else %}
+            font-family: var(--project-font);
+        {% endif %} 
+    }
+
     .mapboxgl-popup {
         max-width: 380px !important;
     }
@@ -285,6 +323,16 @@
         height: 100%;
         width: 100%;
         max-height: 180px;
+        background-color: var(--infobox-bg);
+        color:var(--text-color);
+
+        {% if LANGUAGE_CODE == "ar" %}
+            font-family: var(--project-font-ar);
+        {% elif LANGUAGE_CODE == "he" %}
+            font-family: var(--project-font-he);
+        {% else %}
+            font-family: var(--project-font);
+        {% endif %} 
     }
 
     .popup-content {
@@ -378,9 +426,13 @@
         margin: 0px 8px;
     }
 
+    .filter-toggler i {
+        color:var(--text-color);
+    }
+
     .collapse-toggler.active {
-        color:var(--primary);
-        background: rgb(246, 242, 234);
+        /* color:var(--primary); */
+        background: var(--filter-card-active)
     }
 
     .collapse-toggler > * {
@@ -394,7 +446,7 @@
     }
 
     .collapse-section.active {
-        background: rgb(246, 242, 234);
+        background: var(--filter-card-active);
     }
 
     .collapse-toggler.active span {
@@ -421,13 +473,13 @@
         padding: 5px;
         background-color: #fff;
         border-radius:50%;
-        border:2px ssolid #666;
+        border:2px solid #666;
         width: 10px;
         height: 10px;
     }
 
     input[type=radio]:checked {
-       background-color: var(--primary);
+       background-color: var(--text-color);
     }
 
     /* popup */
@@ -473,11 +525,11 @@
     }
 
     .toggle-filter {
-        background-color: #fff;
+        background-color: var(--filter-bg-color);
         /* box-shadow:0px 0px 0.5rem #555; */
         border:1px solid #ddd !important;
         display: none;
-        color:black;
+        color:var(--text-color);
         width: 100px;
         font-size: 18px !important;
     }
@@ -487,7 +539,7 @@
         bottom: 0px;
         margin:10px;
         left: 0px;
-        background-color: var(--primary);
+        background-color: var(--filter-card-active);
         width: calc(100% - 20px);
         color:#fff;
         height: 50px;
@@ -608,8 +660,8 @@
         </div>
     </div>
 
-    {% if project.custom_map.center != "0,0" or user.is_superuser %}
-        <div class="style-toggler">
+    {% if project %}
+        <div class="style-toggler d-none">
             <div class="d-flex">
                 <input type="radio" name="style" id="custom" class="map-style" checked>
                 <label for="custom"> {% translate "Custom" %} </label>                
@@ -718,17 +770,46 @@
 
 {% block js %}
 <script>
+    // User agent string method
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
     let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
     let center = `{{ project.custom_map.center }}`;
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
+    const isOsmMap = `{{ project.custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val));
     let projectLanguage = `{{ project.project_language }}`;
     let bearing = parseInt(`{{project.custom_map.bearing }}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
     let ftsMarkers = [];
+
+    let project_theme = `{{ project.project_theme }}`;
+    let areaTextColor = project_theme.split("\n").find(l => l.includes("area-text-color")).split(":")[1].slice(0,-1);
+    let areaTexKey = lang_code == "en" ? `project-font` : `project-font-${lang_code}`;
+
+    let areaTextFont = project_theme.split("\n").find(l => l.includes(areaTexKey)).split(":")[1].slice(0,-1)
+    areaTextFont = areaTextFont.split(" !")[0];
+    var filteredPois = [];
+
+    // check the query params
+    let queryLanguage = new URLSearchParams(window.location.search).get("lang");
+    let activeLanguage;
+
+    // let language = readingMode == "RTL" ? "ar" : "en";
+    if(queryLanguage) {
+        activeLanguage = queryLanguage
+    } else {
+        activeLanguage = projectLanguage;
+    }
+
+    let geolocateIcon = `<svg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='#3333'>
+        <path d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7z'/> 
+        <circle id='dot' cx='10' cy='10' r='2'/>
+        <path id='stroke' d='M14 5l1 1-9 9-1-1 9-9z' display='none'/>
+    </svg>`;
 
     let moreInfoText = {
         "en":"More Information",
@@ -744,7 +825,7 @@
     const pinsFormSection = document.getElementById("pins_create_tabs");
     const iconsSection = document.querySelector(".icons-sections");
 
-    const customMapStyle = {
+    const customMapStyle = isOsmMap == "False" ? {
         version: 8,
         sources: {
             'wms-layers':{
@@ -758,22 +839,26 @@
                 "id": 'image-tile',
                 "source":"wms-layers",
                 "type": "raster",
-                "paint": {"raster-fade-duration": 100},
                 "layout": {},
             },
         ],
         "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
-    };
+    } : "mapbox://styles/mapbox/streets-v12";
 
+    
     const map = new mapboxgl.Map({
         container: 'map-project', // container ID
         style: customMapStyle,
         center:[...center],
         bearing:bearing,
-        zoom: minZoom,
+        // zoom: minZoom - 1,
+        zoom:maxZoom,
         minZoom:minZoom,
         maxZoom:maxZoom
     });
+
+    // let nava
+
 
     const mainPopup = new mapboxgl.Popup({ closeOnClick:false, closeOnMove:false, focusAfterOpen:false, anchor:"bottom", offset:[0, -50] });
     var mainMarker = new mapboxgl.Marker({ anchor:'bottom'});
@@ -781,7 +866,31 @@
     const navigationCtrl = new mapboxgl.NavigationControl({ showCompass:false });
     map.addControl(navigationCtrl, 'bottom-right');
 
+    const geolocationControl = new mapboxgl.GeolocateControl({
+        showAccuracyCircle:false
+    });
+
+    map.addControl(geolocationControl, "bottom-left");
+
+    // update map language
+    // Add RTL support if you want to support Arabic
+    
+
+    let mapLang = activeLanguage == "he" ? "mul" : activeLanguage;
+    const languageCtrl = new MapboxLanguage({ defaultLanguage: mapLang});
+    
+    if(mapLang != 'en') {
+        mapboxgl.setRTLTextPlugin("https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js");
+    }
+
+    if(isOsmMap == "True") {
+        // ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'mul', 'pt', 'ru', 'vi', 'zh-Hans', 'zh-Hant']
+        map.addControl(languageCtrl);
+    }
+
     map.on("style.load", function () {
+        // document.querySelector(".mapboxgl-ctrl-icon").innerHTML = geolocateIcon;
+
         setMapLayers();
         fetchPins();
 
@@ -819,7 +928,18 @@
             }
         });
 
+
+        
+
     });
+
+    function flyToInitState() {
+        map.flyTo({
+            center:center,
+            zoom:minZoom,
+            duration:1500
+        });
+    }
 
    
 
@@ -891,11 +1011,11 @@
             source:"area-pins",
             layout:{
                 'icon-allow-overlap': true,
-                'icon-image': ['get', 'category'],
+                'icon-image': ['get', `category_${lang_code}`],
                 // "icon-image":"image-icon",
-                'icon-size': 0.5,
+                'icon-size': 0.75,
                 'text-allow-overlap': true,
-                'text-field': ['get','title'],
+                'text-field': ['get',`title_${lang_code}`],
                 'text-max-width': 13, // ems
                 'text-offset': [0, 1.2],
                 'text-font': ['Nunito Sans Bold'],
@@ -904,7 +1024,7 @@
                 'text-line-height': 1,
             },
             paint:{
-                'text-color': '#fff',
+                'text-color':`${areaTextColor}`,
             },
             maxzoom:minZoom + 1
         });
@@ -966,18 +1086,26 @@
 
     getCategoriesData();
 
-    function loadMapImages(imageList) {
-        imageList.forEach(imgObj => {
+    function loadMapImages(imageList, cb) {
+        if(!imageList.length) {
+            cb();
+        }
+
+        imageList.forEach((imgObj, i) => {
             if(!map.hasImage(imgObj.category)) {
                 map.loadImage(`/media/${imgObj.icon}`, (err, image) => {
-                    if(err) throw err;
+                    if(i == imageList.length - 1) {
+                        cb();
+                    }
 
-                    console.log("Image Loading")
-                    console.log(image);
-                    
+                    if(err) throw err;
                     map.addImage(imgObj.category, image, {width: 310, height: 140});
                 });
             }  
+
+            if(i == imageList.length - 1) {
+                cb();  
+            }
            
         });
     }
@@ -1008,15 +1136,17 @@
             let areaFeatures = poiToGeojson(areaInfo);
             allPoints = JSON.parse(JSON.stringify(poiFeature))
 
+            let categoryColumn = `category_${lang_code}`;
             let imageList = areaInfo.reduce((a,b) => {
-                if(!a.find(item => item.category == b.category)) {
+                
+                if(!a.find(item => item[categoryColumn] == b[categoryColumn ])) {
                     a.push({
-                        category: b.category || 'area-pin',
+                        category: b[categoryColumn ] || 'area-pin',
                         icon:b.icon
                     })
 
                     a.push({
-                        category: `${b.category}-active` || 'area-pin-active',
+                        category: `${b[categoryColumn]}-active` || 'area-pin-active',
                         icon:b.active_icon
                     })
                 }
@@ -1025,14 +1155,22 @@
             }, [])
 
             console.log(imageList);
-            loadMapImages(imageList);
+            loadMapImages(imageList, () => {
+                console.log("Finished: ", map.loaded());
+                map.getSource("area-pins").setData(areaFeatures);
+            });
            
             // renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
             // toggleMarkersByCategory();
-
-            console.log(poiFeature);
             map.getSource("pois").setData(poiFeature);
-            map.getSource("area-pins").setData(areaFeatures);
+           
+
+            let loadInterval = setInterval(() => {
+                if(map.loaded()) {
+                    flyToInitState()
+                    clearInterval(loadInterval)
+                }
+            }, 1000)
         })
         .catch(console.error);
     }
@@ -1125,7 +1263,7 @@
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
         });
 
-        let moreInfo = entry.more_info_link ? `<a href="${entry.more_info_link}">${moreInfoText[lang_code]}</a>` : "";
+        let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link">${moreInfoText[lang_code]}</a>` : "";
         let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
               <img src="/media/${entry.location_image}" alt="" />
             </div>` : "";
@@ -1135,10 +1273,10 @@
         return `<div class='popup-content'>
            ${imgSection}
           <div class="info-section">
-              <h5>${entry.title}</h5>
-              <div class="description">${entry['subtitle']}</div>
+              <h5>${entry[`title_${lang_code}`]}</h5>
+              <div class="description">${entry[`subtitle_${lang_code}`]}</div>
 
-              <p>${entry.description}</p>
+              <p>${entry[`description_${lang_code}`]}</p>
 
               <div class="icons">
                ${icons.join("")}
@@ -1219,19 +1357,26 @@
                 
                 // filters pois
                 let pois = filterPoisByCategogry(category);
-                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
-                renderAllPoints(pois);
+                filteredPois = [...pois];
+                if(!isMobile) {
+                    fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                    renderAllPoints(pois);
+                }
+                
             }
         } else {
             toggler.classList.add("active");
             activeToggler = toggler;
 
-           // filters pois
-           let pois = filterPoisByCategogry(category);
-           console.log(pois);
+            // filters pois
+            let pois = filterPoisByCategogry(category);
+            filteredPois = [...pois];
+            console.log(pois);
 
-            fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
-            renderAllPoints(pois);
+            if(!isMobile) {
+                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                renderAllPoints(pois);
+            }
 
             // console.log("Category with no Sub Categories");
             // toggleMarkers();
@@ -1265,16 +1410,21 @@
             pois = filterPoisBySubCategogry(subCategoryValue);
         }
 
-        fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
-        renderAllPoints(pois);
+        filteredPois = [...pois];
+        if(!isMobile) {
+            fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+            renderAllPoints(pois);
+        }
     }
 
     const filterPoisByCategogry = (category) => {
-        return allPoints.features.filter(ft => ft.properties.category == category);
+        let categoryColumn = `category_${lang_code}`;
+        return allPoints.features.filter(ft => ft.properties[categoryColumn] == category);
     }
 
     const filterPoisBySubCategogry = (subcategory) => {
-        return allPoints.features.filter(ft => ft.properties.subcategory == subcategory);
+        let categoryColumn = `subcategory_${lang_code}`;
+        return allPoints.features.filter(ft => ft.properties[categoryColumn]== subcategory);
     }
 
     
@@ -1381,6 +1531,20 @@
 
                 targetMarker.addEventListener("transitionend", (e) => {
                     mainPopup.addTo(map);
+
+                    let moreInfoBtn = document.getElementById("more-info-link");
+                    if(moreInfoBtn) {
+                        moreInfoBtn.onclick = (e) => {
+                            e.preventDefault();
+
+                            closePopup();
+
+                            setTimeout(() => {
+                                window.location.assign(e.target.href);
+                            }, 400)
+                           
+                        }
+                    }
                 });
             }
             
@@ -1419,28 +1583,24 @@
     applyButton.onclick = (e) => {
         filterSection.classList.remove("expanded");
         // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+        
+        setTimeout(() => {
+            fitToCategoryBounds(filteredPois.map(poi => poi.geometry.coordinates));
+            renderAllPoints(filteredPois);
+        }, 500);
+        
     }
 
-    // check the query params
-    let queryLanguage = new URLSearchParams(window.location.search).get("lang");
-    console.log(queryLanguage);
-    let activeLanguage;
-
-    // let language = readingMode == "RTL" ? "ar" : "en";
-    if(queryLanguage) {
-        activeLanguage = queryLanguage
-    } else {
-        activeLanguage = projectLanguage;
-    }
+    
     
     console.log(activeLanguage);
     console.log(lang_code);
 
-    if (activeLanguage !== lang_code) {
-        document.getElementById("lang-div").value = activeLanguage;
-        document.getElementById("lang-submit").click();
-        //  lang_code = projectLanguage
-    }
+    // if (activeLanguage !== lang_code) {
+    //     document.getElementById("lang-div").value = activeLanguage;
+    //     document.getElementById("lang-submit").click();
+    //     //  lang_code = projectLanguage
+    // }
     
     document.getElementById("lang-select").value = activeLanguage;
     changeLanguage(activeLanguage);

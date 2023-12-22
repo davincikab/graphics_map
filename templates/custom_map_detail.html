@@ -64,13 +64,15 @@
     let maxZoom = parseInt(`{{ custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ custom_map.minzoom }}`);
     let bearing = parseInt(`{{custom_map.bearing}}`);
+    const isOsmMap = `{{custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val))
     // center = center ? center.split(",").map(val => parseFloat(val)) : [0,0];
     let xyz_options = `{{ custom_map.tiles_in_folders }}`;
     console.log(xyz_options);
 
     xyz_options = xyz_options == "True" ? "{z}/{x}/{y}" : "{z}_{x}_{y}";
-    const customMapStyle = {
+    
+    const customMapStyle = isOsmMap == "False" ? {
         version: 8,
         sources: {
             'wms-layers':{
@@ -87,7 +89,7 @@
                 "layout": {},
             },
         ]
-    }
+    } : "mapbox://styles/mapbox/streets-v12";
 
     const map = new mapboxgl.Map({
         container: 'map', // container ID

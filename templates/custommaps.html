@@ -14,6 +14,20 @@
             display: flex;
         }
 
+        .maps-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .maps-container .card {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header {
+            justify-content: space-between;
+        }
+
         .form-section {
             flex: 1;
         }
@@ -47,6 +61,11 @@
         }
 
         @media only screen and (max-width: 480px) { 
+            .maps-container {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
             .subheader {
                 flex-direction: column;
             }
@@ -64,11 +83,11 @@
 {% block content %}
 {% include "navbar.html" %}
 <div class="container mt-5">
-    <div class="header my-2">
+    <div class="header my-2 d-flex">
         <h3>{% translate "Custom Maps" %}</h3>
         <div class="subheader d-flex py-1">
             {% if user.is_authenticated %}
-                <div class="search-bar">
+                <div class="search-bar d-none">
                     <input type="text" name="query" id="query" class="form-control" placeholder="Search Maps ...">
                 </div>
 
