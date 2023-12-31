@@ -15,16 +15,20 @@ urlpatterns = [
   path('create_project/', views.create_project),
   path('projects/<title>', views.project_detail),
   path('projects/<title>/view/', views.project_view),
+  path('project/export/<title>/', views.project_view_export),
   path('project_categories/<title>', views.project_categories),
 
   path('project/add_category', views.add_category),
   path('project/add_sub_category', views.add_sub_category),
   path('project/add_sub_category', views.add_sub_category),
   path('project/get_categories', views.get_categories),
+  path('project/export_project/<project_id>', views.export_project),
+ 
 
   # pins
   path("pins/", views.get_pins),
   path("pins/create", views.create_pins),
+  path("pins/update_pin/<pin_pk>", views.update_pin_details),
   path('pins/delete/<title>', views.delete_pins),
 
   # icons

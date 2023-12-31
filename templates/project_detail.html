@@ -109,7 +109,7 @@
 
     .icons-sections {
         position: absolute;
-        top:50px;
+        top:80px;
         right:0px;
         margin:10px;
         width: 250px;
@@ -120,6 +120,15 @@
         padding:10px;
         box-shadow: 0px 0px 0.5rem #555;
         font-size: 0.8rem;
+    }
+
+    .submit-section {
+        justify-content: space-between;
+    }
+
+    .submit-section > * {
+        flex: 1;
+        margin: 5px;
     }
 
     .icon-list {
@@ -161,6 +170,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .div-marker.edit-marker {
+        cursor:move;
+    }
+
+    .div-marker.edit-marker img {
+        width: 40px;
     }
 
     .marker-wrapper {
@@ -609,6 +626,8 @@
         {% translate "Read Mode" %}
     </button>
 
+    <div class="edit-geometry-section"></div>
+
     <div class="icons-sections d-none">
         <div class="details-header py-2">
             <h6>{% translate "Category Icons" %}</h6>
@@ -749,8 +768,12 @@
                     </select>
                 </div>
 
+                <div class="submit-section d-flex">
+                    <input type="submit" value="{% translate 'Add Pin' %}" class="btn btn-primary mt-2" id="submit-btn">
+                    <button class="btn btn-danger mt-2 d-none" id="cancel-button">Cancel</button>
+                </div>
 
-                <input type="submit" value="{% translate 'Add Pin' %}" class="btn btn-primary mt-2">
+               
 
                 <div class="container d-none progress" id="progress"></div>
             </form>
@@ -775,6 +798,7 @@
     let readingMode = `{{ project.reading_mode }}`;
     let projectLanguage = `{{ project.project_language }}`;
     let bearing = parseInt(`{{project.custom_map.bearing }}`);
+    let tileSize = parseInt(`{{custom_map.tileSize}}`);
     let poiData = [], allData=[], categoryMarkers = [], projectCategories;
 
     let moreInfoText = {
@@ -881,6 +905,9 @@
             paint:{
                 'text-color': '#fff',
             },
+            layout:{
+                visibility:"visible"
+            },
             maxzoom:minZoom + 0.75
         })
 
@@ -895,7 +922,6 @@
             type:'circle',
             source:"pois",
             id:"pois",
-            minzoom:minZoom + 0.75,
             "paint":{
                 "circle-color":"#4D3929",
                 "circle-stroke-color":"#fff",
@@ -910,8 +936,41 @@
                 ],
                 "circle-stroke-width":3
             },
+            layout:{
+                visibility:"visible"
+            }
         });
 
+
+        // map.addSource();
+        map.addSource("all-pois", {
+            type:"geojson",
+            // data:"{% static 'js/sample_points.geojson' %}",
+            data:{"type":"FeatureCollection", "features":[]}
+        });
+
+        map.addLayer({
+            type:'circle',
+            source:"all-pois",
+            id:"all-pois",
+            "paint":{
+                "circle-color":"red",
+                "circle-stroke-color":"#fff",
+                "circle-radius":[
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    0,
+                    3.5,
+                    19,
+                    5
+                ],
+                "circle-stroke-width":3
+            },
+            layout:{
+                visibility:"none"
+            }
+        });
         fetchPins();
 
         map.on("mouseover", "pois", (e) => {
@@ -922,8 +981,27 @@
             map.getCanvas().style.cursor = "";
         })
 
+        map.on("mouseover", "all-pois", (e) => {
+            map.getCanvas().style.cursor = "pointer";
+        })
+
+        map.on("mouseleave", "all-pois", (e) => {
+            map.getCanvas().style.cursor = "";
+        })
+
         // addMarkerHandler();
         map.on("click", (e) => {
+            let editFts = map.queryRenderedFeatures(e.point, {layers:["all-pois"]});
+            if(editFts[0]) {
+                isDataUpdate = true;
+                iconsSection.classList.add("d-none");
+                document.getElementById("cancel-button").classList.remove("d-none");
+                document.getElementById("submit-btn").value = "Update Pin Info";
+                editFeature = editFts[0];
+                updateFormWithValues(editFts[0]);
+                return;
+            }
+
             let btn = document.getElementById("edit-mode");
             if(btn) {
                 updatePinLocation(e.lngLat.toArray());
@@ -931,7 +1009,7 @@
 
             console.log(e.features);
             let fts = map.queryRenderedFeatures(e.point, {layers:['pois']});
-            console.log(fts);
+            
             if(fts[0]) {
                 updatePopupInfo(fts[0])
             } else {
@@ -941,7 +1019,7 @@
         });
 
         map.on("zoomend", (e) => {
-            if(map.getZoom() < (minZoom + 0.75) ) {
+            if(map.getZoom() < (minZoom + 1) ) {
                 ftsMarkers.forEach(marker => marker.remove())
             } else {
                 ftsMarkers.forEach(marker => marker.addTo(map))
@@ -1030,25 +1108,18 @@
     var allPoints;
     function fetchPins() {
 
-        // fetch("/static/js/sample_points.geojson")
-        // .then(res => res.json())
-        // .then(data => {
-        //     allPoints = data;
-
-        //     renderAllPoints(allPoints.features);
-        // })
-        // .catch(console.error);
-
         fetch(`/pins?project_id=${projectId}`)
         .then(res => res.json())
         .then(({data}) => {
-            let info = JSON.parse(data).map(entry => entry.fields);
+            let info = JSON.parse(data).map(entry => ({...entry.fields, pk:entry.pk})).map((pin, i) => ({...pin, id:`pin-${pin.pk}`}));
             allData = JSON.parse(JSON.stringify(info))
-            poiData = info.filter(item => item.pin_type !== "Area Pin")
+
+            poiData = info.filter(item => item.pin_type == "Detail Pin")
+            let simpleFeatureData = info.filter(item => (item.pin_type == "Simple Icon" || item.pin_type == "Simple Text"))
+
             let poiFeature = poiToGeojson(poiData);
             let areaInfo = info.filter(item => item.pin_type == "Area Pin");
 
-            console.log(areaInfo);
             let areaFeatures = poiToGeojson(areaInfo);
             allPoints = JSON.parse(JSON.stringify(poiFeature))
 
@@ -1063,9 +1134,7 @@
                 return a;
             }, [])
 
-            
-
-            console.log(imageList);
+            // console.log(imageList);
             loadMapImages(imageList, () => {
                 console.log("Finished");
                 map.getSource("area-pins").setData(areaFeatures);
@@ -1074,7 +1143,9 @@
             // renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
             // toggleMarkersByCategory();
 
-            console.log(poiFeature);
+            console.log(allData);
+            map.getSource("all-pois").setData(poiToGeojson(allData));
+
             map.getSource("pois").setData(poiFeature);
             map.getSource("area-pins").setData(areaFeatures);
         })
@@ -1538,9 +1609,17 @@
     let location_icon = "";
     let pin_coords = null;
     let pinMarker = new mapboxgl.Marker(), editMode = false;
+    let editMarker = new mapboxgl.Marker({ draggable:true });
+    let editFeature, isDataUpdate = false;
     let pinsIcons = document.querySelectorAll(".pin-icons");
     let accessIcons = document.querySelectorAll(".acc-icons");
     
+    editMarker.on("dragend", (e) => {
+        console.log(e);
+
+        pin_coords = editMarker.getLngLat().toArray();
+    });
+
     function isFormValid(fd) {
         if(!pin_coords) {
             alert("Kindly Add a Marker");
@@ -1561,6 +1640,20 @@
             map.getCanvas().cursor = cursor;
 
             toggleEditSections();
+
+            if(editMode) {
+                map.setLayoutProperty("all-pois", "visibility", "visible");
+                map.setLayoutProperty("pois", "visibility", "none");
+                map.setLayoutProperty("area-pins", "visibility", "none");
+                map.setLayoutProperty("area-pins-icons", "visibility", "none");
+            } else {
+                map.setLayoutProperty("all-pois", "visibility", "none");
+                map.setLayoutProperty("pois", "visibility", "visible");
+                map.setLayoutProperty("area-pins", "visibility", "visible");
+                map.setLayoutProperty("area-pins-icons", "visibility", "visible");
+
+                pinMarker.remove();
+            }
         }
     }
 
@@ -1677,10 +1770,81 @@
         return formData;
     }
 
+    document.getElementById("cancel-button").onclick = (e) => {
+        e.preventDefault();
+        e.target.classList.add("d-none");
+        resetUpdateState();
+    }
+
+    function resetUpdateState() {
+        isDataUpdate = false;
+        iconsSection.classList.remove("d-none");
+        document.getElementById("submit-btn").value = "Add Pin";
+
+        editMarker.remove();
+        map.setFilter("all-pois", null);
+
+        document.getElementById("poi-form").reset();
+    }
+
+    function updateFormWithValues(ft) {
+        let columns = ["title", "subtitle", "description", "more_info_link", "category", "subcategory", "pin_type",];
+        columns.map(col => {
+            let value = ft.properties[col] || "";
+            let id = `id_${col}`;
+
+            if(col == "pin_type" && (ft.properties.pin_type == "Simple Icon" || ft.properties.pin_type == "Simple Text") ) {
+                document.getElementById("id_category").value = ft.properties.category || ft.properties.pin_type;
+            }
+
+            if(col=="subcategory" && value) {
+                updateSubCategoryInput(ft.properties['category']);
+
+                document.getElementById(id).value = value;
+                // document.getElementById(id).classList.remove("d-none");
+            } else {
+                document.getElementById(id).value = value;
+            }
+
+           
+        });
+
+        if(editMarker) {
+            editMarker.remove();
+        }
+
+        // add a draggeble marker using the set icon;
+        let divIcon = getMarkerIcons(`/media/${ft.properties.icon || "/uploads/icons/location-pin.png"}`);
+        divIcon.classList.add("edit-marker");
+        editMarker = new mapboxgl.Marker({ element:divIcon, draggable:true });
+        editMarker.setLngLat(ft.geometry.coordinates);
+        editMarker.addTo(map);
+
+        pin_coords = editMarker.getLngLat().toArray();
+
+        editMarker.on("dragend", (e) => {
+            console.log(e);
+
+            pin_coords = editMarker.getLngLat().toArray();
+        });
+
+
+        // filter the all pois
+        let { id } = ft.properties;
+        map.setFilter("all-pois", ["match", ['get', 'id'], id, false, true]);
+    }
+
+    document.getElementById("id_pin_type").onchange = (e) => {
+        let { value } = e.target;
+
+        if(['Simple Icon', 'Simple Text'].indexOf(value) != -1) {
+            // document.getElementById("id_category").value = value;
+        }
+    }
+
     function handelPinCreation() {
         $("#poi-form").submit(function(e) {
             e.preventDefault();
-            console.log("Submit");
             $form = $(this)
             
             if(!isFormValid(formData)) {
@@ -1702,9 +1866,11 @@
                 progress_bar.classList.remove("d-none");
             }
 
+            let url = isDataUpdate ? `/pins/update_pin/${editFeature.properties.pk}` : '/pins/create';
+
             $.ajax({
                 type: 'POST',
-                url:'/pins/create',
+                url:url,
                 data: formData,
                 dataType: 'json',
                 beforeSend: function(){
@@ -1728,6 +1894,11 @@
                     if(response.data.includes("went wrong")) {
                         console.log(response);
                     } else {
+
+                        if(isDataUpdate) {
+                            resetUpdateState();
+                        }
+
                         uploadForm.reset()
                         progress_bar.classList.add('d-none');
 

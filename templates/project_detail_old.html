@@ -2,46 +2,20 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}
-    {% translate project.title %}
-{% endblock %}
 {% block header %}
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
-{% get_current_language as LANGUAGE_CODE %}
 <style>
     .lang-toggle {
         right:50px;
         top:10px;
-        display: none;
     }
 
     .map-container {
         width: 100vw;
         /* overflow: hidden; */
-        height: calc(100vh - calc(100vh - 100%));
+        height:100vh;
         position: relative;
-
-        {{ project.project_theme }}
-    }
-
-    .map-container {
-        {% if LANGUAGE_CODE == "ar" %}
-            font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
-        {% elif LANGUAGE_CODE == "he" %}
-            font-family: var(--project-font-he), var(--project-font), var(--project-font-ar);;
-        {% else %}
-            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);;
-        {% endif %}        
-    }
-
-    .mapboxgl-ctrl .mapboxgl-ctrl-icon {
-        background-color: var(--filter-bg-color);
-    }
-
-    .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon svg {
-        fill:var(--text-color);
     }
 
     .filter-section {
@@ -50,8 +24,7 @@
         top:0px;
         left:0px;
         z-index: 3;
-        color:var(--text-color);
-        background-color: var(--filter-bg-color);
+        background-color: #fff;
         margin: 10px;
         border-radius: 5px;
         box-shadow: 0px 0px 0.5rem #555;
@@ -60,9 +33,9 @@
 
     #edit-mode {
         position: absolute;
-        top:10px;
+        top:35px;
         right:50px;
-        margin:10px;
+        margin:10px 0px 10px;
         z-index: 3;
         box-shadow: 0px 0px 0.5rem #555;
     }
@@ -87,8 +60,7 @@
         top:10px;
         left:300px;
         z-index: 2;
-        background-color: var(--filter-bg-color);
-        color:var(--text-color);
+        background-color: white;
         border-radius: 5px;
         padding:10px;
         box-shadow: 0px 0px 0.5rem #555;
@@ -96,10 +68,6 @@
 
     .style-toggler > div {
         align-items: center;
-    }
-
-    .style-toggler label {
-        color:var(--text-color);
     }
 
     .style-toggler  input[type=radio] {
@@ -186,7 +154,7 @@
     }
 
     #map-project canvas {
-        background-color:  var(--canvas-bg-color);
+        background-color: #2b2d20;
     }
 
     .div-marker {
@@ -196,7 +164,7 @@
     }
 
     .marker-wrapper {
-        background-color: var(--icons-bg);
+        background-color: white;
         box-shadow: 0px 0px 0.15rem #222;
         border-radius: 50%;
         width: 20px;
@@ -219,7 +187,7 @@
         position: absolute;
         bottom: -8px;
         border: 10px solid #fff;
-        border-color: var(--icons-bg) transparent transparent;
+        border-color: #fff transparent transparent;
     }
 
     .marker-wrapper > * {
@@ -234,7 +202,7 @@
     }
 
     .marker-wrapper.click-marker.active-click {
-        background-color: var(--filter-bg-color);
+        background-color: var(--primary);
         width: 38px;
         height: 38px;
         opacity:1;
@@ -253,14 +221,12 @@
     }
 
     .marker-wrapper.click-marker::before {
-        border-color: var(--filter-bg-color) transparent transparent;
+        border-color: var(--primary) transparent transparent;
     }
+    
 
     .marker-wrapper img {
         width: 22px;
-        height: 22px;
-        object-fit: contain;
-        mix-blend-mode: color-burn;
     }
 
     /* filter-tabs */
@@ -306,104 +272,15 @@
     }
 
     /* popup */
-    .mapboxgl-map {
-        {% if LANGUAGE_CODE == "ar" %}
-            font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
-        {% elif LANGUAGE_CODE == "he" %}
-            font-family: var(--project-font-he), var(--project-font), var(--project-font-ar);
-        {% else %}
-            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);
-        {% endif %}   
-    }
-
     .mapboxgl-popup {
         max-width: 380px !important;
-    }
-
-    .mapboxgl-popup.infobox-aside {
-        transform: none !important;
-        right:0px;
-        flex-grow: 1;
-        /* box-shadow: rgba(0, 0, 0, 0.3) 0px -2px 16px; */
-        display: flex;
-        flex-direction: column;
-        pointer-events: auto;
-        /* background-color: var(--infobox-bg); */
-
-        width: 350px!important;
-        max-height: calc(90vh - 2vw)!important;
-        height: auto;
-        right: 0.5vw!important;
-        left: auto!important;
-        top: 100vw!important;
-
-        transition: top 800ms;
-        opacity: 1;
-        will-change: top;
-    }
-
-    .mapboxgl-popup.infobox-aside.open {
-        top: 0.5vw!important;
-    }
-
-    .mapboxgl-popup.infobox-aside > div {
-        display: flex;
-        flex-direction: column;
-        min-height: 0px;
-        position: relative;
-        user-select: none;
-        touch-action: pan-x;
-    }
-
-    .mapboxgl-popup.infobox-aside .mapboxgl-popup-tip {
-        display: none !important;
-    }
-
-    .mapboxgl-popup.infobox-aside .popup-content {
-        display: flex;
-        flex-direction: column;
-        min-height: 0px;
-        max-height: 100%;
-    }
-
-    .category-section {
-        display: flex;
-        padding: 10px;
-    }
-
-    .category-section div {
-        margin: 0 10px 0 0;
-        border: 2px solid var(--text-color);
-        border-radius: 10px;
-        padding: 0 15px;
-    }
-
-    .mapboxgl-popup.infobox-aside .popup-content .image-section {
-        width: 100%;
-        overflow: visible;
-        max-height: 100%;
-        padding:20px;
-    }
-    .mapboxgl-popup.infobox-aside .popup-content .image-section img {
-        height: auto;
-        width: 100%;
     }
 
     .mapboxgl-popup-content > div {
         display: flex;
         height: 100%;
         width: 100%;
-        max-height: 180px;
-        background-color: var(--infobox-bg);
-        color:var(--text-color);
-
-        {% if LANGUAGE_CODE == "ar" %}
-            font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
-        {% elif LANGUAGE_CODE == "he" %}
-            font-family: var(--project-font-he), var(--project-font), var(--project-font-ar);;
-        {% else %}
-            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);;
-        {% endif %}   
+        height: 180px;
     }
 
     .popup-content {
@@ -463,23 +340,6 @@
         color:#555;
     }
 
-    .infobox-aside  .mapboxgl-popup-close-button {
-        display: block;
-        font-size: 20px;
-        display: none;
-    }
-
-    .infobox-aside .popup-close-btn {
-        position: absolute;
-        top: 0px;
-        right: -10px;
-        padding: 5px;
-        display: block;
-        font-size: 30px;
-        border: none;
-        cursor: pointer;
-    }
-
     .mapboxgl-popup-close-button {
         font-size: 1.5rem;
         padding: 4px !important;
@@ -514,13 +374,9 @@
         margin: 0px 8px;
     }
 
-    .filter-toggler i {
-        color:var(--text-color);
-    }
-
     .collapse-toggler.active {
-        /* color:var(--primary); */
-        background: var(--filter-card-active)
+        color:var(--primary);
+        background: rgb(246, 242, 234);
     }
 
     .collapse-toggler > * {
@@ -534,7 +390,7 @@
     }
 
     .collapse-section.active {
-        background: var(--filter-card-active);
+        background: rgb(246, 242, 234);
     }
 
     .collapse-toggler.active span {
@@ -561,13 +417,11 @@
         padding: 5px;
         background-color: #fff;
         border-radius:50%;
-        border:2px solid #666;
-        width: 10px;
-        height: 10px;
+        border-color: #666;
     }
 
     input[type=radio]:checked {
-       background-color: var(--text-color);
+       background-color: var(--primary);
     }
 
     /* popup */
@@ -581,10 +435,9 @@
         display: flex;
         width: 376px;
         max-width: 100%;
-        min-height:100px;
+        min-height:120px;
         box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.6);
         transition: all 300ms;
-        background-color: var(--infobox-bg);
         opacity: 1;
         will-change: transform;
     }
@@ -592,30 +445,6 @@
     .mapboxgl-popup-content.close-popup { 
         opacity: 0;       
         transform: translateY(25px) scale(0.8);
-    }
-
-    .infobox-aside .mapboxgl-popup-content.close-popup {
-        transition: none;
-        opacity: 1;
-        transform: none;
-        will-change: none;
-    }
-
-    .infobox-aside .mapboxgl-popup-content {
-        transition: none;
-        opacity: 1;
-        transform: none;
-        will-change: none;
-    }
-
-    .infobox-aside .mapboxgl-popup-content.close-popup { 
-        opacity: 1;       
-        transform: none;
-    }
-
-    .mapboxgl-popup-content.close-popup { 
-        opacity: 0;       
-        transform: none;
     }
 
     .mapboxgl-popup-close-button {
@@ -638,12 +467,12 @@
     }
 
     .toggle-filter {
-        background-color: var(--filter-bg-color);
+        background-color: #fff;
         /* box-shadow:0px 0px 0.5rem #555; */
         border:1px solid #ddd !important;
         display: none;
-        color:var(--text-color);
-        width: 100px;
+        color:black;
+        width: 100%;
         font-size: 18px !important;
     }
 
@@ -652,7 +481,7 @@
         bottom: 0px;
         margin:10px;
         left: 0px;
-        background-color: var(--filter-card-active);
+        background-color: var(--primary);
         width: calc(100% - 20px);
         color:#fff;
         height: 50px;
@@ -684,13 +513,9 @@
 
 
     @media screen and (max-width:480px) {
-        #map-project {
-            height: calc(100vh - calc(100vh - 100%));
-            max-height: 100%;
-        }
         .filter-section {
             height: 50px;
-            width: 110px;
+            width: auto;
             max-width: none;
             padding: 5px;
             border-radius: 5px;
@@ -730,25 +555,6 @@
             border-radius: 0px;
         }
 
-        .infobox-aside.mapboxgl-popup {
-            width: 100% !important;
-            left:0px;
-            right:0px;
-        }
-
-        .infobox-aside .mapboxgl-popup-content {
-            overflow-y: auto;
-            height: 100%;
-        }
-
-        .mapboxgl-popup.infobox-aside.open {
-            top:50vh !important;
-            width: 100% !important;
-            max-height: 400px;
-            height: auto;
-            overflow-y: auto;
-        }
-
         .mapboxgl-popup {
             opacity: 1;
             z-index: 2;
@@ -764,20 +570,12 @@
             transform: translateY(135px) scale(1);
         }
 
-        .popup-content p {
-            margin:0px;
-        }
-
         .style-toggler {
             left:10px;
             top:70px;
             width: 90px;
             padding:5px;
             font-size: 14px;
-        }
-
-        .lang-toggle {
-            display: none;
         }
     }
 
@@ -788,11 +586,11 @@
 <div class="map-container">
     <div class="details-tab d-none">
         <div class="detail-header">
-            <h4>{{ project.title }}</h4>
+            <h4>{% translate project.title %}</h4>
         </div>
     </div>
 
-    {% if project %}
+    {% if user.is_superuser %}
         <div class="style-toggler d-none">
             <div class="d-flex">
                 <input type="radio" name="style" id="custom" class="map-style" checked>
@@ -807,21 +605,44 @@
     {% endif %}
 
     {% if user.is_authenticated %}
+    <button class="btn btn-secondary py-0" id="edit-mode">
+        {% translate "Read Mode" %}
+    </button>
+
     <div class="icons-sections d-none">
         <div class="details-header py-2">
-            <h6>Category Icons</h6>
+            <h6>{% translate "Category Icons" %}</h6>
         </div>
+
         <div class="icon-list">
             {% for icon in categories %}
-                <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
-                    <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                    <span>{{ icon.title }}</span>
-                </div>
+                {% if icon.is_area_category == False %}
+                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <span>{% translate icon.title %}</span>
+                    </div>
+                {% endif %}
             {% endfor %} 
         </div>
+
+        <div class="details-header py-2">
+            <h6>{% translate "Area Icons" %}</h6>
+        </div>
+        
+        <div class="icon-list">
+            {% for icon in categories %}
+                {% if icon.is_area_category %}
+                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <span>{% translate icon.title %}</span>
+                    </div>
+                {% endif %}
+            {% endfor %} 
+        </div>
+
         <div class="accesssibility-icons">
             <div class="details-header">
-                <h6>Accessibility Icons</h6>
+                <h6>{% translate "Feature Icons" %}</h6>
             </div>
             <div class="icon-list">
                 {% for icon in accessebility_icons %}
@@ -836,7 +657,7 @@
 
     {% endif %}
 
-    <a class="back-button btn d-none" id="back-button" href="/">
+    <a class="back-button btn" id="back-button" href="/">
         <i class="fa fa-xmark"></i>
     </a>
 
@@ -871,7 +692,7 @@
                     {% if category.pinsubcategory_set.all %}
                         <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
                             <div class="d-flex sub-category-group sub_category-0" >
-                                <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category" data-category="{{ category.title }}">
+                                <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
                                 <label class="label mx-2" for="all-{{ category.id}}">
                                     {% translate "Show All" %}
                                 </label>
@@ -879,7 +700,7 @@
 
                             {% for sub_category in category.pinsubcategory_set.all %}
                                 <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
-                                    <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category" data-category="{{ category.title }}">
+                                    <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
                                     <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
                                 </div>
                             {% endfor %}
@@ -896,16 +717,54 @@
         <div class="apply-button">{% translate "Apply" %}</div>
     </div>
 
+   
+
+    {% if user.is_authenticated %}
+    <div class="pins_create_tabs d-none" id="pins_create_tabs">
+        <div class="details-header px-2 py-2">
+            <h6>{% translate "Add A Pin" %}</h6>
+        </div>
+
+        <div class="body">
+            <form action="" method="post" class="px-3" id="poi-form">
+                {% csrf_token %}
+                {% for field in pinsForm %}
+                    {{ field.errors }}
+                    <div class="mb-1">
+                        <label for="exampleFormControlInput1" class="form-label">{% translate field.label %}</label> <br>
+                        {{ field }}
+                    </div>
+                    
+                {% endfor %} 
+
+                <div class="mb-1">
+                    <label for="id_category" class="form-label">{% translate "Category" %}</label> <br>
+                    <input type="text" name="category" maxlength="100" required="" id="id_category" class="form-control" />
+                </div>
+
+                <div class="mb-1">
+                    <label for="id_subcategory" class="form-label">{% translate "Subcategory" %}</label> <br>
+                    <select name="subcategory" maxlength="100" id="id_subcategory" class="form-control">
+
+                    </select>
+                </div>
+
+
+                <input type="submit" value="{% translate 'Add Pin' %}" class="btn btn-primary mt-2">
+
+                <div class="container d-none progress" id="progress"></div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     <div id="map-project"></div>
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
-    // User agent string method
-    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuZXplcSIsImEiOiJjbGlqeHExZGswY280M2NxcXVnc2J4NzRjIn0.roOLfnIg0hQnfisyhrRpPQ';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
     let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
     let center = `{{ project.custom_map.center }}`;
@@ -913,36 +772,10 @@
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
     const isOsmMap = `{{ project.custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val));
+    let readingMode = `{{ project.reading_mode }}`;
     let projectLanguage = `{{ project.project_language }}`;
-    let bearing = parseInt(`{{ project.custom_map.bearing }}`);
-    let tileSize = parseInt(`{{custom_map.tileSize}}`);
-    let poiData = [], allData=[], categoryMarkers = [], projectCategories, simpleFeatureData = [];
-    let ftsMarkers = [];
-
-    let project_theme = `{{ project.project_theme }}`;
-    let areaTextColor = project_theme.split("\n").find(l => l.includes("area-text-color")).split(":")[1].slice(0,-1);
-    let areaTexKey = lang_code == "en" ? `project-font` : `project-font-${lang_code}`;
-
-    let areaTextFont = project_theme.split("\n").find(l => l.includes(areaTexKey)).split(":")[1].slice(0,-1)
-    areaTextFont = areaTextFont.split(" !")[0];
-    var filteredPois = [];
-
-    // check the query params
-    let queryLanguage = new URLSearchParams(window.location.search).get("lang");
-    let activeLanguage;
-
-    // let language = readingMode == "RTL" ? "ar" : "en";
-    if(queryLanguage) {
-        activeLanguage = queryLanguage.toLocaleLowerCase();
-    } else {
-        activeLanguage = projectLanguage;
-    }
-
-    let geolocateIcon = `<svg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='#3333'>
-        <path d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7z'/> 
-        <circle id='dot' cx='10' cy='10' r='2'/>
-        <path id='stroke' d='M14 5l1 1-9 9-1-1 9-9z' display='none'/>
-    </svg>`;
+    let bearing = parseInt(`{{project.custom_map.bearing }}`);
+    let poiData = [], allData=[], categoryMarkers = [], projectCategories;
 
     let moreInfoText = {
         "en":"More Information",
@@ -957,8 +790,6 @@
 
     const pinsFormSection = document.getElementById("pins_create_tabs");
     const iconsSection = document.querySelector(".icons-sections");
-    let mapboxStyleUrl = `{{ project.custom_map.map_style_url }}`;
-    mapboxStyleUrl = mapboxStyleUrl  == 'None' ? null : mapboxStyleUrl;
 
     const customMapStyle = isOsmMap == "False" ? {
         version: 8,
@@ -978,28 +809,20 @@
             },
         ],
         "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
-    } : (mapboxStyleUrl || "mapbox://styles/mapbox/streets-v12");
+    } : "mapbox://styles/mapbox/streets-v12";
 
-    
     const map = new mapboxgl.Map({
         container: 'map-project', // container ID
         style: customMapStyle,
         center:[...center],
         bearing:bearing,
-        // zoom: minZoom - 1,
-        zoom:maxZoom,
+        zoom: minZoom,
         minZoom:minZoom,
         maxZoom:maxZoom
     });
 
-    // let nava
-    let infoBox = `{{project.infobox_style}}`;
     const mainPopup = new mapboxgl.Popup({ closeOnClick:false, closeOnMove:false, focusAfterOpen:false, anchor:"bottom", offset:[0, -50] });
     var mainMarker = new mapboxgl.Marker({ anchor:'bottom'});
-
-    if(infoBox == "Aside") {
-        mainPopup.addClassName("infobox-aside");
-    }
 
     const navigationCtrl = new mapboxgl.NavigationControl({ showCompass:false });
     map.addControl(navigationCtrl, 'bottom-right');
@@ -1007,29 +830,87 @@
     const geolocationControl = new mapboxgl.GeolocateControl({
         showAccuracyCircle:false
     });
-
+    
     map.addControl(geolocationControl, "bottom-left");
 
-    // update map language
-    // Add RTL support if you want to support Arabic
-    
-
-    let mapLang = activeLanguage == "he" ? "mul" : activeLanguage;
-    const languageCtrl = new MapboxLanguage({ defaultLanguage: mapLang});
-    
-    if(mapLang != 'en') {
-        mapboxgl.setRTLTextPlugin("https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js");
-    }
-
-    if(isOsmMap == "True") {
-        // ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'mul', 'pt', 'ru', 'vi', 'zh-Hans', 'zh-Hant']
-        map.addControl(languageCtrl);
-    }
-
     map.on("style.load", function () {
-        // document.querySelector(".mapboxgl-ctrl-icon").innerHTML = geolocateIcon;
 
-        setMapLayers();
+        map.loadImage("/media/uploads/icons/image.png", (err, image) => {
+            if(err) throw err;
+
+            console.log("Image Loading")
+            console.log(image);
+                    
+            map.addImage('image-icon', image);
+        });
+
+        // area layer
+        // area layer
+        map.addSource("area-pins", {
+            type:"geojson",
+            data:{"type":"FeatureCollection", "features":[]}
+
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins-icons",
+            source:"area-pins",
+            layout:{
+                'icon-allow-overlap': true,
+                'icon-image': ['get', 'category'],
+                'icon-size': 0.75,
+            },
+            maxzoom:minZoom + 0.75
+        })
+
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins",
+            source:"area-pins",
+            layout:{
+                'text-allow-overlap': true,
+                'text-field': ['get','title'],
+                'text-max-width': 13, // ems
+                'text-offset': [0, 1.2],
+                'text-font': ['Nunito Sans Bold'],
+                'text-anchor': 'center',
+                'text-size': 14,
+                'text-line-height': 1,
+            },
+            paint:{
+                'text-color': '#fff',
+            },
+            maxzoom:minZoom + 0.75
+        })
+
+        // map.addSource();
+        map.addSource("pois", {
+            type:"geojson",
+            // data:"{% static 'js/sample_points.geojson' %}",
+            data:{"type":"FeatureCollection", "features":[]}
+        });
+
+        map.addLayer({
+            type:'circle',
+            source:"pois",
+            id:"pois",
+            "paint":{
+                "circle-color":"#4D3929",
+                "circle-stroke-color":"#fff",
+                "circle-radius":[
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    0,
+                    3.5,
+                    19,
+                    5
+                ],
+                "circle-stroke-width":3
+            },
+        });
+
         fetchPins();
 
         map.on("mouseover", "pois", (e) => {
@@ -1048,7 +929,7 @@
             }
 
             console.log(e.features);
-            let fts = map.queryRenderedFeatures(e.point, {layers:['pois', "area-pins-higher"]});
+            let fts = map.queryRenderedFeatures(e.point, {layers:['pois']});
             console.log(fts);
             if(fts[0]) {
                 updatePopupInfo(fts[0])
@@ -1059,27 +940,14 @@
         });
 
         map.on("zoomend", (e) => {
-            if(map.getZoom() < (minZoom + 1) ) {
+            if(map.getZoom() < (minZoom + 0.75) ) {
                 ftsMarkers.forEach(marker => marker.remove())
             } else {
                 ftsMarkers.forEach(marker => marker.addTo(map))
             }
         });
 
-
-        
-
     });
-
-    function flyToInitState() {
-        map.flyTo({
-            center:center,
-            zoom:minZoom,
-            duration:1500
-        });
-    }
-
-   
 
     let styleTogglers = document.querySelectorAll(".map-style");
     styleTogglers.forEach(toggler => {
@@ -1119,146 +987,6 @@
         });
     }
 
-    function rerenderData(sources, layers) {
-        Object.keys(sources).map(srcId => map.addSource(srcId, {...sources[srcId]}))
-        layers.forEach(layer => {
-            map.addLayer({...layer});
-        })
-    }
-
-    function setMapLayers() {
-        map.loadImage("/media/uploads/icons/image.png", (err, image) => {
-            if(err) throw err;
-
-            if(!map.hasImage('image-icon')) {
-                console.log(image);
-                map.addImage('image-icon', image);
-            }
-            
-        });
-
-        // area layer
-        map.addSource("area-pins", {
-            type:"geojson",
-            data:{"type":"FeatureCollection", "features":[]}
-
-        });
-
-        map.addLayer({
-            type:"symbol",
-            id:"area-pins",
-            source:"area-pins",
-            layout:{
-                'icon-allow-overlap': true,
-                'icon-image': ['get', `category_${lang_code}`],
-                // "icon-image":"image-icon",
-                'icon-size': 0.75,
-                'text-allow-overlap': true,
-                'text-field': ['get',`title_${lang_code}`],
-                'text-max-width': 13, // ems
-                'text-offset': [0, 1],
-                // 'text-font': ['Nunito Sans Bold', 'Noto Sans', 'sans-serif'],
-                'text-anchor': 'center',
-                'text-size': 14,
-                'text-line-height': 1,
-            },
-            paint:{
-                'text-color':`${areaTextColor}`,
-            },
-            maxzoom:minZoom + 1
-        });
-
-        // 'icon-image': ['get', `category_${lang_code}`],
-        map.addLayer({
-            type:"symbol",
-            id:"area-pins-higher",
-            source:"area-pins",
-            minzoom:minZoom + 1,
-            layout:{
-                'icon-allow-overlap': true,
-                'icon-image': ['concat', ['get', `category_${lang_code}`], "-active"],
-                'icon-size': 0.5,
-            }
-        })
-
-        // map.addSource();
-        map.addSource("pois", {
-            type:"geojson",
-            // data:"{% static 'js/sample_points.geojson' %}",
-            data:{"type":"FeatureCollection", "features":[]}
-        });
-
-        map.addLayer({
-            type:'circle',
-            source:"pois",
-            id:"pois",
-            minzoom:minZoom + 1,
-            "paint":{
-                "circle-color":"#4D3929",
-                "circle-stroke-color":"#fff",
-                "circle-radius":[
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    0,
-                    3.5,
-                    19,
-                    7
-                ],
-                "circle-stroke-width":3
-            },
-        });
-
-
-        // simple features
-        // area layer
-        map.addSource("simple-features", {
-            type:"geojson",
-            data:{"type":"FeatureCollection", "features":[]}
-        });
-
-        map.addLayer({
-            type:"symbol",
-            id:"simple-features-icons",
-            source:"simple-features",
-            filter:['match', ['get', 'pin_type'], 'Simple Icon', true, false],
-            layout:{
-                'icon-allow-overlap': true,
-                'icon-image': ['get', 'id'],
-                'icon-size': [
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    minZoom,
-                    0.1,
-                    maxZoom,
-                    0.45
-                ]
-            }
-        });
-
-        map.addLayer({
-            type:"symbol",
-            id:"simple-features-text",
-            source:"simple-features",
-            filter:['match', ['get', 'pin_type'], 'Simple Text', true, false],
-            layout:{
-                'text-allow-overlap': true,
-                'text-field': ['get',`title_${lang_code}`],
-                'text-max-width': 7, // ems
-                'text-offset': [0, 1],
-                'text-anchor': 'center',               
-                'text-size': 12,
-                'text-line-height': 1,
-            },
-            paint:{
-                'text-halo-width':2,
-                'text-halo-color':'#fff',
-                'text-color':`#000`,
-            }
-        });
-    }
-
     function getCategoriesData() {
         fetch("/project/get_categories?project_id={{project.id}}")
         .then(res => res.json())
@@ -1267,8 +995,11 @@
 
             projectCategories = JSON.parse(data);
 
-            // updateSubCategoryInput(location_icon.dataset.key);
-            // document.getElementById("id_category").value = location_icon.dataset.key;
+            if(location_icon) {
+                updateSubCategoryInput(location_icon.dataset.key);
+                document.getElementById("id_category").value = location_icon.dataset.key;
+            }
+           
         })
         .catch(console.error)
     }
@@ -1276,62 +1007,23 @@
     getCategoriesData();
 
     function loadMapImages(imageList, cb) {
-        if(!imageList.length) {
-            cb();
-        }
-
-        imageList.forEach((imgObj, i) => {
+        imageList.forEach((imgObj,i) => {
             if(!map.hasImage(imgObj.category)) {
                 map.loadImage(`/media/${imgObj.icon}`, (err, image) => {
+                    if(err) throw err;
+
+                    console.log("Image Loading")
+                    console.log(image);
+                    
+                    map.addImage(imgObj.category, image, {width: 310, height: 140});
+
                     if(i == imageList.length - 1) {
                         cb();
                     }
-
-                    if(err) throw err;
-                    let imageData;
-                    console.log(image);
-                    if(image.width <= 309) {
-                        imageData = image;
-                    } else {
-                        imageData = resizeImage(image);
-                    }
-                    // let 
-
-                    if(!map.hasImage(imgObj.category)) {
-                        map.addImage(imgObj.category,  imageData);
-                    }
-                    
                 });
             }  
-
-            if(i == imageList.length - 1) {
-                cb();  
-            }
            
         });
-    }
-
-    function resizeImage(imageBitmap) {
-        var canvas = document.createElement('canvas');
-        var context = canvas.getContext('2d');
-        var maxW = imageBitmap.width > 309 ? 309 : imageBitmap.width;
-        var maxH =  imageBitmap.height > 139 ? 139 : imageBitmap.height;
-
-        var iw = imageBitmap.width;
-        var ih = imageBitmap.height;
-
-        var scale = Math.min((maxW / iw), (maxH / ih));
-        var iwScaled = iw * scale;
-        var ihScaled = ih * scale;
-
-        canvas.width = maxW;
-        canvas.height = maxH;
-        context.drawImage(imageBitmap, 0, 0, maxW, maxH);
-        console.log(context.getImageData(0, 0, maxW, maxH));
-
-        // console.log(URL.createObjectURL(file));
-        
-        return context.getImageData(0, 0, maxW, maxH);
     }
 
     var allPoints;
@@ -1340,11 +1032,9 @@
         fetch(`/pins?project_id=${projectId}`)
         .then(res => res.json())
         .then(({data}) => {
-            let info = JSON.parse(data).map(entry => ({...entry.fields, pk:entry.pk})).map((pin, i) => ({...pin, id:`pin-${pin.pk}`}));
+            let info = JSON.parse(data).map(entry => entry.fields);
             allData = JSON.parse(JSON.stringify(info))
-
-            poiData = info.filter(item => item.pin_type == "Detail Pin")
-            simpleFeatureData = info.filter(item => (item.pin_type == "Simple Icon" || item.pin_type == "Simple Text"))
+            poiData = info.filter(item => item.pin_type !== "Area Pin")
 
             let poiFeature = poiToGeojson(poiData);
             let areaInfo = info.filter(item => item.pin_type == "Area Pin");
@@ -1353,47 +1043,29 @@
             let areaFeatures = poiToGeojson(areaInfo);
             allPoints = JSON.parse(JSON.stringify(poiFeature))
 
-            let categoryColumn = `category_${lang_code}`;
-            let simpleIcons = simpleFeatureData.filter(item => item.pin_type == "Simple Icon").map(pin => {
-                return { category:pin.id, icon:pin.icon}
-            });
-
             let imageList = areaInfo.reduce((a,b) => {
-                
-                if(!a.find(item => item[categoryColumn] == b[categoryColumn ])) {
+                if(!a.find(item => item.category == b.category)) {
                     a.push({
-                        category: b[categoryColumn ] || 'area-pin',
+                        category: b.category || 'area-pin',
                         icon:b.icon
-                    })
-
-                    a.push({
-                        category: `${b[categoryColumn]}-active` || 'area-pin-active',
-                        icon:b.active_icon
                     })
                 }
                 
                 return a;
             }, [])
 
-            console.log(imageList);
-            console.log(simpleIcons);
-            loadMapImages([...imageList, ...simpleIcons], () => {
-                console.log("Finished: ", map.loaded());
+            // console.log(imageList);
+            loadMapImages(imageList, () => {
+                console.log("Finished");
                 map.getSource("area-pins").setData(areaFeatures);
-                map.getSource("simple-features").setData(poiToGeojson(simpleFeatureData));
             });
            
             // renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
             // toggleMarkersByCategory();
-            map.getSource("pois").setData(poiFeature);
-           
 
-            let loadInterval = setInterval(() => {
-                if(map.loaded()) {
-                    flyToInitState()
-                    clearInterval(loadInterval)
-                }
-            }, 1000)
+            console.log(allData);
+            map.getSource("pois").setData(poiToGeojson(allData));
+            map.getSource("area-pins").setData(areaFeatures);
         })
         .catch(console.error);
     }
@@ -1486,35 +1158,26 @@
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
         });
 
-        let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link">${moreInfoText[lang_code]}</a>` : "";
+        let moreInfo = entry.more_info_link ? `<a href="${entry.more_info_link}">${moreInfoText[lang_code]}</a>` : "";
         let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
               <img src="/media/${entry.location_image}" alt="" />
             </div>` : "";
-        
-        let categorySection = infoBox == "Aside" ? `<div class="category-section">
-                <div>${entry[`category_${lang_code}`]}</div>
-                ${entry[`subcategory_${lang_code}`] ?  `<div>${entry[`subcategory_${lang_code}`]}</div>` : ""} 
-                <div id="close-popup" class="popup-close-btn">×</div>
-        </div>` : "";
-
-        console.log(lang_code);
-
         return `<div class='popup-content'>
-            ${categorySection}
-           ${imgSection}
+            ${imgSection}
           <div class="info-section">
-              <h5>${entry[`title_${lang_code}`]}</h5>
-              <div class="description">${entry[`subtitle_${lang_code}`]}</div>
+            <h5>${entry.title}</h5>
+            <div class="description">${entry['subtitle']}</div>
 
-              <p>${entry[`description_${lang_code}`]}</p>
+            <p>${entry.description}</p>
 
-              <div class="icons">
-               ${icons.join("")}
-              </div>
+            <div class="icons">
+             ${icons.join("")}
+            </div>
 
-               <div class="link-section">
-                    ${moreInfo}
-                </div>
+            <div class="link-section">
+                ${moreInfo}
+            </div>
+              
           </div>
         </div>`;
     }
@@ -1587,30 +1250,22 @@
                 
                 // filters pois
                 let pois = filterPoisByCategogry(category);
-                filteredPois = [...pois];
-                if(!isMobile) {
-                    fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
-                    renderAllPoints(pois);
-                }
-                
+                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                renderAllPoints(pois);
             }
         } else {
             toggler.classList.add("active");
             activeToggler = toggler;
 
-            // filters pois
-            let pois = filterPoisByCategogry(category);
-            filteredPois = [...pois];
-            console.log(pois);
+           // filters pois
+           let pois = filterPoisByCategogry(category);
+           console.log(pois);
 
-            if(!isMobile) {
-                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
-                renderAllPoints(pois);
-            }
+            fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+            renderAllPoints(pois);
 
-            // console.log("Category with no Sub Categories");
             // toggleMarkers();
-           
+            // console.log("Category with no Sub Categories");
         }
 
        
@@ -1623,13 +1278,13 @@
     subCategoryTogglers.forEach(sbToggler => {
 
         sbToggler.onclick = (e) => {
-            let { value, dataset : { category} } = e.target;
-            toggleMarkerBySubCategory(value, category);
+            let { value } = e.target;
+            toggleMarkerBySubCategory(value);
         } 
 
     });
 
-    function toggleMarkerBySubCategory(subCategoryValue, categoryVal) {
+    function toggleMarkerBySubCategory(subCategoryValue) {
         let pois = [];
         if(subCategoryValue.includes("all")) {
             let category = subCategoryValue.split("-")[1];
@@ -1637,28 +1292,22 @@
             pois = filterPoisByCategogry(category);
         } else {
             console.log(subCategoryValue);
-            pois = filterPoisBySubCategogry(subCategoryValue, categoryVal);
+            pois = filterPoisBySubCategogry(subCategoryValue);
         }
 
-        filteredPois = [...pois];
-        if(!isMobile) {
-            fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
-            renderAllPoints(pois);
-        }
+        fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+        renderAllPoints(pois);
     }
 
     const filterPoisByCategogry = (category) => {
-        let categoryColumn = `category_${lang_code}`;
-        return allPoints.features.filter(ft => ft.properties[categoryColumn] == category);
+        return allPoints.features.filter(ft => ft.properties.category == category);
     }
 
-    const filterPoisBySubCategogry = (subcategory, category) => {
-        let categoryColumn = `category_${lang_code}`;
-        let subcategoryColumn = `subcategory_${lang_code}`;
-        return allPoints.features.filter(ft => (ft.properties[categoryColumn] == category && ft.properties[subcategoryColumn]== subcategory));
+    const filterPoisBySubCategogry = (subcategory) => {
+        return allPoints.features.filter(ft => ft.properties.subcategory == subcategory);
     }
 
-    
+    let ftsMarkers = [];
     function renderAllPoints(fts) {
         if(ftsMarkers.length) {
             ftsMarkers.forEach(marker => marker.remove());
@@ -1732,11 +1381,7 @@
             mainMarker.remove();
         } 
 
-        let { active_icon, pin_type } = ft.properties;
-        if(pin_type == "Area Pin") {
-            console.log("Area Pin Click");
-        }
-
+        let { active_icon } = ft.properties;
         let divMarker = document.createElement("div");
         divMarker.classList.add("div-marker");
         
@@ -1760,46 +1405,9 @@
             if(targetMarker) {
                 targetMarker.classList.add("active-click");
 
-                if(mainPopup._classList.has("infobox-aside")) {
-                    console.log("Aside");
-
-                    mainPopup.addTo(map);
-                    setTimeout(() => {
-                        // mainPopup.addClassName("open");
-                    }, 100);
-                }
-
                 targetMarker.addEventListener("transitionend", (e) => {
-
-                    //
-                    if(mainPopup._classList.has("infobox-aside")) {
-                        mainPopup.addClassName("open");
-                    } else {
-                        mainPopup.addTo(map);
-                    }
-                    
-
-                    let moreInfoBtn = document.getElementById("more-info-link");
-                    if(moreInfoBtn) {
-                        moreInfoBtn.onclick = (e) => {
-                            e.preventDefault();
-
-                            closePopup();
-
-                            setTimeout(() => {
-                                window.location.assign(e.target.href);
-                            }, 400)
-                           
-                        }
-                    }
+                    mainPopup.addTo(map);
                 });
-
-                let closeBtn = document.querySelector("#close-popup");
-                if(closeBtn) {
-                    closeBtn.onclick = () => {
-                        closePopup();
-                    }
-                }
             }
             
         })
@@ -1808,32 +1416,87 @@
     function closePopup() {
         console.log("Removing Marker");
         let popupContainer = document.querySelector(".mapboxgl-popup-content");
-        console.log(popupContainer);
 
         if(popupContainer) {
             let activeMarker = document.getElementById("active-marker");
             popupContainer.classList.add("close-popup");
-
-            if(mainPopup._classList.has("infobox-aside")) {
-                mainPopup.removeClassName("open");
-
-                setTimeout(() => {
-                    mainPopup.remove();
-                    mainMarker.remove();
-                }, 1000);
-
-            } else {
-                popupContainer.addEventListener("transitionend", () => {
-                    activeMarker.classList.remove("active-click");
-                    mainPopup.remove();
-                    mainMarker.remove();
-                    popupContainer.classList.remove("close-popup");
-                });
-            }
             
-            
+            popupContainer.addEventListener("transitionend", () => {
+                activeMarker.classList.remove("active-click");
+                mainPopup.remove();
+                mainMarker.remove();
+
+                popupContainer.classList.remove("close-popup");
+            });
         }
     }
+    
+
+    function animatePinsOnDisplay() {
+        // Setting a constant number to change
+        const changeNumber = 0.1;
+            // Setting some default values used in the animation
+            let changeUp = 0;
+            let changeDown = 1;
+
+            const pinIconAnimation = () => {
+                const opacityExpression = [
+                    'match',
+                    ['get', 'POI_ID'],
+                    ...this.matchExpression(pois, prevPois, changeUp, changeDown),
+                    0,
+                ];
+                // First set the opacity of the POIs in the new and prev category
+                // and set all the other POIs to opacity 1
+                mapbox.setPaintProperty('area-pins', 'icon-opacity', opacityExpression);
+                // Set the correct size of the symbol icon
+                mapbox.setLayoutProperty('area-pins', 'icon-size', opacityExpression);
+                // Changing the numbers for the animation
+                changeUp = Math.round((changeUp + changeNumber) * 1e2) / 1e2;
+                changeDown = Math.round((changeDown - changeNumber) * 1e2) / 1e2;
+
+            // Stop the animation if we reach 1
+            if (changeUp > 1.0) {
+                return true;
+            }
+
+            requestAnimationFrame(pinIconAnimation);
+        };
+        pinIconAnimation();
+    }
+
+    const animateActiveMarker = (enable = true) => {
+        const opacity = enable ? 1 : 0;
+        if (rootHTML.classList.contains('ie')) {
+            mapbox.setPaintProperty('active-layer', 'icon-opacity', opacity);
+            mapbox.setLayoutProperty('active-layer', 'icon-size', 1.2);
+        } else {
+            const changeNumber = 0.01;
+            const startValue = 1.0;
+            const endValue = 1.2;
+            let iconSize = enable ? startValue : endValue;
+
+            // Set the icon-opacity to be either visible (1) or invisible (0)
+            mapbox.setPaintProperty('active-layer', 'icon-opacity', opacity);
+            const activeMarkerAnimation = () => {
+                mapbox.setLayoutProperty('active-layer', 'icon-size', iconSize);
+                if (enable) {
+                    iconSize += changeNumber;
+                    if (iconSize.toFixed(2) >= endValue) {
+                        return true;
+                    }
+                } else {
+                    iconSize -= changeNumber;
+                    if (iconSize.toFixed(2) <= startValue) {
+                        return true;
+                    }
+                }
+
+                requestAnimationFrame(activeMarkerAnimation);
+            };
+            activeMarkerAnimation();
+        }
+    };
 
     // toggle filters
     let filterToggler = document.querySelector(".toggle-filter");
@@ -1849,28 +1512,249 @@
     applyButton.onclick = (e) => {
         filterSection.classList.remove("expanded");
         // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
-        
-        setTimeout(() => {
-            fitToCategoryBounds(filteredPois.map(poi => poi.geometry.coordinates));
-            renderAllPoints(filteredPois);
-        }, 500);
+    }
+</script>
+
+{% if user.is_authenticated %}
+<script>
+    // pin creation
+    const uploadForm = document.getElementById('poi-form');
+    const input_file = document.getElementById('id_location_image');
+    const progress_bar = document.getElementById('progress');
+    
+
+    let accessebility_icons = [];
+    let location_icon = "";
+    let pin_coords = null;
+    let pinMarker = new mapboxgl.Marker(), editMode = false;
+    let pinsIcons = document.querySelectorAll(".pin-icons");
+    let accessIcons = document.querySelectorAll(".acc-icons");
+    
+    function isFormValid(fd) {
+        if(!pin_coords) {
+            alert("Kindly Add a Marker");
+            return false;
+        }
+
+        return true;
+    }
+
+    function toggleEditMode() {
+        document.getElementById("edit-mode").onclick = function(e) {
+            editMode = !editMode;
+
+            e.target.classList.toggle("btn-success");
+            e.target.innerHTML = editMode ? "Edit Mode" : "Read Mode";
+
+            let cursor = editMode ? "crosshair" : "";
+            map.getCanvas().cursor = cursor;
+
+            toggleEditSections();
+        }
+    }
+
+    toggleEditMode();
+
+    function toggleEditSections() {
+        iconsSection.classList.toggle("d-none");
+        pinsFormSection.classList.toggle("d-none");
+
+        document.getElementById("filter-section").classList.toggle("d-none");
+    }
+
+    function updatePinLocation(location) {
+        if(!location_icon) {
+            alert("Kindly Select an icon");
+            return;
+        }
+
+         if(editMode) {
+            pin_coords = [...location];
+            let iconSrc = location_icon.querySelector("img").src;
+            let divIcon = getMarkerIcons(iconSrc);
+
+            if(pinMarker) {
+                pinMarker.remove();
+            }
+
+            pinMarker = new mapboxgl.Marker({ element:divIcon });
+            pinMarker.setLngLat(location).addTo(map);
+        }   
+    }
+
+    function selectPinIcon() {
+        pinsIcons.forEach((iconDiv, i) => {
+            if(i==0) {
+                console.log(iconDiv);
+                iconDiv.classList.add("active");
+                location_icon = iconDiv;
+            }
+
+            iconDiv.onclick = (e) => {
+                location_icon ? location_icon.classList.remove("active") : "";
+
+                if(location_icon != e.target) {
+                    e.target.classList.add("active");
+                    location_icon = e.target;
+                    updateSubCategoryInput(e.target.dataset.key);
+                    document.getElementById("id_category").value = e.target.dataset.key;
+                } else {
+                    location_icon = null;
+                }
+
+                
+            }
+        });
+    }
+
+    function updateSubCategoryInput(category) {
+        let options = projectCategories[category].map((subcategory,i) => {
+            if(i == 0) {
+                return `<option value="${subcategory}" selected>${subcategory}</option>`;
+            } else {
+                return `<option value="${subcategory}">${subcategory}</option>`;
+            }
+            
+        });
+
+        if(options.length) {
+            document.getElementById("id_subcategory").innerHTML = options.join("");
+            document.getElementById("id_subcategory").classList.remove("d-none");
+        } else {
+            document.getElementById("id_subcategory").classList.add("d-none");
+        }
+
         
     }
 
-    
-    
-    console.log(activeLanguage);
-    console.log(lang_code);
+    selectPinIcon();
 
-    // if (activeLanguage !== lang_code) {
-    //     document.getElementById("lang-div").value = activeLanguage;
-    //     document.getElementById("lang-submit").click();
-    //     //  lang_code = projectLanguage
-    // }
-    
-    document.getElementById("lang-select").value = activeLanguage;
-    changeLanguage(activeLanguage);
+    // accesibility icons 
+    function updateAccesibiltyIcons() {
+        accessIcons.forEach(iconEl => { 
+            iconEl.onclick = function(e) {
+                let isAdded = accessebility_icons.find(elem => elem == e.target);
 
-    // document.querySelector(".style-toggler").innerHTML += lang[activeLanguage];
+                if(isAdded) {
+                    isAdded.classList.remove("active");
+                    accessebility_icons = accessebility_icons.filter(el => el != isAdded)
+                } else {
+                    e.target.classList.add("active");
+                    accessebility_icons.push(e.target);
+                }
+
+            }
+        })
+    }
+
+    updateAccesibiltyIcons();
+
+    function updateFormData(formData) {
+        console.log(pin_coords);
+        let [longitude, latitude] = pin_coords;
+
+        formData.set('latitude', latitude);
+        formData.set("longitude", longitude);
+
+        // icons
+        let acc_icons = accessebility_icons.map(el => JSON.parse(el.dataset.item));
+        formData.set("accesibility_features", JSON.stringify({ "accesibility_features": [...acc_icons] }));
+        formData.set("project", projectId);
+        formData.set("poi_type", location_icon.dataset.key)
+        formData.set("icon", location_icon.dataset.target);
+
+        return formData;
+    }
+
+    function handelPinCreation() {
+        $("#poi-form").submit(function(e) {
+            e.preventDefault();
+            console.log("Submit");
+            $form = $(this)
+            
+            if(!isFormValid(formData)) {
+                return;
+            }
+            var formData = new FormData(this);
+            formData = updateFormData(formData);
+
+            var object = {};
+            formData.forEach((value, key) => object[key] = value);
+            var json = JSON.stringify(object);
+            console.log(json);
+
+            // return;
+
+            const media_data = input_file.files[0];
+            if(media_data != null){
+                console.log(media_data);
+                progress_bar.classList.remove("d-none");
+            }
+
+            $.ajax({
+                type: 'POST',
+                url:'/pins/create',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                        if(e.lengthComputable){
+                            const percentProgress = (e.loaded/e.total)*100;
+                            console.log(percentProgress);
+                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+                    aria-valuemax="100"></div>`
+                        }
+                    });
+                    return xhr
+                },
+                success: function(response) {
+                    console.log(response);
+                    if(response.data.includes("went wrong")) {
+                        console.log(response);
+                    } else {
+                        uploadForm.reset()
+                        progress_bar.classList.add('d-none');
+
+                        fetchPins();
+                        pinMarker.remove();
+                    }
+                    
+                    // redirect to a project detail page
+                    // window.location.assign()
+                },
+                error: function(err){
+                    console.log(err);
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            });
+        });
+    }
+
+    handelPinCreation();
+
+    function resetIcons() {
+        document.querySelector(".acc-icons").forEach(iconEl => {
+            iconEl.classList.remove("active");
+        });
+    }
+
+    function resetMap() {
+
+    }
 </script>
+{% endif %}
+
+<script>
+    // let language = readingMode == "RTL" ? "ar" : "en";
+    // document.getElementById("lang-select").value = projectLanguage;
+    // changeLanguage(projectLanguage);
+</script>
+<script src="{% static '/js/form-control.js' %}"></script>
 {% endblock %}

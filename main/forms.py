@@ -30,7 +30,7 @@ class PinsForm(ModelForm):
 class PinCategoryForm(ModelForm):
     class Meta:
         model = PinCategory
-        fields = ['title', 'project', 'is_area_category', 'icon', 'active_icon']
+        fields = ['title', 'project', 'is_area_category', 'is_simple_icon', 'icon', 'active_icon']
 
 class PinSubCategoryForm(ModelForm):
     class Meta:

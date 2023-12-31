@@ -64,6 +64,7 @@
     let maxZoom = parseInt(`{{ custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ custom_map.minzoom }}`);
     let bearing = parseInt(`{{custom_map.bearing}}`);
+    let tileSize = parseInt(`{{custom_map.tileSize}}`);
     const isOsmMap = `{{custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val))
     // center = center ? center.split(",").map(val => parseFloat(val)) : [0,0];

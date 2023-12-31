@@ -156,6 +156,20 @@
             visibility: visible;
             opacity: 1;
         }
+
+        a.btn-download {
+            position: absolute;
+            left:0px;
+            top:0px;
+            background-color: #ac5a46;
+            color:white;
+            font-size: 10px;
+        }
+
+        a.btn-download:hover {
+            background-color: rgb(170, 67, 41);
+            color:white;
+        }
         
         @media only screen and (max-width: 480px) { 
             .maps-container {
@@ -219,6 +233,10 @@
     <div class="maps-container container">
         {% for project in projects %}
             <div class="card">
+                <a class="btn-download btn" href="/project/export_project/{{ project.pk}}" target="_blank">
+                    <i class="fa fa-download"></i>
+                </a>
+
                 <img src="/media/{{ project.custom_map.thumbnail }}" alt="{{ project.title}}" width="150px">
 
                 <div class="card-body">

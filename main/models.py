@@ -11,16 +11,17 @@ default_user = User.objects.get(id=1)
 
 class CustomMaps(models.Model):
     title = models.CharField(max_length=200,null=False)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     tiles_folder = models.CharField(default="/media/uploads/projects/efteling", max_length=400)
     center = models.CharField(max_length=200, default="0,0", null=False)
     tiles_in_folders = models.BooleanField(default=False)
     is_osm_based_map = models.BooleanField(default=False)
     map_style_url = models.CharField(blank=True, null=True, max_length=500)
-    thumbnail = models.ImageField(upload_to="./uploads/thumbnails")
+    thumbnail = models.ImageField(upload_to="./uploads/thumbnails/custommaps/")
     bearing = models.IntegerField(default=0, null=False)
     minzoom = models.IntegerField(default=0)
     maxzoom = models.IntegerField(default=5)
+    # tileSize = models.IntegerField(default=256)
 
     class Meta:
         verbose_name_plural = "Custom Maps"
@@ -58,6 +59,10 @@ DEFAULT_STYLESHEET = """
 # 1 for the infobox backgroud, 
 # 1 for the texts,
 #  1 for the chosen area around texts on filters menu
+INFOBOX_TYPES = (
+    ("Default", "Default"),
+    ("Aside", "Side Infobox")
+)
 
 class Project(models.Model):
     title = models.CharField(max_length=200,null=False)
@@ -65,6 +70,7 @@ class Project(models.Model):
     custom_map = models.ForeignKey(CustomMaps, on_delete=models.SET_NULL, null=True)
     project_language = models.CharField(choices=PROJECT_LANG, default="en", max_length=50)
     project_theme = models.TextField(default=DEFAULT_STYLESHEET, max_length=1000)
+    infobox_style = models.CharField(max_length=100, choices=INFOBOX_TYPES, default="Default")
 
     class Meta:
         verbose_name_plural = "Projects"
@@ -89,12 +95,17 @@ class Icons(models.Model):
     def __str__(self):
         return self.title
 
+def content_file_name(instance, filename):
+    folder_path = '/'.join(["uploads/icons/", instance.project.title,  filename])
+    return folder_path
+
 class PinCategory(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     title = models.CharField(default="", max_length=200)
-    icon = models.FileField(upload_to="./uploads/icons/")
+    icon = models.FileField(upload_to=content_file_name, default="uploads/icons/axe_active.png")
     is_area_category = models.BooleanField(default=False)
-    active_icon = models.FileField(upload_to="./uploads/icons/", default="uploads/icons/axe_active.png")
+    is_simple_icon = models.BooleanField(default=False)
+    active_icon = models.FileField(upload_to=content_file_name, default="uploads/icons/axe_active.png")
     ranking_value = models.IntegerField(default=0, )
 
     class Meta:
@@ -115,8 +126,14 @@ class PinSubCategory(models.Model):
 
 PIN_TYPES = (
     ("Area Pin", "Area Pin"),
-    ("Detail Pin", "Detail Pin")
+    ("Detail Pin", "Detail Pin"),
+    ("Simple Icon", "Simple Icon"),
+    ("Simple Text", "Simple Text"),
 )
+
+def pin_file_name(instance, filename):
+    folder_path = '/'.join(["uploads/thumbnails/", instance.project.title,  filename])
+    return folder_path
 
 class Pins(models.Model):
     title = models.CharField(max_length=200,null=False)
@@ -124,7 +141,7 @@ class Pins(models.Model):
     pin_type = models.CharField(max_length=100, choices=PIN_TYPES, default="Detail Pin")
     latitude = models.FloatField(default=0)
     longitude = models.FloatField(default=0)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     category = models.CharField(null=False, max_length=100, default="Attraction")
     subcategory = models.CharField(null=True, max_length=100, blank=True)
     icon = models.CharField(null=False, max_length=1000)
@@ -132,9 +149,10 @@ class Pins(models.Model):
     maxzoom = models.IntegerField(default=18)
     minzoom = models.IntegerField(default=0)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
-    location_image = models.ImageField(default="default.png", upload_to="./uploads/thumbnails/pin_images/")
+    location_image = models.ImageField(default="default.png", upload_to=pin_file_name)
     accesibility_features = models.JSONField(null=True)
     more_info_link = models.CharField(null=True, blank=True, max_length=350)
+    is_simple_pin = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Pins"

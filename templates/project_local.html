@@ -814,7 +814,7 @@
         <div class="icon-list">
             {% for icon in categories %}
                 <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
-                    <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                    <img src="/{{ icon.icon}}" alt="{{ icon.title }}">
                     <span>{{ icon.title }}</span>
                 </div>
             {% endfor %} 
@@ -826,7 +826,7 @@
             <div class="icon-list">
                 {% for icon in accessebility_icons %}
                     <div class="icon acc-icons" data-item='{"title":"{{icon.title}}", "icon":"{{icon.icon}}"}'>
-                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                        <img src="/{{ icon.icon}}" alt="{{ icon.title }}">
                         <span>{{ icon.title }}</span>
                     </div>
                 {% endfor %} 
@@ -857,7 +857,7 @@
                 {% if category.is_area_category == False %}
                     <div class="filter-toggler collapse-toggler" data-id="{{ category.id }}" data-category="{{ category.title}}" data-target="collapse-section-{{ category.id}}">
                         <div class="d-flex header-text">
-                            <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="20px">
+                            <img src="/{{ category.icon}}" alt="{{ category.title }}" height="20px">
                             <h6 class="my-0"> {{ category.title }}</h6>
                         </div>
 
@@ -871,7 +871,7 @@
                     {% if category.pinsubcategory_set.all %}
                         <div class="px-3 collapse-section" id="collapse-section-{{ category.id}}">
                             <div class="d-flex sub-category-group sub_category-0" >
-                                <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category" data-category="{{ category.title }}">
+                                <input type="radio" name="{{  category.title }}" value="all-{{  category.title }}" id="all-{{ category.id}}" class="sub-category">
                                 <label class="label mx-2" for="all-{{ category.id}}">
                                     {% translate "Show All" %}
                                 </label>
@@ -879,7 +879,7 @@
 
                             {% for sub_category in category.pinsubcategory_set.all %}
                                 <div class="d-flex sub-category-group" id="sub-category-group-{{ sub_category.id }}">
-                                    <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category" data-category="{{ category.title }}">
+                                    <input type="radio" name="{{  category.title }}" value="{{  sub_category.title }}" id="sub-category-{{ sub_category.id }}" class="sub-category">
                                     <label class="label mx-2" for="sub-category-{{ sub_category.id }}">{{  sub_category.title }}</label>
                                 </div>
                             {% endfor %}
@@ -908,6 +908,7 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuZXplcSIsImEiOiJjbGlqeHExZGswY280M2NxcXVnc2J4NzRjIn0.roOLfnIg0hQnfisyhrRpPQ';
     let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
+    let projectName = `{{ project.title }}`;
     let center = `{{ project.custom_map.center }}`;
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
@@ -965,7 +966,7 @@
         sources: {
             'wms-layers':{
                 "type":"raster",
-                "tiles":[`${tilesUrl}/tiles/${xyz_options}.png`],
+                "tiles":[`/tiles/${xyz_options}.png`],
                 "tileSize":256
             }
         },
@@ -1127,7 +1128,7 @@
     }
 
     function setMapLayers() {
-        map.loadImage("/media/uploads/icons/image.png", (err, image) => {
+        map.loadImage("icons/image.png", (err, image) => {
             if(err) throw err;
 
             if(!map.hasImage('image-icon')) {
@@ -1273,7 +1274,7 @@
         .catch(console.error)
     }
 
-    getCategoriesData();
+    // getCategoriesData();
 
     function loadMapImages(imageList, cb) {
         if(!imageList.length) {
@@ -1282,7 +1283,7 @@
 
         imageList.forEach((imgObj, i) => {
             if(!map.hasImage(imgObj.category)) {
-                map.loadImage(`/media/${imgObj.icon}`, (err, image) => {
+                map.loadImage(`/${imgObj.icon}`, (err, image) => {
                     if(i == imageList.length - 1) {
                         cb();
                     }
@@ -1337,10 +1338,33 @@
     var allPoints;
     function fetchPins() {
 
-        fetch(`/pins?project_id=${projectId}`)
+        fetch(`/data.json`)
         .then(res => res.json())
-        .then(({data}) => {
-            let info = JSON.parse(data).map(entry => ({...entry.fields, pk:entry.pk})).map((pin, i) => ({...pin, id:`pin-${pin.pk}`}));
+        .then((data) => {
+            // console.log(data);
+            console.log(data.map(entry => ({...entry.fields, pk:entry.pk})));
+            let info = data.map(entry => ({...entry.fields, pk:entry.pk})).map((pin, i) => ({...pin, id:`pin-${pin.pk}`}));
+            info = info.map(entry => {
+                let icon = entry.icon.split("/").slice(-2,).join("/");
+                icon = icon.includes("icons") ? icon : `icons/${icon}`;
+
+                // active icon
+                let active_icon = entry.active_icon.split("/").slice(-2,).join("/");
+                active_icon = active_icon.includes("icons") ? active_icon : `icons/${active_icon}`;
+
+                // thumbnail
+                let location_image = entry.location_image.split("/").slice(-1,).join("/");
+                console.log(location_image);
+                location_image = (location_image && location_image !== "default.png") ? `thumbnails/${projectName}/${location_image}` : "";
+                
+                entry.icon = icon;
+                entry.active_icon = active_icon;
+                entry.location_image = location_image;
+
+                return entry;
+            });
+            console.log(info);
+
             allData = JSON.parse(JSON.stringify(info))
 
             poiData = info.filter(item => item.pin_type == "Detail Pin")
@@ -1406,7 +1430,7 @@
             let iconImage = info.find(item => item.poi_category == category).icon;
 
             return `<div class="filter-tab" data-id="${category}">
-                <img src="/media/${iconImage}"  height="20px" />
+                <img src="/${iconImage}"  height="20px" />
                 <div>${category}</div>
             </div>`;
         });
@@ -1458,7 +1482,7 @@
     }
 
     function createPoiMarker(entry) {
-        let divIcon = getMarkerIcons(`/media/${entry.icon}`);
+        let divIcon = getMarkerIcons(`/${entry.icon}`);
         let popupContent = getPopupContent(entry);
         let popup = new mapboxgl.Popup({ focusAfterOpen:false });
         popup.setHTML(popupContent);
@@ -1483,12 +1507,13 @@
         // let accesibility_features  = [];
 
         let icons = accesibility_features.map(accFeature => {
-            return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
+            let icon = accFeature.icon.split("/").slice(-1,)
+            return ` <img src="/icons/${icon}" alt="${accFeature.title}" />`;
         });
 
         let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link">${moreInfoText[lang_code]}</a>` : "";
         let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
-              <img src="/media/${entry.location_image}" alt="" />
+              <img src="/${entry.location_image}" alt="" />
             </div>` : "";
         
         let categorySection = infoBox == "Aside" ? `<div class="category-section">
@@ -1623,13 +1648,13 @@
     subCategoryTogglers.forEach(sbToggler => {
 
         sbToggler.onclick = (e) => {
-            let { value, dataset : { category} } = e.target;
-            toggleMarkerBySubCategory(value, category);
+            let { value } = e.target;
+            toggleMarkerBySubCategory(value);
         } 
 
     });
 
-    function toggleMarkerBySubCategory(subCategoryValue, categoryVal) {
+    function toggleMarkerBySubCategory(subCategoryValue) {
         let pois = [];
         if(subCategoryValue.includes("all")) {
             let category = subCategoryValue.split("-")[1];
@@ -1637,7 +1662,7 @@
             pois = filterPoisByCategogry(category);
         } else {
             console.log(subCategoryValue);
-            pois = filterPoisBySubCategogry(subCategoryValue, categoryVal);
+            pois = filterPoisBySubCategogry(subCategoryValue);
         }
 
         filteredPois = [...pois];
@@ -1652,10 +1677,9 @@
         return allPoints.features.filter(ft => ft.properties[categoryColumn] == category);
     }
 
-    const filterPoisBySubCategogry = (subcategory, category) => {
-        let categoryColumn = `category_${lang_code}`;
-        let subcategoryColumn = `subcategory_${lang_code}`;
-        return allPoints.features.filter(ft => (ft.properties[categoryColumn] == category && ft.properties[subcategoryColumn]== subcategory));
+    const filterPoisBySubCategogry = (subcategory) => {
+        let categoryColumn = `subcategory_${lang_code}`;
+        return allPoints.features.filter(ft => ft.properties[categoryColumn]== subcategory);
     }
 
     
@@ -1704,7 +1728,7 @@
         divMarker.classList.add("div-marker");
         
         divMarker.innerHTML = `<div class="marker-wrapper">
-            <img src="/media/${ft.properties.icon}" />
+            <img src="/${ft.properties.icon}" />
         </div>`;
        
 
@@ -1741,7 +1765,7 @@
         divMarker.classList.add("div-marker");
         
         divMarker.innerHTML = `<div class="marker-wrapper click-marker" id="active-marker">
-            <img src="/media/${active_icon}" />
+            <img src="/${active_icon}" />
         </div>`;
 
         mainMarker =  new mapboxgl.Marker({element:divMarker, anchor:'bottom'});
@@ -1868,9 +1892,19 @@
     //     //  lang_code = projectLanguage
     // }
     
-    document.getElementById("lang-select").value = activeLanguage;
-    changeLanguage(activeLanguage);
+    // document.getElementById("lang-select").value = activeLanguage;
+    // changeLanguage(activeLanguage);
 
     // document.querySelector(".style-toggler").innerHTML += lang[activeLanguage];
+
+    // update the images path
+    let images = document.querySelectorAll("img");
+    console.log(images);
+    images.forEach(img => {
+        img.src = img.src.split("/").slice(-2,).join("/")
+    });
+
+    changeLanguage(lang_code);
+
 </script>
 {% endblock %}
