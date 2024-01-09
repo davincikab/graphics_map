@@ -59,7 +59,7 @@
 {% block js %}
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
-    let tilesUrl = `/{{ custom_map.tiles_folder }}`;
+    let tilesUrl = `{{ custom_map.tiles_folder }}`;
     let center = `{{ custom_map.center }}`;
     let maxZoom = parseInt(`{{ custom_map.maxzoom }}`);
     let minZoom = parseInt(`{{ custom_map.minzoom }}`);
@@ -72,6 +72,7 @@
     console.log(xyz_options);
 
     xyz_options = xyz_options == "True" ? "{z}/{x}/{y}" : "{z}_{x}_{y}";
+    tilesUrl = tilesUrl.includes("https") ? tilesUrl : `/${tilesUrl}`;
     
     const customMapStyle = isOsmMap == "False" ? {
         version: 8,

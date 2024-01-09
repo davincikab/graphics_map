@@ -24,7 +24,7 @@
             flex: 0.5;
         }
 
-        .map-section {
+        .main-section {
             flex: 0.8;
         }
 
@@ -46,25 +46,50 @@
 {% block content %}
 {% include "navbar.html" %}
 <div class="main mt-5">
-    <div class="map-section mt-3">
-        <div class="mb-3">
-            <span class="form-label">{% translate "Categories" %}</span> 
-        </div>
+    <div class="main-section">
 
-        <div class="card-section">
-            {% for category in categories %}
-            <div class="details-header d-flex">
-                <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="25px">
-                <h6 class=""> {{ category.title }}</h6>
+   
+        <div class="map-section mt-3">
+            <div class="mb-3">
+                <span class="form-label">{% translate "Categories" %}</span> 
             </div>
-            <div class="body my-3">
-                {% for sub_category in category.pinsubcategory_set.all %}
-                    <div>{{  sub_category.title }}</div>
+
+            <div class="card-section">
+                {% for category in categories %}
+                    {% if category.is_simple_icon == False %}
+                        <div class="details-header d-flex">
+                            <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="25px">
+                            <h6 class=""> {{ category.title }}</h6>
+                        </div>
+                        <div class="body my-3">
+                            {% for sub_category in category.pinsubcategory_set.all %}
+                                <div>{{  sub_category.title }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                 {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>    
+    
+        <div class="map-section mt-3">
+            <div class="mb-3">
+                <span class="form-label">{% translate "Simple Icons" %}</span> 
+            </div>
+
+            <div class="card-section">
+                {% for category in categories %}
+                    {% if category.is_simple_icon == True %}
+                        <div class="details-header d-flex">
+                            <img src="/media/{{ category.icon}}" alt="{{ category.title }}" height="25px">
+                            <h6 class=""> {{ category.title }}</h6>
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
     {% if user.is_authenticated %}
         <div class="form-section">

@@ -629,34 +629,51 @@
     <div class="edit-geometry-section"></div>
 
     <div class="icons-sections d-none">
-        <div class="details-header py-2">
-            <h6>{% translate "Category Icons" %}</h6>
-        </div>
+        <div class="icons-listing">        
+            <div class="details-header py-2">
+                <h6>{% translate "Category Icons" %}</h6>
+            </div>
 
-        <div class="icon-list">
-            {% for icon in categories %}
-                {% if icon.is_area_category == False %}
-                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
-                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                        <span>{% translate icon.title %}</span>
-                    </div>
-                {% endif %}
-            {% endfor %} 
-        </div>
+            <div class="icon-list">
+                {% for icon in pin_categories %}
+                    {% if icon.is_area_category == False and not icon.is_simple_icon  %}
+                        <div class="icon pin-icons" data-id="{{ icon.pk}}" data-icon-active="{{ icon.active_icon }}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                            <span>{% translate icon.title %}</span>
+                        </div>
+                    {% endif %}
+                {% endfor %} 
+            </div>
 
-        <div class="details-header py-2">
-            <h6>{% translate "Area Icons" %}</h6>
-        </div>
-        
-        <div class="icon-list">
-            {% for icon in categories %}
-                {% if icon.is_area_category %}
-                    <div class="icon pin-icons" data-id="{{ icon.pk}}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
-                        <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
-                        <span>{% translate icon.title %}</span>
-                    </div>
-                {% endif %}
-            {% endfor %} 
+            <div class="details-header py-2">
+                <h6>{% translate "Area Icons" %}</h6>
+            </div>
+            
+            <div class="icon-list">
+                {% for icon in pin_categories %}
+                    {% if icon.is_area_category %}
+                        <div class="icon pin-icons" data-id="{{ icon.pk}}" data-icon-active="{{ icon.active_icon }}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                            <span>{% translate icon.title %}</span>
+                        </div>
+                    {% endif %}
+                {% endfor %} 
+            </div>
+
+            <div class="details-header py-2">
+                <h6>{% translate "Simple Icons" %}</h6>
+            </div>
+            
+            <div class="icon-list">
+                {% for icon in pin_categories %}
+                    {% if icon.is_simple_icon %}
+                        <div class="icon pin-icons" data-id="{{ icon.pk}}" data-icon-active="{{ icon.active_icon }}" data-target="{{ icon.icon}}" data-key="{{ icon.title }}">
+                            <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
+                            <span>{% translate icon.title %}</span>
+                        </div>
+                    {% endif %}
+                {% endfor %} 
+            </div>
         </div>
 
         <div class="accesssibility-icons">
@@ -665,7 +682,7 @@
             </div>
             <div class="icon-list">
                 {% for icon in accessebility_icons %}
-                    <div class="icon acc-icons" data-item='{"title":"{{icon.title}}", "icon":"{{icon.icon}}"}'>
+                    <div class="icon acc-icons" data-item='{"title":"{{icon.title}}", "icon":"{{icon.icon}}"}' id="acc-{{icon.title}}">
                         <img src="/media/{{ icon.icon}}" alt="{{ icon.title }}">
                         <span>{{ icon.title }}</span>
                     </div>
@@ -788,7 +805,7 @@
 {% block js %}
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWFtZXJqYW1lZWwiLCJhIjoiY2xvcnFmemY5MHh0czJqczhlMDZ4cGNnbCJ9.caC-vY545ifokQctbmu0JQ';
-    let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
+    let tilesUrl = `{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
     let center = `{{ project.custom_map.center }}`;
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
@@ -815,6 +832,7 @@
     const pinsFormSection = document.getElementById("pins_create_tabs");
     const iconsSection = document.querySelector(".icons-sections");
 
+     tilesUrl = tilesUrl.includes("https") ? tilesUrl : `/${tilesUrl}`;
     const customMapStyle = isOsmMap == "False" ? {
         version: 8,
         sources: {
@@ -994,7 +1012,8 @@
             let editFts = map.queryRenderedFeatures(e.point, {layers:["all-pois"]});
             if(editFts[0]) {
                 isDataUpdate = true;
-                iconsSection.classList.add("d-none");
+                // iconsSection.classList.add("d-none");
+                // document.querySelector(".icons-listing").classList.add("d-none");
                 document.getElementById("cancel-button").classList.remove("d-none");
                 document.getElementById("submit-btn").value = "Update Pin Info";
                 editFeature = editFts[0];
@@ -1635,6 +1654,7 @@
 
             e.target.classList.toggle("btn-success");
             e.target.innerHTML = editMode ? "Edit Mode" : "Read Mode";
+            toggleMarkers(false);
 
             let cursor = editMode ? "crosshair" : "";
             map.getCanvas().cursor = cursor;
@@ -1661,6 +1681,7 @@
 
     function toggleEditSections() {
         iconsSection.classList.toggle("d-none");
+        document.querySelector(".icons-listing").classList.remove("d-none");
         pinsFormSection.classList.toggle("d-none");
 
         document.getElementById("filter-section").classList.toggle("d-none");
@@ -1669,6 +1690,11 @@
     function updatePinLocation(location) {
         if(!location_icon) {
             alert("Kindly Select an icon");
+            return;
+        }
+        
+        if(isDataUpdate) {
+            // upate category and subcategory
             return;
         }
 
@@ -1697,6 +1723,17 @@
             iconDiv.onclick = (e) => {
                 location_icon ? location_icon.classList.remove("active") : "";
 
+                if(isDataUpdate) {
+                    e.target.classList.add("active");
+                    location_icon = e.target;
+                    updateSubCategoryInput(e.target.dataset.key);
+                    document.getElementById("id_category").value = e.target.dataset.key;
+
+                    // update
+                    editMarker.getElement().innerHTML = `<img src="/media/${ e.target.dataset.target}" width="25px">`
+                    return;
+                }
+
                 if(location_icon != e.target) {
                     e.target.classList.add("active");
                     location_icon = e.target;
@@ -1705,9 +1742,8 @@
                 } else {
                     location_icon = null;
                 }
-
-                
             }
+
         });
     }
 
@@ -1766,6 +1802,7 @@
         formData.set("project", projectId);
         formData.set("poi_type", location_icon.dataset.key)
         formData.set("icon", location_icon.dataset.target);
+        formData.set("active_icon", location_icon.dataset.iconActive);
 
         return formData;
     }
@@ -1808,6 +1845,31 @@
 
            
         });
+
+        // update the accessibility icons
+        accessebility_icons.forEach(iconDiv =>iconDiv.classList.remove("active"));
+        accessebility_icons = [];
+
+        let { accesibility_features } = JSON.parse(ft.properties.accesibility_features);
+        accesibility_features.forEach(acc_ft => {
+            let id = `acc-${acc_ft.title}`;
+            let element = document.getElementById(id)
+            element.classList.add("active");
+
+            accessebility_icons.push(element)
+        })
+        
+
+        // update active category icons
+        document.querySelectorAll(".pin-icons").forEach(icon => {
+            if(icon.dataset.key == ft.properties.category) {
+                icon.classList.add("active");
+                location_icon = icon;
+            } else {
+                icon.classList.remove("active");
+            }
+        });
+
 
         if(editMarker) {
             editMarker.remove();
@@ -1904,6 +1966,9 @@
 
                         fetchPins();
                         pinMarker.remove();
+                        
+                        accessebility_icons.forEach(icon => icon.classList.remove("active"));
+                        accessebility_icons = [];
                     }
                     
                     // redirect to a project detail page

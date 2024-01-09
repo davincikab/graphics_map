@@ -26,6 +26,7 @@ class PinsForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PinsForm, self).__init__(*args, **kwargs)
         self.fields['more_info_link'].required = False
+        self.fields['subtitle'].required = False
 
 class PinCategoryForm(ModelForm):
     class Meta:

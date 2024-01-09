@@ -33,7 +33,7 @@ class PinCategoryAdmin(admin.ModelAdmin):
 @admin.register(models.PinSubCategory)
 class PinSubCategoryAdmin(admin.ModelAdmin):
     list_display = ['pk', 'title', 'category']
-    search_fields = ['title', 'category']
+    search_fields = ['title']
 
 AdminSite.site_title = "Map Maker"
 AdminSite.site_header = "Map Maker"

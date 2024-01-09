@@ -1,0 +1,2011 @@
+
+
+
+
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        
+    GTA Arabic
+
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css" integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+
+
+        @font-face {
+            font-family:'IBMPlexSans-Bold';
+            font-weight: bold;
+            font-style: normal;
+            src: url(/static/fonts/IBMPlexSans-Bold.ttf);
+        }
+
+        @font-face {
+            font-family:'IBMPlexSansHebrew-Bold';
+            font-weight: bold;
+            font-style: normal;
+            src: url(/static/fonts/IBMPlexSansHebrew-Bold.ttf);
+        }
+
+        @font-face {
+            font-family:'IBMPlexSansArabic-Bold';
+            font-weight: bold;
+            font-style: normal;
+            src: url(/static/fonts/IBMPlexSansArabic-Bold.ttf);
+        }
+
+        @font-face {
+            font-family:'NarkissTam-Bold';
+            font-weight: bold;
+            font-style: normal;
+            src: url(/static/fonts/NarkissTam-Bold.otf);
+        }
+
+        @font-face {
+            font-family:'Advertising-Bold';
+            font-weight: bold;
+            font-style: normal;
+            src: url(/static/fonts/Advertising-Bold.otf);
+        }
+
+
+        @font-face {
+            font-family:'Gill Sans Bold';
+            font-weight: bold;
+            font-style: normal;
+            src: url(/static/fonts/Gill%20Sans%20Bold.otf);
+        }
+    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
+
+<style>
+    .lang-toggle {
+        right:50px;
+        top:10px;
+        display: none;
+    }
+
+    .map-container {
+        width: 100vw;
+        /* overflow: hidden; */
+        height: calc(100vh - calc(100vh - 100%));
+        position: relative;
+
+        --project-font:Poppins, sans-serif !important;
+    --project-font-he:Poppins, sans-serif !important;
+    --project-font-ar:Poppins, sans-serif !important;
+    --canvas-bg-color:#000000;
+    --area-text-color:#ffffff;
+    --filter-bg-color:#5F6F52;
+    --icons-bg:#A9B388;
+    --infobox-bg:#FEFAE0;
+    --text-color:#B99470;
+    --filter-card-active:#5F6F52;
+    }
+
+    .map-container {
+        
+            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);;
+                
+    }
+
+    .mapboxgl-ctrl .mapboxgl-ctrl-icon {
+        background-color: var(--filter-bg-color);
+    }
+
+    .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon svg {
+        fill:var(--text-color);
+    }
+
+    .filter-section {
+        width: 270px;
+        position: absolute;
+        top:0px;
+        left:0px;
+        z-index: 3;
+        color:var(--text-color);
+        background-color: var(--filter-bg-color);
+        margin: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 0.5rem #555;
+        transition: all 300ms ease 0s;
+    }
+
+    #edit-mode {
+        position: absolute;
+        top:10px;
+        right:50px;
+        margin:10px;
+        z-index: 3;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    .pins_create_tabs {
+        width: 350px;
+        position: absolute;
+        top:0px;
+        left:0px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        max-height:90vh;
+        overflow-y: auto;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    .style-toggler {
+        max-width: 350px;
+        position: absolute;
+        top:10px;
+        left:300px;
+        z-index: 2;
+        background-color: var(--filter-bg-color);
+        color:var(--text-color);
+        border-radius: 5px;
+        padding:10px;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    .style-toggler > div {
+        align-items: center;
+    }
+
+    .style-toggler label {
+        color:var(--text-color);
+    }
+
+    .style-toggler  input[type=radio] {
+        background-color: #555;
+        margin:0px 5px;
+    }
+
+    .details-tab {
+        max-width: 350px;
+        position: absolute;
+        top:0px;
+        left:0px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        padding:10px;
+        box-shadow: 0px 0px 0.5rem #555;
+    }
+
+    .details-header {
+        text-transform: capitalize;
+        border-bottom: 1px solid #ddd;
+        /* display: flex;
+        align-items: center;
+        justify-content: space-around; */
+    }
+
+    .details-header h6 {
+        margin-bottom: 0px;
+        flex: 1 1 100%;
+        padding: 10px 6px;
+        font-size: 18px !important;
+    }
+
+    .details-description {
+        padding:0.5rem 0px;
+    }
+
+    .icons-sections {
+        position: absolute;
+        top:50px;
+        right:0px;
+        margin:10px;
+        width: 250px;
+        z-index: 2;
+        background-color: white;
+        margin: 10px;
+        border-radius: 5px;
+        padding:10px;
+        box-shadow: 0px 0px 0.5rem #555;
+        font-size: 0.8rem;
+    }
+
+    .icon-list {
+        max-height: 300px;
+        overflow-y: auto;
+        width: 100%;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr) ) ;
+        padding:10px 0px;
+    }
+
+    .icon-list .icon {
+        width: 90%;
+        height: 50px;
+        cursor: pointer;
+    }
+
+    .icon-list .icon.active {
+        background-color: #999;
+    }
+
+    .icon > * {
+        pointer-events: none;
+    }
+
+    .icon img {
+        height: 50%;
+    }
+
+    #map-project {
+        width:100vw;
+        height:100vh;
+    }
+
+    #map-project canvas {
+        background-color:  var(--canvas-bg-color);
+    }
+
+    .div-marker {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .marker-wrapper {
+        background-color: var(--icons-bg);
+        box-shadow: 0px 0px 0.15rem #222;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+        margin-bottom: 8px;
+        transition: all 200ms;  
+        will-change: width;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .marker-wrapper::before {
+        content: "";
+        /* background-color: orange; */
+        /* box-shadow: 0px 0px 0.15rem #222; */
+        position: absolute;
+        bottom: -8px;
+        border: 10px solid #fff;
+        border-color: var(--icons-bg) transparent transparent;
+    }
+
+    .marker-wrapper > * {
+        pointer-events: none;
+        
+    }
+
+    .marker-wrapper.active {
+        width: 32px;
+        height: 32px;
+        opacity:1
+    }
+
+    .marker-wrapper.click-marker.active-click {
+        background-color: var(--filter-bg-color);
+        width: 38px;
+        height: 38px;
+        opacity:1;
+    }
+
+    .marker-wrapper.click-marker {
+        width: 20px;
+        height: 20px;
+        opacity: 0;
+        margin-bottom: 8px;
+        transition: all 200ms;  
+        will-change: width;
+
+        opacity:0;
+        background-color: var(--primary);
+    }
+
+    .marker-wrapper.click-marker::before {
+        border-color: var(--filter-bg-color) transparent transparent;
+    }
+
+    .marker-wrapper img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        mix-blend-mode: color-burn;
+    }
+
+    /* filter-tabs */
+    .filter-body {
+        max-height: 82%;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+
+    .filter-tab {
+        /* width: 100%; */
+        padding:0.5rem;
+    
+        border-bottom: 1px solid #ddd;
+        text-align:start;
+
+        text-transform: capitalize;
+        cursor: pointer;
+        display: flex;
+    }
+    .filter-tab > * {
+        pointer-events: none;
+    }
+
+    .filter-tab img {
+        margin-right: 0.5rem;
+    }
+
+    .filter-tab:hover {
+        background-color: aliceblue;
+    }
+
+    .filter-tab-body.active, .filter-tab.active {
+        background-color: aliceblue;
+        color:orange;
+    }
+
+    .filter-tab-body {
+        display: flex;
+        padding:0.5rem;
+        flex-direction: column;
+        align-items: self-start;
+    }
+
+    /* popup */
+    .mapboxgl-map {
+        
+            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);
+           
+    }
+
+    .mapboxgl-popup {
+        max-width: 380px !important;
+    }
+
+    .mapboxgl-popup.infobox-aside {
+        transform: none !important;
+        right:0px;
+        flex-grow: 1;
+        /* box-shadow: rgba(0, 0, 0, 0.3) 0px -2px 16px; */
+        display: flex;
+        flex-direction: column;
+        pointer-events: auto;
+        /* background-color: var(--infobox-bg); */
+
+        width: 350px!important;
+        max-height: calc(90vh - 2vw)!important;
+        height: auto;
+        right: 0.5vw!important;
+        left: auto!important;
+        top: 100vw!important;
+
+        transition: top 800ms;
+        opacity: 1;
+        will-change: top;
+    }
+
+    .mapboxgl-popup.infobox-aside.open {
+        top: 0.5vw!important;
+    }
+
+    .mapboxgl-popup.infobox-aside > div {
+        display: flex;
+        flex-direction: column;
+        min-height: 0px;
+        position: relative;
+        user-select: none;
+        touch-action: pan-x;
+    }
+
+    .mapboxgl-popup.infobox-aside .mapboxgl-popup-tip {
+        display: none !important;
+    }
+
+    .mapboxgl-popup.infobox-aside .popup-content {
+        display: flex;
+        flex-direction: column;
+        min-height: 0px;
+        max-height: 100%;
+    }
+
+    .category-section {
+        display: flex;
+        padding: 10px;
+    }
+
+    .category-section div {
+        margin: 0 10px 0 0;
+        border: 2px solid var(--text-color);
+        border-radius: 10px;
+        padding: 0 15px;
+    }
+
+    .mapboxgl-popup.infobox-aside .popup-content .image-section {
+        width: 100%;
+        overflow: visible;
+        max-height: 100%;
+        padding:20px;
+    }
+    .mapboxgl-popup.infobox-aside .popup-content .image-section img {
+        height: auto;
+        width: 100%;
+    }
+
+    .mapboxgl-popup-content > div {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        max-height: 180px;
+        background-color: var(--infobox-bg);
+        color:var(--text-color);
+
+        
+            font-family: var(--project-font), var(--project-font-he), var(--project-font-ar);;
+           
+    }
+
+    .popup-content {
+        width: 376px;
+        display: flex;
+        height: 100%;
+    }
+
+    .popup-content .image-section {
+        width: 180px;
+        max-height: 200px;
+        overflow: hidden;
+    }
+
+    .image-section img {
+        width: 100%;
+        height: 180px;
+    }
+
+    .popup-content .info-section {
+        padding:10px;
+        flex: 1;
+
+        padding: 10px 10px 0px;
+        flex: 1;
+        display: block;
+        /* flex-direction: column;
+        align-items: baseline; */
+    }
+
+    .popup-content .info-section h5 {
+        margin:5px 0px;
+        text-align: start;
+        font-size: 18px;
+    }
+
+    .info-section .icons {
+        display: flex;
+        margin-top: 0.5rem;
+    }
+
+    .info-section .icons img {
+        width: 25px;
+        height: 25px;
+        margin: 0 5px 0px 0px;
+    }
+
+    .link-section {
+        width: 100%;
+        /* text-align: left; */
+        font-size: 15px;
+        margin-top: 0.5rem;
+    }
+
+    .link-section a {
+        text-decoration: underline;
+        color:#555;
+    }
+
+    .infobox-aside  .mapboxgl-popup-close-button {
+        display: block;
+        font-size: 20px;
+        display: none;
+    }
+
+    .infobox-aside .popup-close-btn {
+        position: absolute;
+        top: 0px;
+        right: -10px;
+        padding: 5px;
+        display: block;
+        font-size: 30px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .mapboxgl-popup-close-button {
+        font-size: 1.5rem;
+        padding: 4px !important;
+        color:#000;
+    }
+
+    .filter-toggler {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        cursor: pointer;
+        line-height: 1.5;
+        padding: 16px 0px 15px;
+        border-bottom: 1px solid rgb(237, 229, 213);
+    }
+
+    .filter-list {
+        padding:10px;
+    }
+
+    .filter-toggler .header-text {
+        display: flex;
+        align-items: center;
+    }   
+
+    .filter-toggler h6 {
+        margin:0px;
+    }
+
+    .filter-toggler img {
+        margin: 0px 8px;
+    }
+
+    .filter-toggler i {
+        color:var(--text-color);
+    }
+
+    .collapse-toggler.active {
+        /* color:var(--primary); */
+        background: var(--filter-card-active)
+    }
+
+    .collapse-toggler > * {
+        pointer-events: none;
+    }
+
+    .collapse-toggler span {
+        color:#000;
+        font-size: 16px;
+        margin-right: 0.5rem;
+    }
+
+    .collapse-section.active {
+        background: var(--filter-card-active);
+    }
+
+    .collapse-toggler.active span {
+        transform: rotate(180deg);
+    }
+
+    .collapse-section {
+        padding: 0 0.5rem;
+        width: 100%;
+        max-height: 0px;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        font-size: 14px;
+    }
+
+    .sub-category-group {
+        line-height: 2;
+        display: flex;
+        align-items: center;
+    }
+
+    input[type=radio] {
+        appearance: none;
+        padding: 5px;
+        background-color: #fff;
+        border-radius:50%;
+        border:2px solid #666;
+        width: 10px;
+        height: 10px;
+    }
+
+    input[type=radio]:checked {
+       background-color: var(--text-color);
+    }
+
+    /* popup */
+    .mapboxgl-popup-tip {
+        display: none;
+    }
+
+    .mapboxgl-popup-content {
+        padding: 0px;
+        overflow: hidden;
+        display: flex;
+        width: 376px;
+        max-width: 100%;
+        min-height:100px;
+        box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.6);
+        transition: all 300ms;
+        background-color: var(--infobox-bg);
+        opacity: 1;
+        will-change: transform;
+    }
+
+    .mapboxgl-popup-content.close-popup { 
+        opacity: 0;       
+        transform: translateY(25px) scale(0.8);
+    }
+
+    .infobox-aside .mapboxgl-popup-content.close-popup {
+        transition: none;
+        opacity: 1;
+        transform: none;
+        will-change: none;
+    }
+
+    .infobox-aside .mapboxgl-popup-content {
+        transition: none;
+        opacity: 1;
+        transform: none;
+        will-change: none;
+    }
+
+    .infobox-aside .mapboxgl-popup-content.close-popup { 
+        opacity: 1;       
+        transform: none;
+    }
+
+    .mapboxgl-popup-content.close-popup { 
+        opacity: 0;       
+        transform: none;
+    }
+
+    .mapboxgl-popup-close-button {
+        display: none;
+    }
+
+    .back-button {
+        position: absolute;
+        right: 0px;
+        top:0px;
+        z-index: 3;
+        margin:10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 10px;
+        background-color: #fff;
+        box-shadow:0px 0px 0.5rem #555;
+        font-size: 18px !important;
+    }
+
+    .toggle-filter {
+        background-color: var(--filter-bg-color);
+        /* box-shadow:0px 0px 0.5rem #555; */
+        border:1px solid #ddd !important;
+        display: none;
+        color:var(--text-color);
+        width: 100px;
+        font-size: 18px !important;
+    }
+
+    .apply-button {
+        position: fixed;
+        bottom: 0px;
+        margin:10px;
+        left: 0px;
+        background-color: var(--filter-card-active);
+        width: calc(100% - 20px);
+        color:#fff;
+        height: 50px;
+        z-index: 1;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        box-shadow: 0px 0px 0.5rem #444;
+    }
+
+    .filter-section .text-collapse {
+        display: block;
+    }
+
+    .filter-section.expanded .text-collapse {
+        display: none;
+    }
+
+    .filter-section .text-expanded {
+        display: none;
+    }
+
+    .filter-section.expanded .text-expanded {
+        display: block;
+    }
+
+
+
+    @media screen and (max-width:480px) {
+        #map-project {
+            height: calc(100vh - calc(100vh - 100%));
+            max-height: 100%;
+        }
+        .filter-section {
+            height: 50px;
+            width: 110px;
+            max-width: none;
+            padding: 5px;
+            border-radius: 5px;
+            border-width: 1px;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .filter-section.expanded  .apply-button {
+            display: flex;
+        }
+
+        .filter-section.expanded {
+            width: 100%;
+            top: 0px;
+            left: 0px;
+            margin: 0px;
+            height: 100vh;
+            border-radius: 0px;
+        }
+        .filter-section.expanded .toggle-filter {
+            width: 100px;
+        }
+
+        .toggle-filter {
+            display: block;
+        }
+
+        .filter-section.close {
+            width: 100px;
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .mapboxgl-popup-content { 
+            width: 100%;
+            border-radius: 0px;
+        }
+
+        .infobox-aside.mapboxgl-popup {
+            width: 100% !important;
+            left:0px;
+            right:0px;
+        }
+
+        .infobox-aside .mapboxgl-popup-content {
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .mapboxgl-popup.infobox-aside.open {
+            top:50vh !important;
+            width: 100% !important;
+            max-height: 400px;
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .mapboxgl-popup {
+            opacity: 1;
+            z-index: 2;
+            width: 100%;
+            max-width: 100% !important;
+            inset: auto 0px 0px;
+            transition: bottom 600ms ease 0s;
+            transform: none !important;
+        }
+
+        .mapboxgl-popup-content.close-popup { 
+            opacity: 0;       
+            transform: translateY(135px) scale(1);
+        }
+
+        .popup-content p {
+            margin:0px;
+        }
+
+        .style-toggler {
+            left:10px;
+            top:70px;
+            width: 90px;
+            padding:5px;
+            font-size: 14px;
+        }
+
+        .lang-toggle {
+            display: none;
+        }
+    }
+
+   
+</style>
+
+</head>
+<body>
+
+
+    <form action="/i18n/setlang/" method="post" class="d-none" id="lang-form"><input type="hidden" name="csrfmiddlewaretoken" value="bNgJlM0H5BdIneN2wP9qX6DkQNMirsnuemZphoCey3lMD2wcZtqzCu77Uzt54Z5o">
+        <div class="d-none"></div>
+        <input name="next" type="hidden" value="">
+        <select name="language" id="lang-div">
+            
+            
+            
+            
+                <option value="ar">
+                    العربيّة (ar)
+                </option>
+            
+                <option value="he">
+                    עברית (he)
+                </option>
+            
+                <option value="en" selected>
+                    English (en)
+                </option>
+            
+        </select>
+        <input type="submit" value="Go" id="lang-submit">
+    </form>
+
+
+
+        <div class="lang-toggle">
+            <select name="lang-select" id="lang-select" class="form-control" style="font-size: 10px;">
+                <option value="en"  selected>Engilsh</option>
+                <option value="he" >Hebrew</option>
+                <option value="ar" >Arabic</option>
+            </select>
+        </div>
+
+    
+<div class="map-container">
+    <div class="details-tab d-none">
+        <div class="detail-header">
+            <h4>GTA Arabic</h4>
+        </div>
+    </div>
+
+    
+        <div class="style-toggler d-none">
+            <div class="d-flex">
+                <input type="radio" name="style" id="custom" class="map-style" checked>
+                <label for="custom"> Custom </label>                
+            </div>
+
+            <div class="d-flex">
+                <input type="radio" name="style" id="street" class="map-style">
+                <label for="street"> Street </label>
+            </div>
+        </div>
+    
+
+    
+
+    <a class="back-button btn d-none" id="back-button" href="/">
+        <i class="fa fa-xmark"></i>
+    </a>
+
+    <div class="filter-section" id="filter-section">
+        <div class="toggle-filter btn">
+            <span class="text-collapse">Filters</span>
+            <span class="text-expanded">Close</span>
+        </div>
+
+        <div class="details-header px-2 py-2">
+            <h6>Filters</h6>
+        </div>
+
+        <!-- div.fi -->
+
+        <div class="filter-list">
+            
+                
+                    <div class="filter-toggler collapse-toggler" data-id="13" data-category="Combat" data-target="collapse-section-13">
+                        <div class="d-flex header-text">
+                            <img src="/uploads/projects/GTA Arabic/icons/coffin_uncolored.png" alt="Combat" height="20px">
+                            <h6 class="my-0"> Combat</h6>
+                        </div>
+
+                        
+                    </div>
+
+                    
+                
+            
+        </div>
+
+        <div class="body">
+
+        </div>
+
+        <div class="apply-button">Apply</div>
+    </div>
+
+    <div id="map-project"></div>
+</div>
+
+    <script>
+        let lang = {
+            'ar':"rtl",
+            'en':"ltr",
+            'he':"rtl"
+        };
+
+        let lang_code = "en"
+
+        let isRtl = true;
+        function changeLanguage(langCode) {
+            langCode = langCode.toLocaleLowerCase();
+
+            let html  = document.querySelector("html");
+            html.dir = lang[langCode];
+            html.lang = langCode;
+
+            // document.getElementById("rtl-toggler").innerHTML = lang[langCode];
+        }
+
+        let langToggler = document.getElementById("lang-select")
+        langToggler.onchange = (e) => {
+            changeLanguage(e.target.value);
+
+            // update the page language
+            document.getElementById("lang-div").value = e.target.value;
+            document.getElementById("lang-submit").click();
+        }
+
+        changeLanguage(lang_code);
+    </script>
+
+    
+<script>
+    // User agent string method
+    let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuZXplcSIsImEiOiJjbGlqeHExZGswY280M2NxcXVnc2J4NzRjIn0.roOLfnIg0hQnfisyhrRpPQ';
+    let tilesUrl = `/media/uploads/projects/Efteling Map`;
+    let projectId = `3`;
+    let projectName = `GTA Arabic`;
+    let center = `0,0`;
+    let maxZoom = parseInt(`5`);
+    let minZoom = parseInt(`0`);
+    const isOsmMap = `False`;
+    center = center.split(",").map(val => parseFloat(val));
+    let projectLanguage = `ar`;
+    let bearing = parseInt(`0`);
+    let tileSize = parseInt(``);
+    let poiData = [], allData=[], categoryMarkers = [], projectCategories, simpleFeatureData = [];
+    let ftsMarkers = [];
+
+    let project_theme = `--project-font:Poppins, sans-serif !important;
+    --project-font-he:Poppins, sans-serif !important;
+    --project-font-ar:Poppins, sans-serif !important;
+    --canvas-bg-color:#000000;
+    --area-text-color:#ffffff;
+    --filter-bg-color:#5F6F52;
+    --icons-bg:#A9B388;
+    --infobox-bg:#FEFAE0;
+    --text-color:#B99470;
+    --filter-card-active:#5F6F52;`;
+    let areaTextColor = project_theme.split("\n").find(l => l.includes("area-text-color")).split(":")[1].slice(0,-1);
+    let areaTexKey = lang_code == "en" ? `project-font` : `project-font-${lang_code}`;
+
+    let areaTextFont = project_theme.split("\n").find(l => l.includes(areaTexKey)).split(":")[1].slice(0,-1)
+    areaTextFont = areaTextFont.split(" !")[0];
+    var filteredPois = [];
+
+    // check the query params
+    let queryLanguage = new URLSearchParams(window.location.search).get("lang");
+    let activeLanguage;
+
+    // let language = readingMode == "RTL" ? "ar" : "en";
+    if(queryLanguage) {
+        activeLanguage = queryLanguage.toLocaleLowerCase();
+    } else {
+        activeLanguage = projectLanguage;
+    }
+
+    let geolocateIcon = `<svg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='#3333'>
+        <path d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7z'/> 
+        <circle id='dot' cx='10' cy='10' r='2'/>
+        <path id='stroke' d='M14 5l1 1-9 9-1-1 9-9z' display='none'/>
+    </svg>`;
+
+    let moreInfoText = {
+        "en":"More Information",
+        "ar":"معلومات اكثر",
+        "he":"למידע נוסף"
+    }
+
+    let xyz_options = `False`;
+    console.log(xyz_options);
+
+    xyz_options = xyz_options == "True" ? "{z}/{x}/{y}" : "{z}_{x}_{y}";
+
+    const pinsFormSection = document.getElementById("pins_create_tabs");
+    const iconsSection = document.querySelector(".icons-sections");
+    let mapboxStyleUrl = `None`;
+    mapboxStyleUrl = mapboxStyleUrl  == 'None' ? null : mapboxStyleUrl;
+
+    const customMapStyle = isOsmMap == "False" ? {
+        version: 8,
+        sources: {
+            'wms-layers':{
+                "type":"raster",
+                "tiles":[`/tiles/${xyz_options}.png`],
+                "tileSize":256
+            }
+        },
+        layers: [
+            {
+                "id": 'image-tile',
+                "source":"wms-layers",
+                "type": "raster",
+                "layout": {},
+            },
+        ],
+        "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+    } : (mapboxStyleUrl || "mapbox://styles/mapbox/streets-v12");
+
+    
+    const map = new mapboxgl.Map({
+        container: 'map-project', // container ID
+        style: customMapStyle,
+        center:[...center],
+        bearing:bearing,
+        // zoom: minZoom - 1,
+        zoom:maxZoom,
+        minZoom:minZoom,
+        maxZoom:maxZoom
+    });
+
+    // let nava
+    let infoBox = `Default`;
+    const mainPopup = new mapboxgl.Popup({ closeOnClick:false, closeOnMove:false, focusAfterOpen:false, anchor:"bottom", offset:[0, -50] });
+    var mainMarker = new mapboxgl.Marker({ anchor:'bottom'});
+
+    if(infoBox == "Aside") {
+        mainPopup.addClassName("infobox-aside");
+    }
+
+    const navigationCtrl = new mapboxgl.NavigationControl({ showCompass:false });
+    map.addControl(navigationCtrl, 'bottom-right');
+
+    const geolocationControl = new mapboxgl.GeolocateControl({
+        showAccuracyCircle:false
+    });
+
+    map.addControl(geolocationControl, "bottom-left");
+
+    // update map language
+    // Add RTL support if you want to support Arabic
+    
+
+    let mapLang = activeLanguage == "he" ? "mul" : activeLanguage;
+    const languageCtrl = new MapboxLanguage({ defaultLanguage: mapLang});
+    
+    if(mapLang != 'en') {
+        mapboxgl.setRTLTextPlugin("https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js");
+    }
+
+    if(isOsmMap == "True") {
+        // ['ar', 'de', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'mul', 'pt', 'ru', 'vi', 'zh-Hans', 'zh-Hant']
+        map.addControl(languageCtrl);
+    }
+
+    map.on("style.load", function () {
+        // document.querySelector(".mapboxgl-ctrl-icon").innerHTML = geolocateIcon;
+
+        setMapLayers();
+        fetchPins();
+
+        map.on("mouseover", "pois", (e) => {
+            map.getCanvas().style.cursor = "pointer";
+        })
+
+        map.on("mouseleave", "pois", (e) => {
+            map.getCanvas().style.cursor = "";
+        })
+
+        // addMarkerHandler();
+        map.on("click", (e) => {
+            let btn = document.getElementById("edit-mode");
+            if(btn) {
+                updatePinLocation(e.lngLat.toArray());
+            }
+
+            console.log(e.features);
+            let fts = map.queryRenderedFeatures(e.point, {layers:['pois', "area-pins-higher"]});
+            console.log(fts);
+            if(fts[0]) {
+                updatePopupInfo(fts[0])
+            } else {
+                closePopup();
+            }
+           
+        });
+
+        map.on("zoomend", (e) => {
+            if(map.getZoom() < (minZoom + 1) ) {
+                ftsMarkers.forEach(marker => marker.remove())
+            } else {
+                ftsMarkers.forEach(marker => marker.addTo(map))
+            }
+        });
+
+
+        
+
+    });
+
+    function flyToInitState() {
+        map.flyTo({
+            center:center,
+            zoom:minZoom,
+            duration:1500
+        });
+    }
+
+   
+
+    let styleTogglers = document.querySelectorAll(".map-style");
+    styleTogglers.forEach(toggler => {
+        toggler.onclick = (e) => {
+            console.log(e);
+
+            handleStyleChange(e.target.id);
+        }
+    })
+
+    function handleStyleChange(styleId) {
+        let sourcesId = ['pois', "area-pins"];
+        let layers = [], sources = {};
+
+        let style = map.getStyle();
+        sourcesId.map(srcId => {
+            sources[srcId] = style.sources[srcId];
+            let srcLayers = style.layers.filter(layer => layer.source == srcId);
+
+            layers = [...layers, ...srcLayers]
+        });
+
+        console.log(layers);
+        console.log(sources);
+
+        if(styleId == 'custom') {
+            map.setStyle(customMapStyle, {diff:false });
+        } else {
+            map.setStyle(`mapbox://styles/mapbox/streets-v12`, {diff:false });
+        }
+
+        
+
+        map.once('styledata', () => { 
+            // rerender the styles
+            // rerenderData(sources, layers);
+        });
+    }
+
+    function rerenderData(sources, layers) {
+        Object.keys(sources).map(srcId => map.addSource(srcId, {...sources[srcId]}))
+        layers.forEach(layer => {
+            map.addLayer({...layer});
+        })
+    }
+
+    function setMapLayers() {
+        map.loadImage("icons/image.png", (err, image) => {
+            if(err) throw err;
+
+            if(!map.hasImage('image-icon')) {
+                console.log(image);
+                map.addImage('image-icon', image);
+            }
+            
+        });
+
+        // area layer
+        map.addSource("area-pins", {
+            type:"geojson",
+            data:{"type":"FeatureCollection", "features":[]}
+
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins",
+            source:"area-pins",
+            layout:{
+                'icon-allow-overlap': true,
+                'icon-image': ['get', `category_${lang_code}`],
+                // "icon-image":"image-icon",
+                'icon-size': 0.75,
+                'text-allow-overlap': true,
+                'text-field': ['get',`title_${lang_code}`],
+                'text-max-width': 13, // ems
+                'text-offset': [0, 1],
+                // 'text-font': ['Nunito Sans Bold', 'Noto Sans', 'sans-serif'],
+                'text-anchor': 'center',
+                'text-size': 14,
+                'text-line-height': 1,
+            },
+            paint:{
+                'text-color':`${areaTextColor}`,
+            },
+            maxzoom:minZoom + 1
+        });
+
+        // 'icon-image': ['get', `category_${lang_code}`],
+        map.addLayer({
+            type:"symbol",
+            id:"area-pins-higher",
+            source:"area-pins",
+            minzoom:minZoom + 1,
+            layout:{
+                'icon-allow-overlap': true,
+                'icon-image': ['concat', ['get', `category_${lang_code}`], "-active"],
+                'icon-size': 0.5,
+            }
+        })
+
+        // map.addSource();
+        map.addSource("pois", {
+            type:"geojson",
+            // data:"/static/js/sample_points.geojson",
+            data:{"type":"FeatureCollection", "features":[]}
+        });
+
+        map.addLayer({
+            type:'circle',
+            source:"pois",
+            id:"pois",
+            minzoom:minZoom + 1,
+            "paint":{
+                "circle-color":"#4D3929",
+                "circle-stroke-color":"#fff",
+                "circle-radius":[
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    0,
+                    3.5,
+                    19,
+                    7
+                ],
+                "circle-stroke-width":3
+            },
+        });
+
+
+        // simple features
+        // area layer
+        map.addSource("simple-features", {
+            type:"geojson",
+            data:{"type":"FeatureCollection", "features":[]}
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"simple-features-icons",
+            source:"simple-features",
+            filter:['match', ['get', 'pin_type'], 'Simple Icon', true, false],
+            layout:{
+                'icon-allow-overlap': true,
+                'icon-image': ['get', 'id'],
+                'icon-size': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    minZoom,
+                    0.1,
+                    maxZoom,
+                    0.45
+                ]
+            }
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"simple-features-text",
+            source:"simple-features",
+            filter:['match', ['get', 'pin_type'], 'Simple Text', true, false],
+            layout:{
+                'text-allow-overlap': true,
+                'text-field': ['get',`title_${lang_code}`],
+                'text-max-width': 7, // ems
+                'text-offset': [0, 1],
+                'text-anchor': 'center',               
+                'text-size': 12,
+                'text-line-height': 1,
+            },
+            paint:{
+                'text-halo-width':2,
+                'text-halo-color':'#fff',
+                'text-color':`#000`,
+            }
+        });
+    }
+
+    function getCategoriesData() {
+        fetch("/project/get_categories?project_id=3")
+        .then(res => res.json())
+        .then(({data}) => {
+            console.log(data);
+
+            projectCategories = JSON.parse(data);
+
+            // updateSubCategoryInput(location_icon.dataset.key);
+            // document.getElementById("id_category").value = location_icon.dataset.key;
+        })
+        .catch(console.error)
+    }
+
+    // getCategoriesData();
+
+    function loadMapImages(imageList, cb) {
+        if(!imageList.length) {
+            cb();
+        }
+
+        imageList.forEach((imgObj, i) => {
+            if(!map.hasImage(imgObj.category)) {
+                map.loadImage(`/${imgObj.icon}`, (err, image) => {
+                    if(i == imageList.length - 1) {
+                        cb();
+                    }
+
+                    if(err) throw err;
+                    let imageData;
+                    console.log(image);
+                    if(image.width <= 309) {
+                        imageData = image;
+                    } else {
+                        imageData = resizeImage(image);
+                    }
+                    // let 
+
+                    if(!map.hasImage(imgObj.category)) {
+                        map.addImage(imgObj.category,  imageData);
+                    }
+                    
+                });
+            }  
+
+            if(i == imageList.length - 1) {
+                cb();  
+            }
+           
+        });
+    }
+
+    function resizeImage(imageBitmap) {
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        var maxW = imageBitmap.width > 309 ? 309 : imageBitmap.width;
+        var maxH =  imageBitmap.height > 139 ? 139 : imageBitmap.height;
+
+        var iw = imageBitmap.width;
+        var ih = imageBitmap.height;
+
+        var scale = Math.min((maxW / iw), (maxH / ih));
+        var iwScaled = iw * scale;
+        var ihScaled = ih * scale;
+
+        canvas.width = maxW;
+        canvas.height = maxH;
+        context.drawImage(imageBitmap, 0, 0, maxW, maxH);
+        console.log(context.getImageData(0, 0, maxW, maxH));
+
+        // console.log(URL.createObjectURL(file));
+        
+        return context.getImageData(0, 0, maxW, maxH);
+    }
+
+    var allPoints;
+    function fetchPins() {
+
+        fetch(`/data.json`)
+        .then(res => res.json())
+        .then((data) => {
+            // console.log(data);
+            console.log(data.map(entry => ({...entry.fields, pk:entry.pk})));
+            let info = data.map(entry => ({...entry.fields, pk:entry.pk})).map((pin, i) => ({...pin, id:`pin-${pin.pk}`}));
+            info = info.map(entry => {
+                let icon = entry.icon.split("/").slice(-2,).join("/");
+                icon = icon.includes("icons") ? icon : `icons/${icon}`;
+
+                // active icon
+                let active_icon = entry.active_icon.split("/").slice(-2,).join("/");
+                active_icon = active_icon.includes("icons") ? active_icon : `icons/${active_icon}`;
+
+                // thumbnail
+                let location_image = entry.location_image.split("/").slice(-1,).join("/");
+                console.log(location_image);
+                location_image = (location_image && location_image !== "default.png") ? `thumbnails/${projectName}/${location_image}` : "";
+                
+                entry.icon = icon;
+                entry.active_icon = active_icon;
+                entry.location_image = location_image;
+
+                return entry;
+            });
+            console.log(info);
+
+            allData = JSON.parse(JSON.stringify(info))
+
+            poiData = info.filter(item => item.pin_type == "Detail Pin")
+            simpleFeatureData = info.filter(item => (item.pin_type == "Simple Icon" || item.pin_type == "Simple Text"))
+
+            let poiFeature = poiToGeojson(poiData);
+            let areaInfo = info.filter(item => item.pin_type == "Area Pin");
+
+            console.log(areaInfo);
+            let areaFeatures = poiToGeojson(areaInfo);
+            allPoints = JSON.parse(JSON.stringify(poiFeature))
+
+            let categoryColumn = `category_${lang_code}`;
+            let simpleIcons = simpleFeatureData.filter(item => item.pin_type == "Simple Icon").map(pin => {
+                return { category:pin.id, icon:pin.icon}
+            });
+
+            let imageList = areaInfo.reduce((a,b) => {
+                
+                if(!a.find(item => item[categoryColumn] == b[categoryColumn ])) {
+                    a.push({
+                        category: b[categoryColumn ] || 'area-pin',
+                        icon:b.icon
+                    })
+
+                    a.push({
+                        category: `${b[categoryColumn]}-active` || 'area-pin-active',
+                        icon:b.active_icon
+                    })
+                }
+                
+                return a;
+            }, [])
+
+            console.log(imageList);
+            console.log(simpleIcons);
+            loadMapImages([...imageList, ...simpleIcons], () => {
+                console.log("Finished: ", map.loaded());
+                map.getSource("area-pins").setData(areaFeatures);
+                map.getSource("simple-features").setData(poiToGeojson(simpleFeatureData));
+            });
+           
+            // renderCategoryTabs(info.filter(item => item.pin_type !== "Area Pin"));
+            // toggleMarkersByCategory();
+            map.getSource("pois").setData(poiFeature);
+           
+
+            let loadInterval = setInterval(() => {
+                if(map.loaded()) {
+                    flyToInitState()
+                    clearInterval(loadInterval)
+                }
+            }, 1000)
+        })
+        .catch(console.error);
+    }
+
+    function renderCategoryTabs(info) {
+        let categories = info.map(entry => entry.poi_category);
+        categories = [...new Set([...categories])];
+
+        let filterTabs = categories.map(category => {
+            let iconImage = info.find(item => item.poi_category == category).icon;
+
+            return `<div class="filter-tab" data-id="${category}">
+                <img src="/${iconImage}"  height="20px" />
+                <div>${category}</div>
+            </div>`;
+        });
+
+        document.querySelector(".filter-section .body").innerHTML = filterTabs.join("");
+    }
+
+    function toggleMarkersByCategory() {
+        let categoryTabs = document.querySelectorAll(".filter-tab");
+        categoryTabs.forEach(tab => {
+            tab.onclick = (e) => {
+                console.log(e.target.dataset);
+                renderCategoryMarkers(e.target.dataset.id);
+            }
+        })
+    }
+
+
+    function fitToCategoryBounds(coords) {
+        closePopup();
+        if(!coords.length) { return; }
+        
+
+        let bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
+        coords.forEach(coord => {
+            bounds.extend(coord);
+        });
+
+        map.fitBounds(bounds, { padding:30, bearing:bearing });
+
+        map.once("moveend", (e) => {
+            toggleMarkers();
+        });
+    }
+
+    function renderCategoryMarkers(category) {
+        let entries = poiData.filter(poi => poi.poi_category == category);
+
+        if(categoryMarkers.length) {
+            categoryMarkers.forEach(marker => marker.remove());
+        }
+        
+        categoryMarkers = entries.map(entry => {
+            return createPoiMarker(entry)
+        });
+        
+        let coords = entries.map(entry =>  ([entry.longitude, entry.latitude]));
+        fitToCategoryBounds(coords);
+    }
+
+    function createPoiMarker(entry) {
+        let divIcon = getMarkerIcons(`/${entry.icon}`);
+        let popupContent = getPopupContent(entry);
+        let popup = new mapboxgl.Popup({ focusAfterOpen:false });
+        popup.setHTML(popupContent);
+
+        let marker = new mapboxgl.Marker({ element:divIcon});
+        let { latitude, longitude } = entry;
+        marker.setLngLat([longitude,latitude]).setPopup(popup).addTo(map);
+
+        return marker;
+    }
+
+    function getMarkerIcons(iconSrc) {
+        let divMarker = document.createElement("div");
+        divMarker.classList.add("div-marker");
+        
+        divMarker.innerHTML = `<img src="${iconSrc}" width="25px" />`;
+        return divMarker;
+    }
+
+    function getPopupContent(entry) {
+        let { accesibility_features } = JSON.parse(entry.accesibility_features);
+        // let accesibility_features  = [];
+
+        let icons = accesibility_features.map(accFeature => {
+            let icon = accFeature.icon.split("/").slice(-1,)
+            return ` <img src="/icons/${icon}" alt="${accFeature.title}" />`;
+        });
+
+        let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link">${moreInfoText[lang_code]}</a>` : "";
+        let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
+              <img src="/${entry.location_image}" alt="" />
+            </div>` : "";
+        
+        let categorySection = infoBox == "Aside" ? `<div class="category-section">
+                <div>${entry[`category_${lang_code}`]}</div>
+                ${entry[`subcategory_${lang_code}`] ?  `<div>${entry[`subcategory_${lang_code}`]}</div>` : ""} 
+                <div id="close-popup" class="popup-close-btn">×</div>
+        </div>` : "";
+
+        console.log(lang_code);
+
+        return `<div class='popup-content'>
+            ${categorySection}
+           ${imgSection}
+          <div class="info-section">
+              <h5>${entry[`title_${lang_code}`]}</h5>
+              <div class="description">${entry[`subtitle_${lang_code}`]}</div>
+
+              <p>${entry[`description_${lang_code}`]}</p>
+
+              <div class="icons">
+               ${icons.join("")}
+              </div>
+
+               <div class="link-section">
+                    ${moreInfo}
+                </div>
+          </div>
+        </div>`;
+    }
+
+    const poiToGeojson = (pois) => {
+        let features = pois.map(poi => {
+            return {
+                "type":"Feature",
+                "geometry":{"type":"Point", "coordinates":[poi.longitude, poi.latitude]},
+                "properties":{...poi}
+            }
+        });
+
+        return { "type":"FeatureCollection", "features":[...features] };
+    }
+
+    let collapseTogglers = document.querySelectorAll(".collapse-toggler");
+    let activeToggler, activeCollapse, activeCategory, activeSubCategory;
+
+    collapseTogglers.forEach(toggler => {
+        toggler.addEventListener("click", (e) => {
+            toggleCollapse(e.target);
+        })
+    });
+
+    const toggleCollapse = (toggler) => {
+        console.log(toggler);
+        let {target, category, id } = toggler.dataset;
+        var content = document.getElementById(target);
+
+        if(activeToggler && activeToggler != toggler) {
+            activeToggler.classList.remove("active");
+
+            if(activeCollapse) {
+                activeCollapse.classList.remove("active");
+                activeCollapse.style.maxHeight = 0;
+            }     
+        }
+
+        console.log(category);
+
+        if(content) {
+            let maxHeight = getComputedStyle(content).maxHeight;
+
+            if(activeCollapse && activeCollapse != content) {
+                activeCollapse.classList.remove("active");
+                activeToggler.classList.remove("active");
+                activeCollapse.style.maxHeight = 0;
+            }
+            
+            if(maxHeight != "0px") {
+                content.style.maxHeight = 0;
+                content.classList.remove("active");
+                toggler.classList.remove("active");
+                activeCollapse = undefined;
+
+                let radioTogglers = document.querySelectorAll(`#collapse-section-${id} .sub-category`);
+                radioTogglers.forEach(radionBtn=> radionBtn.checked=false)
+                toggleMarkers(false);
+            } else {
+                toggler.classList.add("active");
+                content.classList.add("active");
+
+                content.style.maxHeight = content.scrollHeight+15 + "px";
+                activeCollapse = content;
+                activeToggler = toggler;
+
+                console.log(`all-${id}`);
+                document.getElementById(`all-${id}`).checked = true;
+                
+                // filters pois
+                let pois = filterPoisByCategogry(category);
+                filteredPois = [...pois];
+                if(!isMobile) {
+                    fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                    renderAllPoints(pois);
+                }
+                
+            }
+        } else {
+            toggler.classList.add("active");
+            activeToggler = toggler;
+
+            // filters pois
+            let pois = filterPoisByCategogry(category);
+            filteredPois = [...pois];
+            console.log(pois);
+
+            if(!isMobile) {
+                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                renderAllPoints(pois);
+            }
+
+            // console.log("Category with no Sub Categories");
+            // toggleMarkers();
+           
+        }
+
+       
+    }
+
+    // sub category togglers
+    let subCategoryTogglers = document.querySelectorAll(".sub-category");
+    console.log(subCategoryTogglers);
+
+    subCategoryTogglers.forEach(sbToggler => {
+
+        sbToggler.onclick = (e) => {
+            let { value } = e.target;
+            toggleMarkerBySubCategory(value);
+        } 
+
+    });
+
+    function toggleMarkerBySubCategory(subCategoryValue) {
+        let pois = [];
+        if(subCategoryValue.includes("all")) {
+            let category = subCategoryValue.split("-")[1];
+            console.log(category);
+            pois = filterPoisByCategogry(category);
+        } else {
+            console.log(subCategoryValue);
+            pois = filterPoisBySubCategogry(subCategoryValue);
+        }
+
+        filteredPois = [...pois];
+        if(!isMobile) {
+            fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+            renderAllPoints(pois);
+        }
+    }
+
+    const filterPoisByCategogry = (category) => {
+        let categoryColumn = `category_${lang_code}`;
+        return allPoints.features.filter(ft => ft.properties[categoryColumn] == category);
+    }
+
+    const filterPoisBySubCategogry = (subcategory) => {
+        let categoryColumn = `subcategory_${lang_code}`;
+        return allPoints.features.filter(ft => ft.properties[categoryColumn]== subcategory);
+    }
+
+    
+    function renderAllPoints(fts) {
+        if(ftsMarkers.length) {
+            ftsMarkers.forEach(marker => marker.remove());
+        }
+
+        ftsMarkers = fts.map(ft => {
+            return createFtsMarker(ft);
+        });
+    }
+
+    let clickedMarker;
+    function toggleMarkers(display=true) {
+        let wrappers = document.querySelectorAll(".marker-wrapper");
+
+        // wrappers.forEach(markerWrapper => {
+        //     markerWrapper.onclick = (e) => {
+        //         if(clickedMarker && clickedMarker != e.target) {
+        //             clickedMarker.classList.remove("active-click");
+        //         } 
+
+        //         e.target.classList.add("active-click");
+        //         clickedMarker = e.target;
+                
+        //     }
+        // })
+
+        if(display) {
+            wrappers.forEach(wrp => wrp.classList.add("active"));
+        } else {
+            wrappers.forEach(wrp => wrp.classList.remove("active"));
+        }
+    }
+
+    let entryData = {
+        "title": "Sample Point", "subtitle": "Axe", "pin_type": "Detail Pin", "latitude": 51.6510339032819, 
+        "longitude": 5.0507890003802345, "description": "Lorem Ipsum", "icon": "uploads/icons/axe_colored.png", "poi_category": "axe", 
+        "maxzoom": 18, "minzoom": 16, "bottom_link": "", "project": 1, "location_image": "uploads/thumbnails/pin_images/aftershock.png", 
+        "accesibility_features": '{"accesibility_features":[]}}'
+    };
+
+    function createFtsMarker(ft) {
+        let divMarker = document.createElement("div");
+        divMarker.classList.add("div-marker");
+        
+        divMarker.innerHTML = `<div class="marker-wrapper">
+            <img src="/${ft.properties.icon}" />
+        </div>`;
+       
+
+        divMarker.onclick = (e) => {
+            e.stopPropagation();
+            updatePopupInfo(ft);
+        };
+
+        let marker = new mapboxgl.Marker({element:divMarker, anchor:'bottom'});
+        marker.setLngLat(ft.geometry.coordinates);
+        marker.addTo(map);
+
+
+        return marker;
+    }
+
+    function updatePopupInfo(ft) {
+        let popupContent = getPopupContent(ft.properties);
+        mainPopup.setHTML(popupContent);
+        mainPopup.setLngLat(ft.geometry.coordinates);
+        // .addTo(map);
+        
+        // active marker
+        if(mainMarker) {
+            mainMarker.remove();
+        } 
+
+        let { active_icon, pin_type } = ft.properties;
+        if(pin_type == "Area Pin") {
+            console.log("Area Pin Click");
+        }
+
+        let divMarker = document.createElement("div");
+        divMarker.classList.add("div-marker");
+        
+        divMarker.innerHTML = `<div class="marker-wrapper click-marker" id="active-marker">
+            <img src="/${active_icon}" />
+        </div>`;
+
+        mainMarker =  new mapboxgl.Marker({element:divMarker, anchor:'bottom'});
+        mainMarker.setLngLat(ft.geometry.coordinates);
+        mainMarker.addTo(map);       
+
+
+        map.flyTo({
+            center:ft.geometry.coordinates,
+            duration:500
+        });
+
+        map.once("moveend", (e) => {
+            let targetMarker = document.getElementById("active-marker");
+
+            if(targetMarker) {
+                targetMarker.classList.add("active-click");
+
+                if(mainPopup._classList.has("infobox-aside")) {
+                    console.log("Aside");
+
+                    mainPopup.addTo(map);
+                    setTimeout(() => {
+                        // mainPopup.addClassName("open");
+                    }, 100);
+                }
+
+                targetMarker.addEventListener("transitionend", (e) => {
+
+                    //
+                    if(mainPopup._classList.has("infobox-aside")) {
+                        mainPopup.addClassName("open");
+                    } else {
+                        mainPopup.addTo(map);
+                    }
+                    
+
+                    let moreInfoBtn = document.getElementById("more-info-link");
+                    if(moreInfoBtn) {
+                        moreInfoBtn.onclick = (e) => {
+                            e.preventDefault();
+
+                            closePopup();
+
+                            setTimeout(() => {
+                                window.location.assign(e.target.href);
+                            }, 400)
+                           
+                        }
+                    }
+                });
+
+                let closeBtn = document.querySelector("#close-popup");
+                if(closeBtn) {
+                    closeBtn.onclick = () => {
+                        closePopup();
+                    }
+                }
+            }
+            
+        })
+    }
+
+    function closePopup() {
+        console.log("Removing Marker");
+        let popupContainer = document.querySelector(".mapboxgl-popup-content");
+        console.log(popupContainer);
+
+        if(popupContainer) {
+            let activeMarker = document.getElementById("active-marker");
+            popupContainer.classList.add("close-popup");
+
+            if(mainPopup._classList.has("infobox-aside")) {
+                mainPopup.removeClassName("open");
+
+                setTimeout(() => {
+                    mainPopup.remove();
+                    mainMarker.remove();
+                }, 1000);
+
+            } else {
+                popupContainer.addEventListener("transitionend", () => {
+                    activeMarker.classList.remove("active-click");
+                    mainPopup.remove();
+                    mainMarker.remove();
+                    popupContainer.classList.remove("close-popup");
+                });
+            }
+            
+            
+        }
+    }
+
+    // toggle filters
+    let filterToggler = document.querySelector(".toggle-filter");
+    let applyButton = document.querySelector(".apply-button");
+    let filterSection = document.querySelector(".filter-section");
+
+    filterToggler.onclick = (e) => {
+        console.log(e);        
+        filterSection.classList.toggle("expanded");
+        // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+    }
+
+    applyButton.onclick = (e) => {
+        filterSection.classList.remove("expanded");
+        // filterToggler.innerHTML = filterSection.classList.contains("expanded") ? "Close" : "Filters";
+        
+        setTimeout(() => {
+            fitToCategoryBounds(filteredPois.map(poi => poi.geometry.coordinates));
+            renderAllPoints(filteredPois);
+        }, 500);
+        
+    }
+
+    
+    
+    console.log(activeLanguage);
+    console.log(lang_code);
+
+    // if (activeLanguage !== lang_code) {
+    //     document.getElementById("lang-div").value = activeLanguage;
+    //     document.getElementById("lang-submit").click();
+    //     //  lang_code = projectLanguage
+    // }
+    
+    // document.getElementById("lang-select").value = activeLanguage;
+    // changeLanguage(activeLanguage);
+
+    // document.querySelector(".style-toggler").innerHTML += lang[activeLanguage];
+
+    // update the images path
+    let images = document.querySelectorAll("img");
+    console.log(images);
+    images.forEach(img => {
+        img.src = img.src.split("/").slice(-2,).join("/")
+    });
+
+    changeLanguage(lang_code);
+
+</script>
+
+    <script src="/static/js/color-modes.js"></script>
+</body>
+</html>
+
+<!-- cnsdrd-map
+@{H<OwjO"q8OUn{be$Sbj^v=O^ai3I -->

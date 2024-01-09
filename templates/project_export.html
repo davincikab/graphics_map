@@ -122,7 +122,7 @@
 
     .details-header {
         text-transform: capitalize;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--filter-card-line-color);
         /* display: flex;
         align-items: center;
         justify-content: space-around; */
@@ -260,7 +260,6 @@
         width: 22px;
         height: 22px;
         object-fit: contain;
-        mix-blend-mode: color-burn;
     }
 
     /* filter-tabs */
@@ -366,6 +365,11 @@
         max-height: 100%;
     }
 
+    .category-section-wrapper {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .category-section {
         display: flex;
         padding: 10px;
@@ -376,6 +380,8 @@
         border: 2px solid var(--text-color);
         border-radius: 10px;
         padding: 0 15px;
+        align-items: center;
+        display: flex;
     }
 
     .mapboxgl-popup.infobox-aside .popup-content .image-section {
@@ -393,9 +399,11 @@
         display: flex;
         height: 100%;
         width: 100%;
-        max-height: 180px;
+        max-height: 70vw;
+        font-size: 13px;
+        overflow-y: auto;
         background-color: var(--infobox-bg);
-        color:var(--text-color);
+        color:var(--infobox-text-color);
 
         {% if LANGUAGE_CODE == "ar" %}
             font-family: var(--project-font-ar), var(--project-font), var(--project-font-he);
@@ -437,7 +445,13 @@
     .popup-content .info-section h5 {
         margin:5px 0px;
         text-align: start;
-        font-size: 18px;
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .info-section .popup-subtitle {
+        font-weight: 600;
+        font-size: 17px;
     }
 
     .info-section .icons {
@@ -470,7 +484,7 @@
     }
 
     .infobox-aside .popup-close-btn {
-        position: absolute;
+        /* position: absolute; */
         top: 0px;
         right: -10px;
         padding: 5px;
@@ -494,7 +508,7 @@
         cursor: pointer;
         line-height: 1.5;
         padding: 16px 0px 15px;
-        border-bottom: 1px solid rgb(237, 229, 213);
+        border-bottom: 1px solid var(--filter-card-line-color);
     }
 
     .filter-list {
@@ -512,6 +526,8 @@
 
     .filter-toggler img {
         margin: 0px 8px;
+        height: var(--filter-icon-size) !important;
+        width: var(--filter-icon-size) !important;
     }
 
     .filter-toggler i {
@@ -520,7 +536,8 @@
 
     .collapse-toggler.active {
         /* color:var(--primary); */
-        background: var(--filter-card-active)
+        background: var(--filter-card-active);
+        color:var(--filter-card-active-text-color);
     }
 
     .collapse-toggler > * {
@@ -581,10 +598,9 @@
         display: flex;
         width: 376px;
         max-width: 100%;
-        min-height:100px;
+        min-height:120px;
         box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.6);
         transition: all 300ms;
-        background-color: var(--infobox-bg);
         opacity: 1;
         will-change: transform;
     }
@@ -613,10 +629,10 @@
         transform: none;
     }
 
-    .mapboxgl-popup-content.close-popup { 
+    /* .mapboxgl-popup-content.close-popup { 
         opacity: 0;       
         transform: none;
-    }
+    } */
 
     .mapboxgl-popup-close-button {
         display: none;
@@ -640,21 +656,24 @@
     .toggle-filter {
         background-color: var(--filter-bg-color);
         /* box-shadow:0px 0px 0.5rem #555; */
-        border:1px solid #ddd !important;
+        border:none;
         display: none;
         color:var(--text-color);
         width: 100px;
         font-size: 18px !important;
     }
 
+    .btn.toggle-filter:hover {
+        color:var(--text-color);
+    }
     .apply-button {
         position: fixed;
         bottom: 0px;
         margin:10px;
         left: 0px;
-        background-color: var(--filter-card-active);
+        background-color: var(--accept-button-bg-color);
         width: calc(100% - 20px);
-        color:#fff;
+        color:var(--accept-button-text-color);
         height: 50px;
         z-index: 1;
 
@@ -662,7 +681,8 @@
         align-items: center;
         justify-content: center;
         border-radius: 5px;
-        box-shadow: 0px 0px 0.5rem #444;
+        font-size: 18px !important;
+        /* box-shadow: 0px 0px 0.5rem #444; */
     }
 
     .filter-section .text-collapse {
@@ -713,6 +733,8 @@
         }
         .filter-section.expanded .toggle-filter {
             width: 100px;
+            background-color: var(--close-button-bg-color);
+            color:var(--close-button-text-color);
         }
 
         .toggle-filter {
@@ -906,7 +928,7 @@
     let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuZXplcSIsImEiOiJjbGlqeHExZGswY280M2NxcXVnc2J4NzRjIn0.roOLfnIg0hQnfisyhrRpPQ';
-    let tilesUrl = `/{{ project.custom_map.tiles_folder }}`;
+    let tilesUrl = `{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
     let center = `{{ project.custom_map.center }}`;
     let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
@@ -920,7 +942,37 @@
     let ftsMarkers = [];
 
     let project_theme = `{{ project.project_theme }}`;
-    let areaTextColor = project_theme.split("\n").find(l => l.includes("area-text-color")).split(":")[1].slice(0,-1);
+    let areaTextColor = getValueFromProjectTheme("area-text-color") || "#000";
+    let simpleTextColor = getValueFromProjectTheme("simple-text-color")|| "#000";
+    let textColor = getValueFromProjectTheme("text-color")|| "#000";
+    let areaTextOffset = getValueFromProjectTheme("area-text-offset") || 2;
+    areaTextOffset = parseFloat(areaTextOffset);
+
+    let circleIconColor =  getValueFromProjectTheme("circle-icon-color") || "#4D3929";
+    let circleIconStrokeColor = getValueFromProjectTheme("circle-icon-stroke-color") || "#fff";
+
+    let simpleTextOffset = getValueFromProjectTheme("simple-text-offset") || 1;
+    simpleTextOffset = parseFloat(simpleTextOffset);
+
+    // text icons min zooms
+    let simpleIconMinzoom = getValueFromProjectTheme("simple-icon-minzoom") || 2;
+    simpleIconMinzoom = parseFloat(simpleIconMinzoom );
+
+    let simpleTextMinzoom = getValueFromProjectTheme("simple-text-minzoom") || 2;
+    simpleTextMinzoom = parseFloat(simpleTextMinzoom);
+
+    let simpleTextSize = getValueFromProjectTheme("simple-text-size") || 12;
+    simpleTextSize = parseFloat(simpleTextSize);
+
+    let areaIconMinzoom = getValueFromProjectTheme("area-icon-minzoom") || 2;
+    areaIconMinzoom = parseFloat(areaIconMinzoom);
+
+    function getValueFromProjectTheme(key) {
+        let val =  project_theme.split("\n").find(l => l.includes(`--${key}`));
+        return val ? val.split(":")[1].slice(0,-1) : null
+    }
+    
+
     let areaTexKey = lang_code == "en" ? `project-font` : `project-font-${lang_code}`;
 
     let areaTextFont = project_theme.split("\n").find(l => l.includes(areaTexKey)).split(":")[1].slice(0,-1)
@@ -944,6 +996,11 @@
         <path id='stroke' d='M14 5l1 1-9 9-1-1 9-9z' display='none'/>
     </svg>`;
 
+    let zoomInIcon = `<svg xmlns='http://www.w3.org/2000/svg' fill='${textColor}' viewBox='0 0 29 29'><path d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5z'/></svg>`;
+    let zoomOutIcon = `<svg xmlns='http://www.w3.org/2000/svg' fill='${textColor}' viewBox='0 0 29 29'><path d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-9z'/></svg>`;
+    let geoIcon = `<svg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='${textColor}'><path d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7z'/><circle id='dot' cx='10' cy='10' r='2'/><path id='stroke' d='M14 5l1 1-9 9-1-1 9-9z' display='none'/></svg>`;
+    let geoIconDeniend = `<svg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='${textColor}'><path d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7z'/><circle id='dot' cx='10' cy='10' r='2'/><path id='stroke' d='M14 5l1 1-9 9-1-1 9-9z' fill='#f00'/></svg>`;
+
     let moreInfoText = {
         "en":"More Information",
         "ar":"معلومات اكثر",
@@ -960,6 +1017,7 @@
     let mapboxStyleUrl = `{{ project.custom_map.map_style_url }}`;
     mapboxStyleUrl = mapboxStyleUrl  == 'None' ? null : mapboxStyleUrl;
 
+    tilesUrl = tilesUrl.includes("https") ? tilesUrl : `/${tilesUrl}`;
     const customMapStyle = isOsmMap == "False" ? {
         version: 8,
         sources: {
@@ -987,7 +1045,7 @@
         center:[...center],
         bearing:bearing,
         // zoom: minZoom - 1,
-        zoom:maxZoom,
+        zoom:(minZoom + maxZoom)/2,
         minZoom:minZoom,
         maxZoom:maxZoom
     });
@@ -1026,7 +1084,35 @@
         map.addControl(languageCtrl);
     }
 
+    // update zoom icons
+    let imageUrl = URL.createObjectURL(new Blob([zoomInIcon], {
+        type: 'image/svg+xml'
+    }));
+    document.querySelector(".mapboxgl-ctrl button.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon").style.backgroundImage = `url("${imageUrl}")`;
+
+    let imageUrlOut = URL.createObjectURL(new Blob([zoomOutIcon], {
+        type: 'image/svg+xml'
+    }));
+    document.querySelector(".mapboxgl-ctrl button.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon").style.backgroundImage = `url("${imageUrlOut}")`;
+    
+    // update geolocation icons
+
+    let imageUrlGeo = URL.createObjectURL(new Blob([geoIcon], {
+        type: 'image/svg+xml'
+    }));
+    
+    
     map.on("style.load", function () {
+        if(map.hasControl(geolocationControl)) {
+            setTimeout(() => {
+                console.log(document.querySelector("button.mapboxgl-ctrl-geolocate"));
+                document.querySelector("button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon").style.backgroundImage = `url("${imageUrlGeo}")`;
+            }, 100);
+            
+        } else {
+            console.log("Control Not Found");
+        }
+        
         // document.querySelector(".mapboxgl-ctrl-icon").innerHTML = geolocateIcon;
 
         setMapLayers();
@@ -1127,15 +1213,15 @@
     }
 
     function setMapLayers() {
-        map.loadImage("/media/uploads/icons/image.png", (err, image) => {
-            if(err) throw err;
+        // map.loadImage("/media/uploads/icons/image.png", (err, image) => {
+        //     if(err) throw err;
 
-            if(!map.hasImage('image-icon')) {
-                console.log(image);
-                map.addImage('image-icon', image);
-            }
+        //     if(!map.hasImage('image-icon')) {
+        //         console.log(image);
+        //         map.addImage('image-icon', image);
+        //     }
             
-        });
+        // });
 
         // area layer
         map.addSource("area-pins", {
@@ -1156,7 +1242,7 @@
                 'text-allow-overlap': true,
                 'text-field': ['get',`title_${lang_code}`],
                 'text-max-width': 13, // ems
-                'text-offset': [0, 1],
+                'text-offset': [0, areaTextOffset],
                 // 'text-font': ['Nunito Sans Bold', 'Noto Sans', 'sans-serif'],
                 'text-anchor': 'center',
                 'text-size': 14,
@@ -1165,7 +1251,7 @@
             paint:{
                 'text-color':`${areaTextColor}`,
             },
-            maxzoom:minZoom + 1
+            maxzoom:areaIconMinzoom
         });
 
         // 'icon-image': ['get', `category_${lang_code}`],
@@ -1173,7 +1259,7 @@
             type:"symbol",
             id:"area-pins-higher",
             source:"area-pins",
-            minzoom:minZoom + 1,
+            minzoom:areaIconMinzoom,
             layout:{
                 'icon-allow-overlap': true,
                 'icon-image': ['concat', ['get', `category_${lang_code}`], "-active"],
@@ -1194,8 +1280,8 @@
             id:"pois",
             minzoom:minZoom + 1,
             "paint":{
-                "circle-color":"#4D3929",
-                "circle-stroke-color":"#fff",
+                "circle-color":circleIconColor,
+                "circle-stroke-color":circleIconStrokeColor,
                 "circle-radius":[
                     'interpolate',
                     ['linear'],
@@ -1230,31 +1316,55 @@
                     ['linear'],
                     ['zoom'],
                     minZoom,
-                    0.1,
+                    0.15,
                     maxZoom,
-                    0.45
+                    0.75
+                ]
+            },
+            minzoom:simpleIconMinzoom
+        });
+
+        map.addLayer({
+            type:"symbol",
+            id:"simple-features-icons-higher",
+            source:"simple-features",
+            filter:['match', ['get', 'pin_type'], 'Simple Icon', true, false],
+            minzoom:simpleIconMinzoom,
+            layout:{
+                'visibility':'none',
+                'icon-allow-overlap': true,
+                'icon-image': ['concat', ['get', 'id'], "-active"],
+                'icon-size': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    minZoom,
+                    0.15,
+                    maxZoom,
+                    0.75
                 ]
             }
-        });
+        })
 
         map.addLayer({
             type:"symbol",
             id:"simple-features-text",
             source:"simple-features",
             filter:['match', ['get', 'pin_type'], 'Simple Text', true, false],
+            minzoom:simpleTextMinzoom,
             layout:{
                 'text-allow-overlap': true,
                 'text-field': ['get',`title_${lang_code}`],
                 'text-max-width': 7, // ems
-                'text-offset': [0, 1],
+                'text-offset': [0, simpleTextOffset],
                 'text-anchor': 'center',               
-                'text-size': 12,
+                'text-size': simpleTextSize,
                 'text-line-height': 1,
             },
             paint:{
                 'text-halo-width':2,
                 'text-halo-color':'#fff',
-                'text-color':`#000`,
+                'text-color':`${simpleTextColor}`,
             }
         });
     }
@@ -1315,7 +1425,7 @@
         var canvas = document.createElement('canvas');
         var context = canvas.getContext('2d');
         var maxW = imageBitmap.width > 309 ? 309 : imageBitmap.width;
-        var maxH =  imageBitmap.height > 139 ? 139 : imageBitmap.height;
+        var maxH =  imageBitmap.height > 140 ? 140 : imageBitmap.height;
 
         var iw = imageBitmap.width;
         var ih = imageBitmap.height;
@@ -1354,8 +1464,10 @@
             allPoints = JSON.parse(JSON.stringify(poiFeature))
 
             let categoryColumn = `category_${lang_code}`;
-            let simpleIcons = simpleFeatureData.filter(item => item.pin_type == "Simple Icon").map(pin => {
-                return { category:pin.id, icon:pin.icon}
+            let simpleIcons = [];
+            simpleFeatureData.filter(item => item.pin_type == "Simple Icon").forEach(pin => {
+                simpleIcons.push({ category:pin.id, icon:pin.icon });
+                simpleIcons.push({ category:`${pin.id}-active`, icon:pin.active_icon });
             });
 
             let imageList = areaInfo.reduce((a,b) => {
@@ -1486,16 +1598,17 @@
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
         });
 
-        let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link">${moreInfoText[lang_code]}</a>` : "";
+        let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link" target="_blank">${moreInfoText[lang_code]}</a>` : "";
         let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
               <img src="/media/${entry.location_image}" alt="" />
             </div>` : "";
         
-        let categorySection = infoBox == "Aside" ? `<div class="category-section">
+        let categorySection = infoBox == "Aside" ? `<div class="category-section-wrapper"><div class="category-section">
                 <div>${entry[`category_${lang_code}`]}</div>
                 ${entry[`subcategory_${lang_code}`] ?  `<div>${entry[`subcategory_${lang_code}`]}</div>` : ""} 
-                <div id="close-popup" class="popup-close-btn">×</div>
-        </div>` : "";
+            </div>
+            <div id="close-popup" class="popup-close-btn">×</div>
+         </div>` : "";
 
         console.log(lang_code);
 
@@ -1503,18 +1616,20 @@
             ${categorySection}
            ${imgSection}
           <div class="info-section">
-              <h5>${entry[`title_${lang_code}`]}</h5>
-              <div class="description">${entry[`subtitle_${lang_code}`]}</div>
+            <h5 class="popup-title">${entry[`title_${lang_code}`] || ""}</h5>
+            <div class="popup-subtitle">${entry[`subtitle_${lang_code}`] || ""}</div>
 
-              <p>${entry[`description_${lang_code}`]}</p>
+            <p class="description">
+                ${entry[`description_${lang_code}`] || ""}
+            </p>
 
-              <div class="icons">
-               ${icons.join("")}
-              </div>
+            <div class="icons">
+                ${icons.join("")}
+            </div>
 
-               <div class="link-section">
-                    ${moreInfo}
-                </div>
+            <div class="link-section">
+                ${moreInfo}
+            </div>
           </div>
         </div>`;
     }
@@ -1812,9 +1927,10 @@
 
         if(popupContainer) {
             let activeMarker = document.getElementById("active-marker");
-            popupContainer.classList.add("close-popup");
+            
 
             if(mainPopup._classList.has("infobox-aside")) {
+                console.log("Aside Popup");
                 mainPopup.removeClassName("open");
 
                 setTimeout(() => {
@@ -1823,10 +1939,14 @@
                 }, 1000);
 
             } else {
+                let activeMarker = document.getElementById("active-marker");
+                popupContainer.classList.add("close-popup");
+                
                 popupContainer.addEventListener("transitionend", () => {
                     activeMarker.classList.remove("active-click");
                     mainPopup.remove();
                     mainMarker.remove();
+
                     popupContainer.classList.remove("close-popup");
                 });
             }

@@ -120,7 +120,8 @@ def project_detail(request, title):
                 return render(request, "not-authorized.html")
         pins_icons = Icons.objects.exclude(icon_type="Accesibility")
         acc_icons = Icons.objects.filter(icon_type="Accesibility")
-        project_categories = PinCategory.objects.filter(project=map_project)
+        project_categories = PinCategory.objects.filter(project=map_project).filter(is_simple_icon=False).filter(is_area_category=False).order_by('ranking_value')
+        pin_categories = PinCategory.objects.filter(project=map_project)
         # custom_map = CustomMaps.objects.get()
 
         print(project_categories)
@@ -131,6 +132,7 @@ def project_detail(request, title):
             "pins_icons":pins_icons, 
             "accessebility_icons":acc_icons,
             "user":request.user,
+            "pin_categories":pin_categories,
             "categories":project_categories
         }
         return render(request, 'project_detail.html', context)
@@ -233,7 +235,11 @@ def create_pins(request):
             pin_instance.category_he = pin_category.title_he
             
             if request.POST.get('subcategory'):
-                subcategory = PinSubCategory.get(category=pin_category)
+                subcategory_title = request.POST.get('subcategory')
+                subcategory = PinSubCategory.objects.get(
+                    Q(title=subcategory_title) | Q(title_en=subcategory_title) | Q(title_he=subcategory_title) |
+                    Q(title_ar=subcategory_title) 
+                )
                 pin_instance.subcategory = subcategory.title
                 pin_instance.subcategory_en = subcategory.title_en
                 pin_instance.subcategory_ar = subcategory.title_ar
@@ -257,17 +263,44 @@ def update_pin_details(request, pin_pk):
     if request.method == "POST":
         pin = Pins.objects.get(pk=pin_pk)
         form =PinsForm(request.POST, request.FILES, instance=pin)
+        project = Project.objects.get(pk=request.POST.get('project'))
+        pin_category = PinCategory.objects.get(Q(title=request.POST.get("category")) & Q(project=project))
 
         if form.is_valid():
-            form.save()
-            # pin.latitude = request.POST['latitude']
-            # pin.longitude = request.POST['longitude']
+            pin_instance = form.save(commit=False)
+            pin_instance.accesibility_features = request.POST.get('accesibility_features')
+
+            # update category values
+            pin_instance.icon = pin_category.icon
+            pin_instance.active_icon = pin_category.active_icon
+            pin_instance.category_en = pin_category.title_en
+            pin_instance.category_ar = pin_category.title_ar
+            pin_instance.category_he = pin_category.title_he
+
+            if request.POST.get('subcategory'):
+                subcategory_title = request.POST.get('subcategory')
+                subcategory = PinSubCategory.objects.get(
+                    Q(title=subcategory_title) | Q(title_en=subcategory_title) | Q(title_he=subcategory_title) |
+                    Q(title_ar=subcategory_title) 
+                )
+                pin_instance.subcategory = subcategory.title
+                pin_instance.subcategory_en = subcategory.title_en
+                pin_instance.subcategory_ar = subcategory.title_ar
+                pin_instance.subcategory_he = subcategory.title_he
+            else:
+                pin_instance.subcategory = ""
+                pin_instance.subcategory_en = ""
+                pin_instance.subcategory_ar = ""
+                pin_instance.subcategory_he = ""
+
+            pin_instance.latitude = request.POST['latitude']
+            pin_instance.longitude = request.POST['longitude']
             # pin.title = request.POST['title']
             # pin.subtitle = request.POST['subtitle']
             # pin.description = request.POST['description']
             # pin.description = request.POST['description']
 
-            # pin.save()
+            pin_instance.save()
             return JsonResponse({'data':'Success!!'})
         else:
             return JsonResponse({'data':'Failed!'})
@@ -369,7 +402,13 @@ def add_category(request):
         form = PinCategoryForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.title = request.POST['title']
+            category.title_en = request.POST['title']
+            category.title_ar = request.POST['title']
+            category.title_he = request.POST['title']
+
+            category.save()
             return JsonResponse({'data':'Success!'})
         else:
             print(form.errors)
@@ -381,7 +420,14 @@ def add_sub_category(request):
         form = PinSubCategoryForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            subcategory = form.save(commit=False)
+            subcategory.title = request.POST['title']
+            subcategory.title_en = request.POST['title']
+            subcategory.title_ar = request.POST['title']
+            subcategory.title_he = request.POST['title']
+
+            subcategory.save()
+
             return JsonResponse({'data':'Success!'})
         else:
             # print(form.errors)
@@ -427,16 +473,16 @@ def export_project(request, project_id):
     # get all the icons a zip file
     icons_path = f"{media_root_dir}/uploads/icons/{project.title}"
     zip_directory(icons_path, f'{media_root_dir}/export/{project.title}/icons.zip')
-    unzip_to_dir(f'{media_root_dir}/export/{project.title}/icons.zip', f"{media_root_dir}/export/{project.title}/icons")
+    unzip_to_dir(f'{media_root_dir}/export/{project.title}/icons.zip', f"{media_root_dir}/export/{project.title}/icons/")
     delete_zip(f'{media_root_dir}/export/{project.title}/icons.zip')
     # shutil.copy(icons_path, f"{media_root_dir}/export/{project.title}/icons") 
 
-    move_accessibility_icons(f"{media_root_dir}/uploads/icons", f"{media_root_dir}/export/{project.title}/icons")
+    move_accessibility_icons(f"{media_root_dir}/uploads/icons", f"{media_root_dir}/export/{project.title}/icons/")
 
     # get uploaded images: thumbnails:create a zip
     thumbnail_path = f"{media_root_dir}/uploads/thumbnails/{project.title}"
     zip_directory(thumbnail_path, f'{media_root_dir}/export/{project.title}/thumbnails.zip')
-    unzip_to_dir(f'{media_root_dir}/export/{project.title}/thumbnails.zip', f"{media_root_dir}/export/{project.title}/thumbnails")
+    unzip_to_dir(f'{media_root_dir}/export/{project.title}/thumbnails.zip', f"{media_root_dir}/export/{project.title}/thumbnails/")
     delete_zip(f'{media_root_dir}/export/{project.title}/thumbnails.zip')
 
     # get the static files: css, js, fonts

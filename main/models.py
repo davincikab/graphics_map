@@ -10,7 +10,7 @@ TILES_OPTIONS = (
 default_user = User.objects.get(id=1)
 
 class CustomMaps(models.Model):
-    title = models.CharField(max_length=200,null=False)
+    title = models.CharField(max_length=200,null=False, unique=True)
     description = models.TextField(blank=True, null=True)
     tiles_folder = models.CharField(default="/media/uploads/projects/efteling", max_length=400)
     center = models.CharField(max_length=200, default="0,0", null=False)
@@ -44,14 +44,36 @@ DEFAULT_STYLESHEET = """
     --project-font:Poppins, sans-serif !important;
     --project-font-he:Poppins, sans-serif !important;
     --project-font-ar:Poppins, sans-serif !important;
-
+    --simple-text-size:12;
+    --simple-text-offset:1;
+    --area-text-offset:3.2;
+    --simple-text-minzoom:14;
+    --simple-icon-minzoom:14;
+    --area-icon-minzoom:2;
     --canvas-bg-color:#000000;
     --area-text-color:#ffffff;
+    --simple-text-color:#000;
+    --circle-icon-color:#4D3929;
+    --circle-icon-stroke-color:#fff;
+
     --filter-bg-color:#5F6F52;
     --icons-bg:#A9B388;
     --infobox-bg:#FEFAE0;
+    --infobox-text-color:#00ffff;
+    --infobox-title-font-size:21px;
+    --infobox-title-font-size:18px;
+    --infobox-font-size:13px;
+    --filter-icon-size:30px;
+
     --text-color:#B99470;
     --filter-card-active:#5F6F52;
+    --filter-card-active-text-color:#00ff00;
+    --filter-card-line-color:#00ffff;
+
+    --accept-button-bg-color:#000;
+    --accept-button-text-color:#fff;
+    --close-button-bg-color:#fff;
+    --close-button-text-color:#f0f00f;
 """
 
 # 1 for the filters windows background, 
@@ -69,7 +91,7 @@ class Project(models.Model):
     project_owner = models.ForeignKey(User, on_delete=models.CASCADE, default=default_user.pk)
     custom_map = models.ForeignKey(CustomMaps, on_delete=models.SET_NULL, null=True)
     project_language = models.CharField(choices=PROJECT_LANG, default="en", max_length=50)
-    project_theme = models.TextField(default=DEFAULT_STYLESHEET, max_length=1000)
+    project_theme = models.TextField(default=DEFAULT_STYLESHEET, max_length=4100)
     infobox_style = models.CharField(max_length=100, choices=INFOBOX_TYPES, default="Default")
 
     class Meta:
@@ -137,7 +159,7 @@ def pin_file_name(instance, filename):
 
 class Pins(models.Model):
     title = models.CharField(max_length=200,null=False)
-    subtitle =models.CharField(max_length=200)
+    subtitle =models.CharField(max_length=200, blank=True)
     pin_type = models.CharField(max_length=100, choices=PIN_TYPES, default="Detail Pin")
     latitude = models.FloatField(default=0)
     longitude = models.FloatField(default=0)
