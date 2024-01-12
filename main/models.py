@@ -21,6 +21,7 @@ class CustomMaps(models.Model):
     bearing = models.IntegerField(default=0, null=False)
     minzoom = models.IntegerField(default=0)
     maxzoom = models.IntegerField(default=5)
+    mobile_minzoom = models.IntegerField(default=5)
     # tileSize = models.IntegerField(default=256)
 
     class Meta:
@@ -46,6 +47,7 @@ DEFAULT_STYLESHEET = """
     --project-font-ar:Poppins, sans-serif !important;
     --simple-text-size:12;
     --simple-text-offset:1;
+    --area-text-size:10;
     --area-text-offset:3.2;
     --simple-text-minzoom:14;
     --simple-icon-minzoom:14;
@@ -61,7 +63,7 @@ DEFAULT_STYLESHEET = """
     --infobox-bg:#FEFAE0;
     --infobox-text-color:#00ffff;
     --infobox-title-font-size:21px;
-    --infobox-title-font-size:18px;
+    --infobox-subtitle-font-size:18px;
     --infobox-font-size:13px;
     --filter-icon-size:30px;
 

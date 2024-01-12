@@ -36,8 +36,13 @@
         {% endif %}        
     }
 
-    .mapboxgl-ctrl .mapboxgl-ctrl-icon {
+    .mapboxgl-ctrl .mapboxgl-ctrl-icon  {
         background-color: var(--filter-bg-color);
+    }
+
+    .mapboxgl-ctrl-group {
+        background-color: var(--filter-bg-color);
+        border-radius: 4px;
     }
 
     .mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon svg {
@@ -377,7 +382,7 @@
 
     .category-section div {
         margin: 0 10px 0 0;
-        border: 2px solid var(--text-color);
+        border: 2px solid var(--infobox-text-color);
         border-radius: 10px;
         padding: 0 15px;
         align-items: center;
@@ -400,7 +405,7 @@
         height: 100%;
         width: 100%;
         max-height: 70vw;
-        font-size: 13px;
+        font-size:  var(--infobox-font-size);
         overflow-y: auto;
         background-color: var(--infobox-bg);
         color:var(--infobox-text-color);
@@ -445,13 +450,14 @@
     .popup-content .info-section h5 {
         margin:5px 0px;
         text-align: start;
-        font-size: 21px;
+        font-size:  var(--infobox-title-font-size);
         font-weight: bold;
     }
 
     .info-section .popup-subtitle {
         font-weight: 600;
-        font-size: 17px;
+        margin: 5px 0px;
+        font-size: var(--infobox-subtitle-font-size);
     }
 
     .info-section .icons {
@@ -513,6 +519,8 @@
 
     .filter-list {
         padding:10px;
+        max-height: calc(90% - 69px);
+        overflow: hidden auto;
     }
 
     .filter-toggler .header-text {
@@ -573,6 +581,10 @@
         align-items: center;
     }
 
+    .collapse-section.active label {
+        color:var(--filter-card-active-text-color);
+    }
+
     input[type=radio] {
         appearance: none;
         padding: 5px;
@@ -584,7 +596,7 @@
     }
 
     input[type=radio]:checked {
-       background-color: var(--text-color);
+       background-color: var(--filter-card-active-text-color);
     }
 
     /* popup */
@@ -700,9 +712,6 @@
     .filter-section.expanded .text-expanded {
         display: block;
     }
-
-
-
     @media screen and (max-width:480px) {
         #map-project {
             height: calc(100vh - calc(100vh - 100%));
@@ -756,6 +765,7 @@
             width: 100% !important;
             left:0px;
             right:0px;
+            top:100vh !important;
         }
 
         .infobox-aside .mapboxgl-popup-content {
@@ -803,6 +813,147 @@
         }
     }
 
+    @media screen 
+        and (min-device-width: 480px) 
+        and (max-width:1000px) 
+        and (orientation: landscape){
+        .filter-list {
+            padding: 10px;
+            max-height: calc(82vh - 69px);
+            overflow: hidden auto;
+            padding-bottom:50px;
+        }
+
+        .map-container {
+            height: calc(100vh - calc(100vh - 100%));
+        }
+
+        #map-project {
+            height: calc(100vh - calc(100vh - 100%));
+            max-height: 100%;
+        }
+
+        .filter-section {
+            /* transform: translate(-30px,-30px) scale(0.8); */
+            transform: translate(-35px,-35px) scale(0.75);
+        }
+
+        .details-header h6 {
+            padding:5px 3px;
+        }
+
+        .filter-toggler {
+            padding: 8px 0px 8px;
+        }
+    }
+    
+
+    /* @media screen and (max-width:787px) and (orientation: landscape) {
+    /* @media only screen 
+        and (min-device-width: 480px) 
+        and (max-device-width: 640px) 
+        and (orientation: landscape) 
+    { */
+
+        /* #map-project {
+            height: calc(100vh - calc(100vh - 100%));
+            max-height: 100%;
+        }
+        .filter-section {
+            height: 50px;
+            width: 110px;
+            max-width: none;
+            padding: 5px;
+            border-radius: 5px;
+            border-width: 1px;
+            overflow: hidden;
+            z-index: 99;
+        }
+
+        .filter-section.expanded  .apply-button {
+            display: flex;
+        }
+
+        .filter-section.expanded {
+            width: 100%;
+            top: 0px;
+            left: 0px;
+            margin: 0px;
+            height: 100vh;
+            border-radius: 0px;
+        }
+        .filter-section.expanded .toggle-filter {
+            width: 100px;
+            background-color: var(--close-button-bg-color);
+            color:var(--close-button-text-color);
+        }
+
+        .toggle-filter {
+            display: block;
+        }
+
+        .filter-section.close {
+            width: 100px;
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .mapboxgl-popup-content { 
+            width: 100%;
+            border-radius: 0px;
+        }
+
+        .infobox-aside.mapboxgl-popup {
+            width: 100% !important;
+            left:0px;
+            right:0px;
+            top:100vh !important;
+        }
+
+        .infobox-aside .mapboxgl-popup-content {
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .mapboxgl-popup.infobox-aside.open {
+            top:50vh !important;
+            width: 100% !important;
+            max-height: 400px;
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .mapboxgl-popup {
+            opacity: 1;
+            z-index: 2;
+            width: 100%;
+            max-width: 100% !important;
+            inset: auto 0px 0px;
+            transition: bottom 600ms ease 0s;
+            transform: none !important;
+        }
+
+        .mapboxgl-popup-content.close-popup { 
+            opacity: 0;       
+            transform: translateY(135px) scale(1);
+        }
+
+        .popup-content p {
+            margin:0px;
+        }
+
+        .style-toggler {
+            left:10px;
+            top:70px;
+            width: 90px;
+            padding:5px;
+            font-size: 14px;
+        }
+
+        .lang-toggle {
+            display: none;
+        }
+    } */
    
 </style>
 {% endblock %}
@@ -931,8 +1082,8 @@
     let tilesUrl = `{{ project.custom_map.tiles_folder }}`;
     let projectId = `{{ project.pk}}`;
     let center = `{{ project.custom_map.center }}`;
-    let maxZoom = parseInt(`{{ project.custom_map.maxzoom }}`);
-    let minZoom = parseInt(`{{ project.custom_map.minzoom }}`);
+    let maxZoom =  parseInt(`{{ project.custom_map.maxzoom }}`);
+    let minZoom = isMobile ? parseInt(`{{ project.custom_map.mobile_minzoom }}`) :parseInt(`{{ project.custom_map.minzoom }}`);
     const isOsmMap = `{{ project.custom_map.is_osm_based_map}}`;
     center = center.split(",").map(val => parseFloat(val));
     let projectLanguage = `{{ project.project_language }}`;
@@ -963,6 +1114,9 @@
 
     let simpleTextSize = getValueFromProjectTheme("simple-text-size") || 12;
     simpleTextSize = parseFloat(simpleTextSize);
+
+    let areaTextSize = getValueFromProjectTheme("area-text-size") || 12;
+    areaTextSize = parseFloat(areaTextSize);
 
     let areaIconMinzoom = getValueFromProjectTheme("area-icon-minzoom") || 2;
     areaIconMinzoom = parseFloat(areaIconMinzoom);
@@ -1051,7 +1205,7 @@
     });
 
     // let nava
-    let infoBox = `{{project.infobox_style}}`;
+    let infoBox = isMobile ?  "" : `{{project.infobox_style}}`;
     const mainPopup = new mapboxgl.Popup({ closeOnClick:false, closeOnMove:false, focusAfterOpen:false, anchor:"bottom", offset:[0, -50] });
     var mainMarker = new mapboxgl.Marker({ anchor:'bottom'});
 
@@ -1245,7 +1399,7 @@
                 'text-offset': [0, areaTextOffset],
                 // 'text-font': ['Nunito Sans Bold', 'Noto Sans', 'sans-serif'],
                 'text-anchor': 'center',
-                'text-size': 14,
+                'text-size': areaTextSize,
                 'text-line-height': 1,
             },
             paint:{
@@ -1598,7 +1752,7 @@
             return ` <img src="/media/${accFeature.icon}" alt="${accFeature.title}" />`;
         });
 
-        let moreInfo = entry.more_info_link ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link" target="_blank">${moreInfoText[lang_code]}</a>` : "";
+        let moreInfo = entry[`more_info_link_${lang_code}`] ? `<a href="${entry[`more_info_link_${lang_code}`]}" id="more-info-link" target="_blank">${moreInfoText[lang_code]}</a>` : "";
         let imgSection = (entry.location_image && entry.location_image !== "default.png") ? ` <div class='image-section'>
               <img src="/media/${entry.location_image}" alt="" />
             </div>` : "";
@@ -1706,6 +1860,11 @@
                 if(!isMobile) {
                     fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
                     renderAllPoints(pois);
+                } else {
+                    if(screen.orientation.type.includes("landscape")) {
+                        fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                        renderAllPoints(pois);
+                    }
                 }
                 
             }
@@ -1721,6 +1880,11 @@
             if(!isMobile) {
                 fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
                 renderAllPoints(pois);
+            } else {
+                if(screen.orientation.type.includes("landscape")) {
+                    fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                    renderAllPoints(pois);
+                }
             }
 
             // console.log("Category with no Sub Categories");
@@ -1759,6 +1923,11 @@
         if(!isMobile) {
             fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
             renderAllPoints(pois);
+        } else {
+            if(screen.orientation.type.includes("landscape")) {
+                fitToCategoryBounds(pois.map(poi => poi.geometry.coordinates));
+                renderAllPoints(pois);
+            }
         }
     }
 
@@ -1902,7 +2071,7 @@
                             closePopup();
 
                             setTimeout(() => {
-                                window.location.assign(e.target.href);
+                                window.open(e.target.href, "_blank");
                             }, 400)
                            
                         }
