@@ -42,40 +42,42 @@ PROJECT_LANG = (
 )
 
 DEFAULT_STYLESHEET = """
-    --project-font:Poppins, sans-serif !important;
-    --project-font-he:Poppins, sans-serif !important;
-    --project-font-ar:Poppins, sans-serif !important;
+    --project-font:Alef, Poppins !important;
+    --project-font-he:Poppins, Alef !important;
+    --project-font-ar:Poppins, Alef !important;
+
     --simple-text-size:12;
     --simple-text-offset:1;
-    --area-text-size:10;
+    --area-text-size:15;
     --area-text-offset:3.2;
     --simple-text-minzoom:14;
     --simple-icon-minzoom:14;
-    --area-icon-minzoom:2;
+    --area-icon-minzoom:17;
+
     --canvas-bg-color:#000000;
+
     --area-text-color:#ffffff;
     --simple-text-color:#000;
-    --circle-icon-color:#4D3929;
-    --circle-icon-stroke-color:#fff;
-
-    --filter-bg-color:#5F6F52;
-    --icons-bg:#A9B388;
-    --infobox-bg:#FEFAE0;
-    --infobox-text-color:#00ffff;
-    --infobox-title-font-size:21px;
+    --circle-icon-color:#ff75f4;
+    --circle-icon-stroke-color:#151818;
+    --filter-bg-color:#2a3944;
+    --icons-bg:#2a3944;
+    --infobox-bg:#ffffff;
+    --infobox-text-color:#1b0f23;
+    --infobox-title-font-size:26px;
     --infobox-subtitle-font-size:18px;
     --infobox-font-size:13px;
-    --filter-icon-size:30px;
+    --filter-icon-size:35px;
 
-    --text-color:#B99470;
-    --filter-card-active:#5F6F52;
-    --filter-card-active-text-color:#00ff00;
-    --filter-card-line-color:#00ffff;
+    --text-color:#d6f8ff;
+    --filter-card-active:#364a57;
+    --filter-card-active-text-color:#ff75f4;
+    --filter-card-line-color:#78a5be;
 
-    --accept-button-bg-color:#000;
-    --accept-button-text-color:#fff;
-    --close-button-bg-color:#fff;
-    --close-button-text-color:#f0f00f;
+    --accept-button-bg-color:#af349b;
+    --accept-button-text-color:#d6f8ff;
+    --close-button-bg-color:#616c75;
+    --close-button-text-color:#d6f8ff;
 """
 
 # 1 for the filters windows background, 
